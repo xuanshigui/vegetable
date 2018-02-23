@@ -8,3 +8,8 @@ spring:
     username: root
     password: 123456
     driverClassName: com.mysql.cj.jdbc.Driver
+  thymeleaf:
+    check-template: true
+    # 关闭模板缓存，便于调试
+    cache: false
+    suffix: .html
