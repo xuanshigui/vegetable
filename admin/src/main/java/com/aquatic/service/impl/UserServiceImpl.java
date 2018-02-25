@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private UserDao userDao;
 
     public boolean delRecord() {
-        jdbcTemplate.update("delete from test where id=3");
-        return true;
+        return userDao.delete();
     }
 }
