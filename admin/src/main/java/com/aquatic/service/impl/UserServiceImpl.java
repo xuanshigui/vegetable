@@ -1,8 +1,8 @@
 package com.aquatic.service.impl;
 
 import com.aquatic.service.UserService;
+import com.aquatic.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
