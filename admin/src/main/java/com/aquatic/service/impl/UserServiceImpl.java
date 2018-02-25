@@ -1,17 +1,17 @@
 package com.aquatic.service.impl;
 
 import com.aquatic.service.UserService;
+import com.aquatic.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private UserDao userDao;
 
     public boolean delRecord() {
-        jdbcTemplate.update("delete from test where id=3");
-        return true;
+        return userDao.delete();
     }
 }
