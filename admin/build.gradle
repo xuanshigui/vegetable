@@ -2,7 +2,7 @@ apply plugin: 'war'
 apply plugin: 'org.springframework.boot'
 
 dependencies {
-    // compile project(':service')
+    compile project(':service')
     compile "com.alibaba:fastjson:1.2.46"
     compile 'org.webjars:bootstrap:3.3.7'
 }
