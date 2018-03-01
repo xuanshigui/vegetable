@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>hello</title>
 </head>
 <body>
-welcome to aquatic system;
+welcome to aquatic system.
+<br>
+test input <input type="text" th:value="${test}">
+<br>
+test text <span th:text="${test}"></span>
+<br>
+UserProfile:
+
+姓名：<span th:text="${user.name}"></span>
+年龄：<span th:text="${user.age}"></span>
+性别：<span th:text="${user.gender.getGender()}"></span>
+
+
 </body>
 </html>

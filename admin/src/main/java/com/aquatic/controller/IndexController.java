@@ -1,5 +1,7 @@
 package com.aquatic.controller;
 
+import com.aquatic.constants.Gender;
+import com.aquatic.model.User;
 import com.aquatic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,16 @@ public class IndexController extends BaseController {
 
     @GetMapping(path = "/{item}.html")
     public ModelAndView index(@PathVariable("item") String item) {
-        return new ModelAndView("index");
+        ModelAndView mv = new ModelAndView(item);
+        String test = "this is a test";
+        mv.addObject("test", test);
+
+        User user = new User();
+        user.setName("zhangsan");
+        user.setAge(33);
+        user.setGender(Gender.M);
+
+        mv.addObject("user", user);
+        return mv;
     }
 }
