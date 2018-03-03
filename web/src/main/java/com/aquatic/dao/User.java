@@ -1,4 +1,4 @@
-package com.aquatic;
+package com.aquatic.dao;
 
 import com.aquatic.constants.Gender;
 

@@ -1,22 +1,13 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>hello</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
 <body>
-welcome to aquatic system.
-<br>
-test input <input type="text" th:value="${test}">
-<br>
-test text <span th:text="${test}"></span>
-<br>
-UserProfile:
-
-姓名：<span th:text="${user.name}"></span>
-年龄：<span th:text="${user.age}"></span>
-性别：<span th:text="${user.gender.getGender()}"></span>
-
-
+<!-- OVERVIEW -->
+<div class="panel panel-headline">
+	<div class="panel-heading">
+		<h3 class="panel-title">Weekly Overview</h3>
+		<p class="panel-subtitle">Period: Oct 14, 2016 - Oct 21, 2016</p>
+	</div>
+</div>
 </body>
 </html>
