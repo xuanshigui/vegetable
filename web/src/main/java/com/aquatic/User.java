@@ -1,4 +1,4 @@
-package com.aquatic.model;
+package com.aquatic;
 
 import com.aquatic.constants.Gender;
 

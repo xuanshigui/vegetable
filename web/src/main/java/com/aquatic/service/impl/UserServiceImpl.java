@@ -1,7 +1,7 @@
 package com.aquatic.service.impl;
 
-import com.aquatic.service.UserService;
 import com.aquatic.dao.UserDao;
+import com.aquatic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

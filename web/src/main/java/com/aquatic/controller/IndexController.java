@@ -1,7 +1,7 @@
 package com.aquatic.controller;
 
+import com.aquatic.User;
 import com.aquatic.constants.Gender;
-import com.aquatic.model.User;
 import com.aquatic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
