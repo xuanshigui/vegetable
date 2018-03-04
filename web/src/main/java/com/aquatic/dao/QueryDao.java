@@ -68,7 +68,6 @@ public class QueryDao {
         List<Map<String, Object>> result = new ArrayList<>();
         try (PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 Map<String, Object> item = new HashMap<>();
                 item.put("name", rs.getString("name"));
@@ -89,17 +88,17 @@ public class QueryDao {
     private static String buildWhere(Map<String, String> condition) {
         StringBuilder where = new StringBuilder();
         String name = condition.get("name");
-        if (name != null) {
+        if (name != null && !name.equals("")) {
             where.append(" AND name = '").append(name).append("'");
         }
 
         String startDate = condition.get("start_date");
-        if (startDate != null) {
+        if (startDate != null && !startDate.equals("")) {
             where.append(" AND date >= '").append(startDate).append("'");
         }
 
         String endDate = condition.get("end_date");
-        if (endDate != null) {
+        if (endDate != null && !endDate.equals("")) {
             where.append(" AND date <= '").append(endDate).append("'");
         }
 
@@ -113,6 +112,7 @@ public class QueryDao {
             }
         }
 
-        return QueryTable.SC.getTable();
+        return "price_xuqin_b";
+        //return QueryTable.SC.getTable();
     }
 }

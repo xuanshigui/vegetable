@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
+@RequestMapping(path = "/")
 public class QueryController extends BaseController {
 
     private final QueryService queryService;
@@ -18,7 +19,7 @@ public class QueryController extends BaseController {
         this.queryService = queryService;
     }
 
-    @RequestMapping(value = "add.json", method = RequestMethod.POST)
+    @RequestMapping(value = "/add.json", method = RequestMethod.POST)
     public Map<String, Object> add(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("name", "lprice", "mprice", "hprice", "classify", "unit", "date");
         Map<String, String> data = buildData(request, fields);
@@ -27,7 +28,7 @@ public class QueryController extends BaseController {
         return buildResponse(queryService.query(type, data));
     }
 
-    @RequestMapping(value = "delete.json", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete.json", method = RequestMethod.GET)
     public Map<String, Object> delete(HttpServletRequest request, HttpServletResponse response) {
         String type = request.getParameter("type");
         String id = request.getParameter("id");
@@ -35,7 +36,7 @@ public class QueryController extends BaseController {
         return buildResponse(queryService.delete(type, id));
     }
 
-    @RequestMapping(value = "update.json", method = RequestMethod.POST)
+    @RequestMapping(value = "/update.json", method = RequestMethod.POST)
     public Map<String, Object> update(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("name", "lprice", "mprice", "hprice", "classify", "unit", "date", "id");
         Map<String, String> data = buildData(request, fields);
@@ -44,12 +45,13 @@ public class QueryController extends BaseController {
         return buildResponse(queryService.update(type, data));
     }
 
-    @RequestMapping(value = "query.json", method = {RequestMethod.POST, RequestMethod.GET})
-    public Map<String, Object> query(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/query.json", method = {RequestMethod.POST, RequestMethod.GET})
+    public Map query(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("name", "start_date", "end_date");
         Map<String, String> condition = buildData(request, fields);
         String type = request.getParameter("type");
 
+        // todo 传入分页参数
         return buildResponse(queryService.query(type, condition));
     }
 
@@ -58,7 +60,7 @@ public class QueryController extends BaseController {
         Map<String, String> data = new HashMap<>();
         for (String field : fields) {
             String param = request.getParameter(field);
-            if (param != null) {
+            if (param != null && !param.equals("")) {
                 data.put(field, param);
             }
         }
