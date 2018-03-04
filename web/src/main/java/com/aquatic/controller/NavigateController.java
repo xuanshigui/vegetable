@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
  * created by zbs on 2018/3/3
  */
 @Controller
-class NavigateController {
+class NavigateController extends BaseController{
     @GetMapping(path = "/")
     ModelAndView index() {
         return page("index");
