@@ -50,7 +50,7 @@
     <div id="sidebar-nav" class="sidebar">
         <div class="sidebar-scroll">
             <nav>
-                <ul class="nav">
+                <ul id="mainNav" class="nav">
                     <li><a href="/index.html" class=""><i class="lnr lnr-home"></i> <span>首页</span></a></li>
                     <li><a href="/elements.html" class=""><i class="lnr lnr-code"></i> <span>Elements</span></a></li>
                     <li><a href="/charts.html" class=""><i class="lnr lnr-chart-bars"></i> <span>Charts</span></a></li>
@@ -58,11 +58,11 @@
                     <li><a href="/notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a>
                     </li>
                     <li>
-                        <a id="subButton" href="#subPages" data-toggle="collapse" class="collapsed"><i
+                        <a id="querySubButton" href="#querySubPages" data-toggle="collapse" class="collapsed"><i
                                 class="lnr lnr-file-empty"></i> <span>查询</span> <i
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
-                        <div id="subPages" class="collapse ">
-                            <ul class="nav">
+                        <div id="querySubPages" class="collapse ">
+                            <ul id="querySubNav" class="nav">
                                 <li><a href="/aquatic.html" class="">水产</a></li>
                                 <li><a href="/livestock.html" class="">畜禽</a></li>
                             </ul>
@@ -113,27 +113,34 @@
 
     function pageActive() {
         var pageUri = window.location.pathname;
-        $('#sidebar-nav').find("li").each(function () {
+        var active = false;
+        $('#mainNav').children("li").each(function () {
             var link = $(this).find("a")[0];
             var href = link.getAttribute("href");
             if (href == pageUri) {
                 $(link).addClass("active");
-                return true;
+                active = true;
             }
         });
+        if (active) {
+            return;
+        }
 
-        // 主页面没有选中的打开子页面查看
-        $('#subButton').addClass("active");
-        $('#subPages').addClass("in");
-        $('#subPages').attr("aria-expanded", true);
-        $('#subNav').find("li").each(function () {
+        // 主页面没有选中的查看查询子菜单
+        $('#querySubNav').children("li").each(function () {
             var link = $(this).find("a")[0];
             var href = link.getAttribute("href");
             if (href == pageUri) {
                 $(link).addClass("active");
-                return true;
+                $('#querySubButton').addClass("active");
+                $('#querySubPages').addClass("in");
+                $('#querySubPages').attr("aria-expanded", true);
+                active = true;
             }
         });
+        if (active) {
+            return;
+        }
 
     }
 
