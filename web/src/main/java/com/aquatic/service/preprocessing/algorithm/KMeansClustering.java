@@ -40,8 +40,8 @@ public class KMeansClustering {
         }
     }
     public Map<Sample,List<Sample>> kcluster(int k) {  
-        // ���������������ѡȡk����������Ϊ�۴�����  
-        // ÿ���۴���������Щ��  
+        // 随机从样本集合中选取k个样本点作为聚簇中心
+        // 每个聚簇中心有哪些点
         Map<Sample,List<Sample>> nowClusterCenterMap = new HashMap<Sample, List<Sample>>();  
         for (int i = 0; i < k; i++) {  
             Random random = new Random();  
@@ -49,20 +49,20 @@ public class KMeansClustering {
             nowClusterCenterMap.put(dataset.get(num), new ArrayList<Sample>());  
         }  
           
-        //��һ�εľ۴�����  
+        //上一次的聚簇中心
         Map<Sample,List<Sample>> lastClusterCenterMap = null;  
   
-        // �ҵ�����������ĵ�,Ȼ������Ը�����Ϊmap����list��  
+        // 找到离中心最近的点,然后加入以该中心为map键的list中
         while (true) {  
-        	//����dataset sample����dataset�е�ÿһ��sample
+        	//遍历dataset sample代表dataset中的每一个sample
             for (Sample sample : dataset) {  
                 double shortest = Double.MAX_VALUE;  
                 Sample key = null;
-                //��ǰ�ľ������ļ�ֵ�ԣ���k��
+                //当前的聚类中心键值对，有k个
                 Set<Entry<Sample,List<Sample>>> entrySet = nowClusterCenterMap.entrySet();
-                //������������
+                //遍历聚类中心
                 for (Entry<Sample, List<Sample>> entry : entrySet) { 
-                	//��ǰ�ľ������ļ���һ��Sample��
+                	//当前的聚类中心键（一个Sample）
                 	Sample sampleKey = entry.getKey();
                     double distance = distance(sample, sampleKey,0.5,0.5);  
                     if (distance < shortest) {  
@@ -80,13 +80,13 @@ public class KMeansClustering {
             	System.out.println(no+"-"+list.size());
             	no++;
             }
-            //����������һ����ͬ�����������̽���  
+            //如果结果与上一次相同，则整个过程结束
             if (isEqualCenter(lastClusterCenterMap,nowClusterCenterMap)) {  
                 break;  
             }  
             lastClusterCenterMap = nowClusterCenterMap;  
             nowClusterCenterMap = new HashMap<Sample, List<Sample>>();  
-            //�����ĵ��Ƶ������г�Ա��ƽ��λ�ô�,�������µľ۴�����  
+            //把中心点移到其所有成员的平均位置处,并构建新的聚簇中心
             for (Entry<Sample,List<Sample>> entry : lastClusterCenterMap.entrySet()) {  
                 List<Sample> entryVaule = entry.getValue();
                 if(entryVaule.size()!=0){
@@ -138,14 +138,14 @@ public class KMeansClustering {
         return distance;  
     }  
     
-    //����µ����ĵ�(��þ�ֵ����)
+    //获得新的中心点(获得均值向量)
     private Sample getNewCenterSample(List<Sample> value) {
     	int sampleNumber = value.size();
     	int cols = value.get(0).getNumberOfNodes();
     	int rows = value.get(0).getSeries().get(0).getNumberOfParas();
-    	//������۾���
+    	//距离积累矩阵
     	double[][] sumArray = new double[rows][cols];
-    	//��ʼ��������۾���
+    	//初始化距离积累矩阵
     	for(int i=0;i<rows;i++){
     		for(int j=0;j<cols;j++){
     			sumArray[i][j] = 0.0;
@@ -160,7 +160,7 @@ public class KMeansClustering {
             	}
         	}
         }  
-        //��ֵArray
+        //均值Array
         double[][] avgArray = new double[rows][cols];
         Sample sample = new Sample();  
         for(int i=0;i<rows;i++){
@@ -181,14 +181,20 @@ public class KMeansClustering {
         return sample;  
     }  
     
-    public static void main(String[] args) throws IOException {
-		KMeansClustering kmc = new KMeansClustering();
-		
-		//��ʼ��ʵ��
-		int centerNumber = 3;
-		kmc.initDataSet();
-		Map<Sample, List<Sample>> result = kmc.kcluster(centerNumber);
-		Clustering.display(result);
+    public static void kMeansClustering(int centerNumber){
+        try {
+            KMeansClustering kmc = new KMeansClustering();
+
+            //初始化实验
+            kmc.initDataSet();
+            Map<Sample, List<Sample>> result = kmc.kcluster(centerNumber);
+            Clustering.display(result);
+
+        }catch(Exception e){
+            System.out.println("数据读取失败。");
+        }
+
+
 		/*double sumDBI = 0.0;
 		for(int i=0;i<5;i++){
 			kmc.initDataSet();
