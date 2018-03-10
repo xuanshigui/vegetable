@@ -12,7 +12,7 @@ import com.aquatic.utils.PathHelper;
 
 public class Preprocessing {
 
-    public static void call() {
+    public static void preprocessing() {
         //导入气象参数，并将其转换成List<Parameters>
         List<Parameters> entityList1 = getEntityList(PathHelper.getExamplePath() + "atmosphere.csv");
 
@@ -106,26 +106,19 @@ public class Preprocessing {
     public static List<Parameters> preprocessWater() {
         ////导入数据集,即导入fiveall.csv文件，注意是文件全名，即"E:/prediction/fiveall.csv"
         List<Parameters> entityList = Preprocessing.getEntityList(PathHelper.getExamplePath() + "fiveall.csv");
-        //ÿһ��������һ��List
+        //每一个参数是一个List
         List<List<Double>> paraLists = Preprocessing.getParaList(entityList);
-        //�쳣���ݼ��
+        //数据异常检测
         for (List<Double> oneList : paraLists) {
             AbnormalDetection.abnormalDetect(oneList, 0.01, 10);
         }
-        //�����
+        //数据清洗
         for (List<Double> oneList : paraLists) {
             FillUp.fillUpByMeanValue(oneList);
         }
-        //ת����ʵ��������
         List<Parameters> resultList = Preprocessing.reverseToEntityList(paraLists, entityList);
-        //���ݱ任
+        //数据变换
         List<Parameters> converseByAverage = DataConversion.converseByAverage(resultList, 6);
-        //��һ��
-        //List<Parameters> normalizedList = Normalization.normalization(converseByAverage);
-        //�����ڷָ�����
-        //Preprocessing.exportByDays(converseByAverage);
-        //�������ڷָ�����
-        //CutDataBySlideWindow.getSamples("E:/prediction/fiveparam");
         return converseByAverage;
     }
 
