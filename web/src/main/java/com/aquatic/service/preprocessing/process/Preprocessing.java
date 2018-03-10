@@ -12,20 +12,20 @@ import com.aquatic.service.preprocessing.utils.TimeFormat;
 public class Preprocessing {
 	
 	public static void main(String[] args) {
-		//�������ݼ�
+		//导入气象参数，并将其转换成List<Parameters>
 		List<Parameters> entityList1 = getEntityList("E:/prediction/atmosphere.csv");
-		//��һ��
-		//List<Parameters> normalizedList1 = Normalization.normalization(entityList);
-		//ˮ������Ԥ����
+
+		//预处理水质参数
 		List<Parameters> entityList2 = preprocessWater();
 		
-		//�����ں�
+		//数据融合
 		List<Parameters> fusedList = Preprocessing.dataFusion(entityList1,entityList2);
+		//归一化操作
 		List<Parameters> normalizedList = Normalization.normalization(fusedList);
 		//System.out.println(fusedList.size());
 	    //export(normalizedList,"E:/prediction/fiveparam/fuseddata.csv");
 		Preprocessing.exportByDays(normalizedList,"E:/prediction/fiveparam");
-		//�������ڷָ�����
+		//按照滑动窗口切割数据集
 		CutDataBySlideWindow.getSamples("E:/prediction/fiveparam");
 	}
 	
@@ -47,7 +47,7 @@ public class Preprocessing {
 				Parameters params2 = normalizedList2.get(j);
 				boolean flag = isCorresponding(params1, params2);
 				if(flag){
-					//�µ�Parameters
+					//新的Parameters
 					Parameters parameters = new Parameters();
 					parameters.setDate(params1.getDate());
 					parameters.setTime(params2.getTime());
@@ -77,21 +77,21 @@ public class Preprocessing {
 		String minute2 = hour_minute2[1];
 		if(date1.equals(date2)){
 			if(hour1.equals(hour2)){
-				//ͬһ��Сʱ
+				//同一个小时
 				if(Math.abs((Integer.parseInt(minute1)-Integer.parseInt(minute2)))<15){
 					return true;
 				}else{
 					return false;
 				}
 			}else if((Integer.parseInt(hour1)-Integer.parseInt(hour2))==1){
-				//ǰһ��Сʱ
+				//前一个小时
 				if(Integer.parseInt(minute2)>45&&Integer.parseInt(minute1)<10){
 					return true;
 				}else{
 					return false;
 				}
 			}else if((Integer.parseInt(hour1)-Integer.parseInt(hour2))==-1){
-				//��һ��Сʱ
+				//后一个小时
 				if(Integer.parseInt(minute2)<15&&Integer.parseInt(minute1)>31){
 					return true;
 				}else{
@@ -104,8 +104,8 @@ public class Preprocessing {
 		return false;
 	}
 
-	public static List<Parameters> preprocessWater() {
-		//�������ݼ�
+	public static List<Parameters> preprocessWater(String waterParametersData) {
+		////导入数据集,即导入fiveall.csv文件，注意是文件全名，即"E:/prediction/fiveall.csv"
 		List<Parameters> entityList = Preprocessing.getEntityList("E:/prediction/fiveall.csv");
 		//ÿһ��������һ��List
 		List<List<Double>> paraLists = Preprocessing.getParaList(entityList);
