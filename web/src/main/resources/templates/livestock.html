@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<form action="" style="margin-bottom: 5px">
+    畜禽名称：<input type="text" id="name"><br>
+    查询日期：<input type="date" id="start_date"> - <input type="date" id="end_date">
+</form>
+
+<table id="table">
+</table>
+<script>
+    function initQuery() {
+        $('#table').bootstrapTable({
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                searchParams.type= "xq";
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 10,                       //每页的记录行数（*）
+            pageList: [10, 20, 30],             //可供选择的每页的行数（*）
+            uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'id',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    }
+                },
+                {
+                    field: 'name',
+                    title: '名称',
+                    visible: true
+                },
+                {
+                    field: 'lprice',
+                    title: '最低价',
+                    visible: true
+                },
+                {
+                    field: 'mprice',
+                    title: '平均价',
+                    visible: true
+                },
+                {
+                    field: 'hprice',
+                    title: '最高价',
+                    visible: true
+                },
+                {
+                    field: 'date',
+                    title: '发布时间',
+                    visible: true
+                },
+                {
+                    field: 'id',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var operation = '<button onclick="enableStrategy(' + row.id + ')"  >启用</button>';
+                        operation += '<button data-toggle="modal" data-target="#modal" class="update" onclick="updateStrategy(' + row.id + ')"  >修改</button>';
+                        operation += '<button class="remove" onclick="deleteStrategy(' + row.id + ')" >删除</button>';
+
+                        return operation;
+                    }
+                }
+            ]
+        });
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data,
+            "total" : 10, // todo 查询总数接口
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.name = $('#name').val();
+        param.start_date = $('#start_date').val();
+        param.end_date = $('#end_date').val();
+        return param;
+    }
+
+    $(function() {
+        initQuery();
+    });
+</script>
+</body>
+</html>
