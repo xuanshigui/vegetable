@@ -3,17 +3,18 @@ package com.aquatic.service.preprocessing.process;
 import java.util.ArrayList;
 
 public class Grubbs {
-	private ArrayList<Double> dataArrayList;
+    private ArrayList<Double> dataArrayList;
     private int length;
     private final double alpha = 0.01;
-//����һ�����ݣ�����Ҫ�������޳�������С���쳣ֵ
+
+    //����һ�����ݣ�����Ҫ�������޳�������С���쳣ֵ
     public Grubbs(ArrayList<Double> arrayList) {
         this.dataArrayList = arrayList;
         this.length = arrayList.size();
     }
 
     public ArrayList<Double> calc() {
-    //��Ϊ������˹׼��ֻ�ܶԴ��ڵ���3�����ݽ����жϣ�����������С��3ʱ��ֱ�ӷ���
+        //��Ϊ������˹׼��ֻ�ܶԴ��ڵ���3�����ݽ����жϣ�����������С��3ʱ��ֱ�ӷ���
         if (dataArrayList.size() < 3) {
             return dataArrayList;
         }
@@ -40,7 +41,7 @@ public class Grubbs {
 
     }
 
-//ð������
+    //ð������
     private ArrayList<Double> bubbleSort(ArrayList<Double> arr, int n) {
         // TODO Auto-generated method stub
         double temp = 0;
@@ -55,7 +56,8 @@ public class Grubbs {
         }
         return arr;
     }
-//��ƽ��
+
+    //��ƽ��
     public double calcAverage(ArrayList<Double> sample) {
         // TODO Auto-generated method stub
         double sum = 0;
@@ -67,7 +69,8 @@ public class Grubbs {
 
         return (double) sum / cnt;
     }
-//���׼��
+
+    //���׼��
     private double calcStandard(ArrayList<Double> array, int n, double average) {
         // TODO Auto-generated method stub
         double sum = 0;
@@ -77,9 +80,10 @@ public class Grubbs {
         }
         return (double) Math.sqrt((sum / (n - 1)));
     }
-//���ٽ�ֵ�ı�����alphaΪ0.05
+
+    //���ٽ�ֵ�ı�����alphaΪ0.05
     private double calcG(double alpha, int n) {
-        double[] N = { 1.1546847100299753, 1.4962499999999703,
+        double[] N = {1.1546847100299753, 1.4962499999999703,
                 1.763678479497787, 1.9728167175443088, 2.1391059896012203,
                 2.2743651271139984, 2.386809875078279, 2.4820832497170997,
                 2.564121252001767, 2.6357330437346365, 2.698971864039854,
@@ -98,21 +102,21 @@ public class Grubbs {
                 3.482461799798589, 3.491104954935569, 3.4995221913492585,
                 3.507723926208097, 3.5157199035634887, 3.5235192496631433,
                 3.5311305227901078, 3.5385617582575746, 3.5458205091071684,
-                3.5529138829882037, 3.5598485756350797 };
+                3.5529138829882037, 3.5598485756350797};
 
         return N[n - 3];
 
     }
-    
+
     public static void main(String[] args) {
-	double[] test = {1000.0, 218.2, 220.6, 323.5, 280.1, 289.5, 276.1, 257.8, 252.7, 243.6, 235.6, 232.4, 248.1};
-	ArrayList<Double> testList = new ArrayList<>();
-	for(double t:test){
-		testList.add(t);
-	}
-	System.out.println(testList.toString());
-	Grubbs ad = new Grubbs(testList);
-	ad.calc();
-	System.out.println(testList.toString());
+        double[] test = {1000.0, 218.2, 220.6, 323.5, 280.1, 289.5, 276.1, 257.8, 252.7, 243.6, 235.6, 232.4, 248.1};
+        ArrayList<Double> testList = new ArrayList<>();
+        for (double t : test) {
+            testList.add(t);
+        }
+        System.out.println(testList.toString());
+        Grubbs ad = new Grubbs(testList);
+        ad.calc();
+        System.out.println(testList.toString());
     }
 }
