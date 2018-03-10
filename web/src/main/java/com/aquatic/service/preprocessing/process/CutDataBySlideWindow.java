@@ -8,6 +8,7 @@ import com.aquatic.service.preprocessing.common.Constant;
 import com.aquatic.service.preprocessing.entity.Parameters;
 import com.aquatic.service.preprocessing.entity.Sample;
 import com.aquatic.service.preprocessing.utils.CsvUtils;
+import com.aquatic.utils.PathHelper;
 
 public class CutDataBySlideWindow {
 	//ѭ����ȡ�ļ��ٷָ�
@@ -38,7 +39,7 @@ public class CutDataBySlideWindow {
 			for(Parameters present:paraList){
 				dataList.add(present.display());
 			}
-			String fileName = "E:/prediction/fiveparam/cut/fiveparam" + (sampleSeries + count) + ".csv";
+			String fileName = PathHelper.getExamplePath() + "fiveparam/cut/fiveparam" + (sampleSeries + count) + ".csv";
 			count++;
 			boolean isSuccess=CsvUtils.exportCsv(new File(fileName), dataList);
 		    System.out.println(isSuccess);

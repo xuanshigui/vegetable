@@ -79,7 +79,7 @@ public class CsvUtils {
         try { 
             br = new BufferedReader(new FileReader(file));
             String line = ""; 
-            while ((line = br.readLine()) != null) { 
+            while ((line = br.readLine()) != null) {
                 dataList.add(line);
             }
         }catch (Exception e) {

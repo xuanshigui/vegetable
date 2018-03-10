@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import com.aquatic.service.preprocessing.algorithm.KMeansClustering;
 import com.aquatic.service.preprocessing.entity.Parameters;
 import com.aquatic.service.preprocessing.entity.Sample;
+import com.aquatic.utils.PathHelper;
 
 public class ConstructTrainingset {
 	
@@ -26,13 +27,13 @@ public class ConstructTrainingset {
 		int count = 0;
 		for(List<Parameters> entityList:trainingSet){
 			//������
-			Preprocessing.export(entityList, "E:/prediction/complete/training"+ count +".csv");
+			Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete/training"+ count +".csv");
 			count++;
 		}
 		count = 0;
 		for(List<Parameters> entityList:testSet){
 			//������
-			Preprocessing.export(entityList, "E:/prediction/complete/test"+ count +".csv");
+			Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete/test"+ count +".csv");
 			count++;
 		}
 	}

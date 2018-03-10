@@ -3,14 +3,15 @@ package com.aquatic.service.preprocessing.process;
 import java.util.List;
 
 import com.aquatic.service.preprocessing.entity.Parameters;
+import com.aquatic.utils.PathHelper;
 
 public class ReverseTest {
 	
 	public static void main(String[] args) {
-		List<Parameters> entityList1 = Preprocessing.getEntityList("E:/prediction/atmosphere.csv");
+		List<Parameters> entityList1 = Preprocessing.getEntityList(PathHelper.getExamplePath() + "atmosphere.csv");
 		//ˮ������Ԥ����
 		List<Parameters> entityList2 = Preprocessing.preprocessWater();
-		List<Parameters> normalizedList = Preprocessing.getEntityList("E:/prediction/complete/test1.csv");
+		List<Parameters> normalizedList = Preprocessing.getEntityList(PathHelper.getExamplePath() + "complete/test1.csv");
 		
 		//�����ں�
 		List<Parameters> fusedList = Preprocessing.dataFusion(entityList1,entityList2);
