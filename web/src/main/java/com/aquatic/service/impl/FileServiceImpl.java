@@ -24,11 +24,7 @@ public class FileServiceImpl implements FileService {
 
             byte temp[] = new byte[1024];
             int size;
-            size = inputStream.read(temp);
-            System.out.println(size);
             while ((size = inputStream.read(temp)) != -1) {
-                System.out.write(temp);
-                System.out.flush();
                 outputStream.write(temp, 0, size);
             }
             outputStream.close();

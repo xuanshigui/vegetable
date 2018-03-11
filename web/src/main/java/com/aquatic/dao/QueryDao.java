@@ -1,5 +1,6 @@
 package com.aquatic.dao;
 
+import com.aquatic.constants.QueryTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -154,13 +155,12 @@ public class QueryDao {
     }
 
     private static String getTable(String type) {
-//        for (QueryTable table : QueryTable.values()) {
-//            if (table.getType().equals(type)) {
-//                return table.getTable();
-//            }
-//        }
+        for (QueryTable table : QueryTable.values()) {
+            if (table.getType().equals(type)) {
+                return table.getTable();
+            }
+        }
 
-        return "price_xuqin_b";
-        //return QueryTable.SC.getTable();
+        return QueryTable.SC.getTable();
     }
 }

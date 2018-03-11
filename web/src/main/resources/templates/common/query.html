@@ -12,6 +12,8 @@
 <form action="" style="margin-bottom: 5px">
     <span id="typeDesc">水产</span>名称：<input type="text" id="name"><br>
     查询日期：<input type="date" id="start_date"> - <input type="date" id="end_date">
+
+    <button class="btn btn-primary" onclick="initQuery()">查询</button>
 </form>
 
 <table id="table">
@@ -148,6 +150,7 @@
                 searchParams.page = this.pageNumber;
                 searchParams.size = this.pageSize;
                 searchParams.type = type;
+                console.log(searchParams);
                 return searchParams;
             },
             minimumCountColumns: 2,
