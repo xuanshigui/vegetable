@@ -131,7 +131,7 @@ public class Preprocessing {
                 paraArray[i][j] = entityList.get(i).get(j);
             }
         }
-        //ˮ��	�ܽ���	ph	    �絼��	�Ƕ�
+
         for (int i = 0; i < paraArray[0].length; i++) {
             Parameters parameters = new Parameters();
             String time = originList.get(i).getTime();
@@ -153,7 +153,7 @@ public class Preprocessing {
         int rows = entityList.get(0).getNumberOfParas();
         int cols = entityList.size();
         Double[][] paraArray = new Double[rows][cols];
-        //ˮ��	�ܽ���	ph	    �絼��	�Ƕ�
+
         for (int i = 0; i < cols; i++) {
             Parameters parameter = entityList.get(i);
             List<Double> item = parameter.getParaList();
@@ -214,7 +214,7 @@ public class Preprocessing {
             Parameters param = paramList.get(index);
             Parameters param_next = paramList.get(index + 1);
             if (!param.getDate().equals(param_next.getDate())) {
-                //�Ȳ���
+
                 List<String> dataList = new ArrayList<>();
                 String fileName = filePath + "/fiveparam" + count + ".csv";
                 for (int j = start; j <= end; j++) {
@@ -227,7 +227,6 @@ public class Preprocessing {
                 } else {
                     count = count - 1;
                 }
-                //�ٸı�״̬
                 start = index + 1;
                 count++;
             }
