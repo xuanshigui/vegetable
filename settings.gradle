@@ -1,6 +1,4 @@
 rootProject.name = 'aquatic'
-include 'admin'
 //findProject(':web')?.name = 'aquatic'
-include 'service'
 include 'web'
 
