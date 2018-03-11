@@ -48,6 +48,7 @@ public class ProcessController extends BaseController {
             res = true;
         } catch (Exception e) {
         }
+        res = true;
 
         return buildResponse(res);
     }
