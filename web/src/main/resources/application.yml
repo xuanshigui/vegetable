@@ -3,6 +3,10 @@ server:
 
 # mysql
 spring:
+  http:
+    multipart:
+      enabled: true
+
   jackson:
     date-format: yyyy-MM-dd
   datasource:

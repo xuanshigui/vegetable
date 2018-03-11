@@ -25,7 +25,7 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form enctype="multipart/form-data" name="file" id="fileForm">
                         请选择文件：<input id="file" type="file">
                     </form>
                 </div>
@@ -47,45 +47,51 @@
 <script>
     function submitData() {
         var uri = "";
-        if ($('#fileType') == '天气') {
+        if ($('#fileType').html() == '天气') {
             uri = "upload_atmosphere.json"
         } else {
             uri = "upload_water.json"
         }
 
-        nextStep();
+        var formData = new FormData();
+        formData.append("file", $("#file")[0].files[0]);
 
         $.ajax({
             url: uri,
             method: "POST",
             dataType: "json",
+            cache: false,
+            processData: false,
+            contentType: false,
+            data: formData,
             success: function (data) {
                 if (data.data) {
-                    nextStep();
+                    if ($('#fileType').html() == '天气') {
+                        alert("天气数据上传成功！请继续上传水质数据！");
+                        uploadWater();
+                    } else {
+                        alert("水质数据上传成功！请继续处理数据！");
+                        askStep();
+                    }
                 }
             }
         });
     }
 
-    function nextStep() {
-        if ($('#fileType') == '天气') {
-            uploadWater();
-        } else {
-            askStep();
-        }
-    }
 
     function uploadAtmosphere() {
-        $('#file').empty();
+        var file = $("#file");
+        file.after(file.clone().val(""));
+        file.remove();
         $('#upload').modal('toggle');
         $('#fileType').html('天气');
     }
 
     function uploadWater() {
-        $('#upload').modal('toggle');
         $('#fileType').html('水质');
-        $('#file').empty();
-        askStep();
+        var file = $("#file");
+        file.after(file.clone().val(""));
+        file.remove();
     }
 
     function askStep() {
