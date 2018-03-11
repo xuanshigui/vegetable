@@ -11,4 +11,6 @@ public interface QueryService {
     boolean update(String type, Map<String, String> data);
 
     List<Map<String, Object>> query(String type, Map<String, String> condition);
+
+    int queryTotal(String type, Map<String, String> condition);
 }

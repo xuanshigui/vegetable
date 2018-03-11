@@ -1,5 +1,6 @@
 package com.aquatic.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aquatic.service.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class QueryController extends BaseController {
         Map<String, String> data = buildData(request, fields);
         String type = request.getParameter("type");
 
-        return buildResponse(queryService.query(type, data));
+        return buildResponse(queryService.add(type, data));
     }
 
     @RequestMapping(value = "/delete.json", method = RequestMethod.GET)
@@ -47,12 +48,19 @@ public class QueryController extends BaseController {
 
     @RequestMapping(value = "/query.json", method = {RequestMethod.POST, RequestMethod.GET})
     public Map query(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("name", "start_date", "end_date");
+
+        List<String> fields = Arrays.asList("name", "start_date", "end_date", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         String type = request.getParameter("type");
 
-        // todo 传入分页参数
-        return buildResponse(queryService.query(type, condition));
+        List<Map<String, Object>> result = queryService.query(type, condition);
+
+        int total = queryService.queryTotal(type, condition);
+        JSONObject data = new JSONObject();
+        data.put("total", total);
+        data.put("rows", result);
+
+        return buildResponse(data);
     }
 
 

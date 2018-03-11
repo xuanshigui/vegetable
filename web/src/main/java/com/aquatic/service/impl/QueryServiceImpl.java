@@ -37,4 +37,9 @@ public class QueryServiceImpl implements QueryService {
     public List<Map<String, Object>> query(String type, Map<String, String> condition) {
         return queryDao.query(type, condition);
     }
+
+    @Override
+    public int queryTotal(String type, Map<String, String> condition){
+        return queryDao.queryTotal(type, condition);
+    }
 }
