@@ -5,6 +5,11 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
+bootRun {
+//开启页面热加载功能
+    addResources = true
+}
+
 repositories {
     mavenCentral()
 }

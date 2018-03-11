@@ -63,22 +63,4 @@ public class QueryController extends BaseController {
         return buildResponse(data);
     }
 
-
-    private static Map<String, String> buildData(HttpServletRequest request, List<String> fields) {
-        Map<String, String> data = new HashMap<>();
-        for (String field : fields) {
-            String param = request.getParameter(field);
-            if (param != null && !param.equals("")) {
-                data.put(field, param);
-            }
-        }
-
-        return data;
-    }
-
-    private static Map<String, Object> buildResponse(Object data) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("data", data);
-        return response;
-    }
 }
