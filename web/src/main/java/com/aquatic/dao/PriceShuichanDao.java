@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface PriceShuichanDao {
 
-	public List<Object> findYears();
+    public List<Object> findYears();
 
-	public List<Object[]> findNames();
+    public List<Object[]> findNames();
 }

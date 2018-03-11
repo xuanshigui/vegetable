@@ -1,10 +1,14 @@
 package com.aquatic.service.analysis;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class PriceCollector {
-	
+
+	@Autowired
+	private  CalcToMonth calcToMonth;
+
 	public double[][] getPrice(int fromYear, int toYear,String itemName,String classify){
 		CalcToMonth calcToMonth = new CalcToMonth();
-		double[][] origin_price = calcToMonth.getPriceByYear(fromYear, toYear, itemName, classify);
-		return origin_price;
+		return calcToMonth.getPriceByYear(fromYear, toYear, itemName, classify);
 	}
 }

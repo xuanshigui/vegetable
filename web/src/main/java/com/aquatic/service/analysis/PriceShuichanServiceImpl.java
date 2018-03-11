@@ -6,24 +6,22 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.aquatic.dao.PriceShuichanDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import price_prediction.Predictor;
-import cau.edu.collector.PriceCollector;
-import cau.edu.common.service.BaseServiceImpl;
-import cau.edu.query.dao.PriceShuichanDao;
-import cau.edu.query.entity.MonthlyAverageData;
-import cau.edu.query.entity.PriceShuichan;
-@Service("priceShuichanService")
-public class PriceShuichanServiceImpl extends BaseServiceImpl<PriceShuichan>
-		implements PriceShuichanService {
 
-	PriceShuichanDao priceShuichanDao;
-	@Resource
-	public void setPriceShuichanDao(PriceShuichanDao priceShuichanDao) {
-		super.setBaseDao(priceShuichanDao);
+@Service("priceShuichanService")
+public class PriceShuichanServiceImpl implements PriceShuichanService {
+
+	final PriceShuichanDao priceShuichanDao;
+
+	@Autowired
+	public PriceShuichanServiceImpl(PriceShuichanDao priceShuichanDao) {
 		this.priceShuichanDao = priceShuichanDao;
 	}
+
 	@Override
 	public List<String> getNameList() {
 		List<Object[]> objectList = priceShuichanDao.findNames();
