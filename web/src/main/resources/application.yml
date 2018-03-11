@@ -3,6 +3,8 @@ server:
 
 # mysql
 spring:
+  jackson:
+    date-format: yyyy-MM-dd
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF8&serverTimezone=PRC
     username: root
