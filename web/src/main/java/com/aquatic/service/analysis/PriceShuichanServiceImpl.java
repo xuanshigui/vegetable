@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.annotation.Resource;
 
 import com.aquatic.dao.PriceShuichanDao;
 import org.springframework.beans.factory.annotation.Autowired;
