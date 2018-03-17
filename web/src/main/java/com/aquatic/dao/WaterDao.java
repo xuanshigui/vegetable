@@ -53,7 +53,7 @@ public class WaterDao extends BaseDao {
                 item.put("dissolved_oxygen", row.get("dissolvedOxygen"));
                 item.put("working_voltage", row.get("workingVoltage"));
                 item.put("charging_voltage", row.get("chargingVoltage"));
-                item.put("operating_emp", row.get("operatingTmp"));
+                item.put("operating_temp", row.get("operatingTemp"));
                 item.put("timestamp", row.get("timestamp"));
                 result.add(item);
             }
