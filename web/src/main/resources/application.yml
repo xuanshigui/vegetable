@@ -3,10 +3,11 @@ server:
 
 # mysql
 spring:
-  http:
+  servlet:
     multipart:
       enabled: true
-
+      maxFileSize: 20Mb
+      maxRequestSize: 20Mb
   jackson:
     date-format: yyyy-MM-dd
   datasource:

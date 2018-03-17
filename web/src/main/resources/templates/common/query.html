@@ -9,12 +9,10 @@
     添加数据
 </button>
 <br>
-<form action="" style="margin-bottom: 5px">
-    <span id="typeDesc">水产</span>名称：<input type="text" id="name"><br>
-    查询日期：<input type="date" id="start_date"> - <input type="date" id="end_date">
+<span id="typeDesc">水产</span>名称：<input type="text" id="name"><br>
+查询日期：<input type="date" id="start_date"> - <input type="date" id="end_date">
 
-    <button class="btn btn-primary" onclick="initQuery()">查询</button>
-</form>
+<button class="btn btn-primary" id="queryTable">查询</button>
 
 <table id="table">
 </table>
@@ -135,7 +133,11 @@
     }
 
     function initQuery() {
-        $('#table').bootstrapTable({
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
             method: 'GET',
             dataType: 'json',
             contentType: "application/json;charset=UTF-8",
@@ -150,7 +152,6 @@
                 searchParams.page = this.pageNumber;
                 searchParams.size = this.pageSize;
                 searchParams.type = type;
-                console.log(searchParams);
                 return searchParams;
             },
             minimumCountColumns: 2,
@@ -217,7 +218,7 @@
                     }
                 }
             ]
-        });
+        }
     }
 
     function responseHandler(data) {
@@ -238,6 +239,9 @@
     $(function () {
         initQuery();
         $('#typeDesc').html(typeDesc);
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
     });
 </script>
 </body>
