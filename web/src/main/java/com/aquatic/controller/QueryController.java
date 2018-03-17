@@ -1,7 +1,7 @@
 package com.aquatic.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.aquatic.service.QueryService;
+import com.aquatic.service.ProductQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +13,10 @@ import java.util.*;
 @RequestMapping(path = "/")
 public class QueryController extends BaseController {
 
-    private final QueryService queryService;
+    private final ProductQueryService queryService;
 
     @Autowired
-    public QueryController(QueryService queryService) {
+    public QueryController(ProductQueryService queryService) {
         this.queryService = queryService;
     }
 

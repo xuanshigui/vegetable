@@ -1,7 +1,7 @@
 package com.aquatic.service.impl;
 
 import com.aquatic.dao.QueryDao;
-import com.aquatic.service.QueryService;
+import com.aquatic.service.ProductQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class QueryServiceImpl implements QueryService {
+public class ProductQueryServiceImpl implements ProductQueryService {
 
     private final QueryDao queryDao;
 
     @Autowired
-    public QueryServiceImpl(QueryDao queryDao) {
+    public ProductQueryServiceImpl(QueryDao queryDao) {
         this.queryDao = queryDao;
     }
 
