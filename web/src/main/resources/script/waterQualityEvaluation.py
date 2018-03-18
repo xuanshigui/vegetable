@@ -2,6 +2,7 @@
 # coding: utf-8
 
 # In[24]:
+import sys
 
 def readDataSet(path):
     import numpy  as np
@@ -62,5 +63,5 @@ def do_catch(path,seedStr):
 
 #seedStr='0,5,1,12,66,60'
 #path = 'C:\\Users\\Administrator\\Desktop\\csv\\tmp\\DOYield.csv'
-#do_catch(path,seedStr)
+print(do_catch(sys.argv[1], sys.argv[2]))
 

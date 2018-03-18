@@ -35,7 +35,7 @@
     </nav>
     <!-- END NAVBAR -->
     <!-- LEFT SIDEBAR -->
-    <div id="sidebar-nav" class="sidebar" style="width: 20%;">
+    <div id="sidebar-nav" class="sidebar" style="width: 250px;">
         <div class="sidebar-scroll">
             <nav>
                 <ul id="mainNav" class="nav">
@@ -53,8 +53,17 @@
                         </div>
                     </li>
                     <li><a href="/process.html" class=""><i class="lnr lnr-chart-bars"></i> <span>数据处理</span></a></li>
+
+                    <li>
+                        <a id="analysisSubButton" href="#analysisSubPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-linearicons"></i></i> <span>数据分析</span> <i
+                                class="icon-submenu lnr lnr-chevron-left"></i></a>
+                        <div id="analysisSubPages" class="collapse ">
+                            <ul id="analysisSubNav" class="nav">
+                                <li><a href="/env.html" class="">环境评价</a></li>
+                                <li><a href="/price.html" class="">价格预测</a></li>
+                            </ul>
+                        </div>
                     </li>
-                    <li><a href="/analysis.html" class=""><i class="lnr lnr-linearicons"></i> <span>数据分析</span></a></li>
                 </ul>
             </nav>
         </div>
@@ -118,6 +127,22 @@
                 $('#querySubButton').addClass("active");
                 $('#querySubPages').addClass("in");
                 $('#querySubPages').attr("aria-expanded", true);
+                active = true;
+            }
+        });
+        if (active) {
+            return;
+        }
+
+        // 主页面没有选中的查看分析子菜单
+        $('#analysisSubNav').children("li").each(function () {
+            var link = $(this).find("a")[0];
+            var href = link.getAttribute("href");
+            if (href == pageUri) {
+                $(link).addClass("active");
+                $('#analysisSubButton').addClass("active");
+                $('#analysisSubPages').addClass("in");
+                $('#analysisSubPages').attr("aria-expanded", true);
                 active = true;
             }
         });

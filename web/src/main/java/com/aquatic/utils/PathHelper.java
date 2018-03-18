@@ -2,12 +2,14 @@ package com.aquatic.utils;
 
 import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+
 /**
  * created by zbs on 2018/3/10
  */
 public class PathHelper {
 
-    public static final String SEPARATOR = System.getProperties().getProperty("path.separator");
+    public static final String SEPARATOR = File.separator;
 
     public static String getResourcePath() {
         String path = "";

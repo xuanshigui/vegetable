@@ -3,6 +3,7 @@ package com.aquatic.service.script;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aquatic.utils.PathHelper;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,7 +11,8 @@ import java.io.InputStreamReader;
 /**
  * created by zbs on 2018/3/18
  */
-public class CallService {
+@Service
+public class ScriptService {
 
     private static final String SCRIPT_DIR = PathHelper.getResourcePath() + PathHelper.SEPARATOR + "script" + PathHelper.SEPARATOR;
     private static final String PY_SCRIPT = SCRIPT_DIR + "waterQualityEvaluation.py";
@@ -32,8 +34,8 @@ public class CallService {
         return cal(filePath, seeds);
     }
 
-    public String cal(String file, String seeds) {
-        String command = PY_SCRIPT + " " + file + " " + seeds;
+    private String cal(String file, String seeds) {
+        String command = "python " + PY_SCRIPT + " " + file + " " + seeds;
         String result = "";
         try {
             Process process = Runtime.getRuntime().exec(command);
@@ -41,19 +43,19 @@ public class CallService {
             result = input.readLine();
             input.close();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         return result;
     }
 
 
-    public String getSeeds(String env, String profit) {
+    private String getSeeds(String env, String profit) {
         JSONObject attr = getAttr(env, profit);
         return attr.getString("seeds");
     }
 
-    public String getSourceFile(String env, String profit) {
+    private String getSourceFile(String env, String profit) {
         JSONObject attr = getAttr(env, profit);
         return attr.getString("file");
     }
