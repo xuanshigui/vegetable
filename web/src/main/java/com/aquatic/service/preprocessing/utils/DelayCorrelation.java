@@ -73,8 +73,8 @@ public class DelayCorrelation {
     }
 
     public static void main(String[] args) {
-        String filePath = PathHelper.getExamplePath() + "fiveparam/cut";
-        String fileName = filePath + "/fiveparam" + 0 + ".csv";
+        String filePath = PathHelper.getExamplePath() + "fiveparam" + PathHelper.SEPARATOR + "cut";
+        String fileName = filePath + PathHelper.SEPARATOR + "fiveparam" + 0 + ".csv";
         List<Parameters> entityList = Preprocessing.getEntityList(fileName);
         int length = entityList.size();
         double[] dissovledOxygen = new double[length];

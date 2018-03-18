@@ -6,10 +6,13 @@ import org.springframework.util.ResourceUtils;
  * created by zbs on 2018/3/10
  */
 public class PathHelper {
+
+    public static final String SEPARATOR = System.getProperties().getProperty("path.separator");
+
     public static String getResourcePath() {
         String path = "";
         try {
-            path = ResourceUtils.getFile("classpath:").getParent() + "/resources/";
+            path = ResourceUtils.getFile("classpath:").getParent() + SEPARATOR + "resources" + SEPARATOR;
         } catch (Exception e) {
 
         }
@@ -17,6 +20,6 @@ public class PathHelper {
     }
 
     public static String getExamplePath() {
-        return getResourcePath() + "examples/";
+        return getResourcePath() + "examples" + SEPARATOR;
     }
 }

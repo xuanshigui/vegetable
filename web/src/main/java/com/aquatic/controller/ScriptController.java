@@ -11,7 +11,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(path = "/")
-public class AnalysisController extends BaseController {
+public class ScriptController extends BaseController {
     @RequestMapping(value = "/call_python.json", method = RequestMethod.GET)
     public Map<String, Object> uploadAtmosphere() {
 

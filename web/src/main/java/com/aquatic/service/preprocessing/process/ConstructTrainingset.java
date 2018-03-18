@@ -27,13 +27,13 @@ public class ConstructTrainingset {
         int count = 0;
         for (List<Parameters> entityList : trainingSet) {
             //������
-            Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete/training" + count + ".csv");
+            Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete"+PathHelper.SEPARATOR+"training" + count + ".csv");
             count++;
         }
         count = 0;
         for (List<Parameters> entityList : testSet) {
             //������
-            Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete/test" + count + ".csv");
+            Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete"+PathHelper.SEPARATOR+"test" + count + ".csv");
             count++;
         }
     }

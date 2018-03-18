@@ -39,7 +39,7 @@ public class CutDataBySlideWindow {
             for (Parameters present : paraList) {
                 dataList.add(present.display());
             }
-            String fileName = PathHelper.getExamplePath() + "fiveparam/cut/fiveparam" + (sampleSeries + count) + ".csv";
+            String fileName = PathHelper.getExamplePath() + "fiveparam" + PathHelper.SEPARATOR + "cut" + PathHelper.SEPARATOR + "fiveparam" + (sampleSeries + count) + ".csv";
             count++;
             boolean isSuccess = CsvUtils.exportCsv(new File(fileName), dataList);
             System.out.println(isSuccess);
