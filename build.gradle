@@ -46,7 +46,7 @@ allprojects {
         compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.0.0.RELEASE'
         compile fileTree(includes: ['*.jar'], dir: 'libs')
         compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.12.Final'
-
+        compile group: 'se.sics.kriging', name: 'matlab-javabuilder', version: '2011a'
     }
 
     configurations {

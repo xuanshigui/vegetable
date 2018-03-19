@@ -2,19 +2,28 @@ package com.aquatic.service.analysis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 
+@Repository
 public class CalcToMonth {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     int countTotal = 0;
+
+    @Autowired
+    public CalcToMonth(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     /**
      * @param pname     名称
@@ -33,7 +42,7 @@ public class CalcToMonth {
         }
         try {
             while (rs.next()) {
-                sum += rs.getDouble(4);  // 4:mprice  5:hprice
+                sum += rs.getDouble("mprice");  // 4:mprice  5:hprice
                 count++;
                 countTotal++;
             }
@@ -60,7 +69,7 @@ public class CalcToMonth {
      * @return
      */
     public double cal_price(String pname, int pyear, int pmonth) {
-        ResultSet rs = select_price(pname, pyear, pmonth);
+        List<Map<String, Object>> rs = select_price(pname, pyear, pmonth);
         int count = 0;
         double sum = 0;
 
@@ -68,11 +77,12 @@ public class CalcToMonth {
             System.out.println("cal_p ERROR !");
         }
         try {
-            while (rs.next()) {
-                sum += rs.getDouble(4);    // 4:mprice 	5:hprice
+            for (Object row1 : rs) {
+                Map row = (Map) row1;
+                sum += Double.valueOf((Float) row.get("mprice"));   // 4:mprice 	5:hprice
                 count++;
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -100,6 +110,13 @@ public class CalcToMonth {
             ResultSet rs = ps.executeQuery();
             ps.close();
             conn.close();
+            if (rs.next()) {
+                System.out.println(rs.getString("mprice"));
+            }
+
+            while (rs.next()) {
+                countTotal++;
+            }
             return rs;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -109,18 +126,13 @@ public class CalcToMonth {
         return null;
     }
 
-    public ResultSet select_price(String pname, int pyear, int pmonth) {
+    public List<Map<String, Object>> select_price(String pname, int pyear, int pmonth) {
         try {
-            Connection conn = jdbcTemplate.getDataSource().getConnection();
-            String sql = "select * from price_shuichan where name like '%" + pname + "%' and year(date)=? and month(date)=?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, pyear);
-            ps.setInt(2, pmonth);
-            ResultSet rs = ps.executeQuery();
-            ps.close();
-            conn.close();
-            return rs;
-        } catch (SQLException e) {
+            String year = String.valueOf(pyear);
+            String month = String.valueOf(pmonth);
+            String sql = "select * from price_shuichan where name like '%" + pname + "%' and year(date)=" + year + " and month(date)=" + month;
+            return jdbcTemplate.queryForList(sql);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("Something ERROR !");

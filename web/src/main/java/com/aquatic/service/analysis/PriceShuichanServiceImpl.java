@@ -16,9 +16,12 @@ public class PriceShuichanServiceImpl implements PriceShuichanService {
 
 	final PriceShuichanDao priceShuichanDao;
 
+	final PriceCollector pc;
+
 	@Autowired
-	public PriceShuichanServiceImpl(PriceShuichanDao priceShuichanDao) {
+	public PriceShuichanServiceImpl(PriceShuichanDao priceShuichanDao, PriceCollector pc) {
 		this.priceShuichanDao = priceShuichanDao;
+		this.pc = pc;
 	}
 
 	@Override
@@ -56,7 +59,6 @@ public class PriceShuichanServiceImpl implements PriceShuichanService {
 		String aname = pname[0];
 		int fromYear = Integer.parseInt(year)-4;
 		int toYear = Integer.parseInt(year);
-		PriceCollector pc = new PriceCollector();
 		double[][] originMeanPrice = pc.getPrice(fromYear, toYear, aname, "");
 		double[][] processed_result = new double[5][12];
 		try {
@@ -76,6 +78,7 @@ public class PriceShuichanServiceImpl implements PriceShuichanService {
 	           processed_result[3] = originMeanPrice[4];
 	           processed_result[4][0] = rmse;
 	       } catch (Exception e) {
+			e.printStackTrace();
 	           System.out.println("Error!");
 	       } 
 		return processed_result;
@@ -105,7 +108,6 @@ public class PriceShuichanServiceImpl implements PriceShuichanService {
 		boolean flag = true;
 		int fromYear = Integer.parseInt(year)-4;
 		int toYear = Integer.parseInt(year);
-		PriceCollector pc = new PriceCollector();
 		double[][] originMeanPrice = pc.getPrice(fromYear, toYear, aname, "");
 		int count = 0;
 		for(int i=0;i<originMeanPrice.length;i++){
