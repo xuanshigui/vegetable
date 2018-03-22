@@ -1,4 +1,4 @@
-package com.aquatic.service.analysis;
+package com.aquatic.service.analysis.price;
 
 import java.util.ArrayList;
 import java.util.Calendar;

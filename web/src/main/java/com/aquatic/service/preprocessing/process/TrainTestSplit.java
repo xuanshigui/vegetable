@@ -1,10 +1,7 @@
 package com.aquatic.service.preprocessing.process;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.aquatic.service.preprocessing.algorithm.KMeansClustering;
@@ -12,38 +9,29 @@ import com.aquatic.service.preprocessing.entity.Parameters;
 import com.aquatic.service.preprocessing.entity.Sample;
 import com.aquatic.utils.PathHelper;
 
-public class ConstructTrainingset {
+public class TrainTestSplit {
 
-    public static void main(String[] args) throws IOException {
-        //��ȡ������
+    public static Map<String,List<List<Parameters>>> train_test_split(String filePath,int centerNumber) throws IOException {
+        //获取聚类结果
         KMeansClustering kmc = new KMeansClustering();
-        int centerNumber = 3;
-        kmc.initDataSet();
+        kmc.initDataSet(filePath);
         Map<Sample, List<Sample>> result = kmc.kcluster(centerNumber);
-        //����ѵ�����Ͳ��Լ�
+        //构造训练集和测试集
         List<List<Parameters>> trainingSet = new ArrayList<List<Parameters>>();
         List<List<Parameters>> testSet = new ArrayList<List<Parameters>>();
         converseToEntityList(result, trainingSet, testSet);
-        int count = 0;
-        for (List<Parameters> entityList : trainingSet) {
-            //������
-            Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete"+PathHelper.SEPARATOR+"training" + count + ".csv");
-            count++;
-        }
-        count = 0;
-        for (List<Parameters> entityList : testSet) {
-            //������
-            Preprocessing.export(entityList, PathHelper.getExamplePath() + "complete"+PathHelper.SEPARATOR+"test" + count + ".csv");
-            count++;
-        }
+        Map<String,List<List<Parameters>>> setMap = new HashMap<>();
+        setMap.put("trainingSet",trainingSet);
+        setMap.put("testSet",testSet);
+        return setMap;
     }
 
 
     public static List<Parameters> malpositionContact(
             List<Parameters> simplicatedList, int para, int position) {
-        //�����и�
+        //按日切割
         List<List<Parameters>> dayList = cutByDay(simplicatedList);
-        //����DayList,��ÿ������ݴ�һλ�и�
+        //遍历DayList,将每天的数据错一位切割
         List<Parameters> trainingSet = new ArrayList<>();
         for (List<Parameters> oneDay : dayList) {
             for (int i = position; i < (oneDay.size() - position); i++) {
@@ -105,7 +93,7 @@ public class ConstructTrainingset {
     public static void converseToEntityList(Map<Sample, List<Sample>> sampleMap, List<List<Parameters>> trainingSet, List<List<Parameters>> testSet) {
 
         for (Entry<Sample, List<Sample>> entry : sampleMap.entrySet()) {
-            //��ת��ΪSampleList
+            //先转换为SampleList
             List<Sample> sampleList = new ArrayList<>();
             List<Parameters> paraList = new ArrayList<>();
             sampleList.add(entry.getKey());
@@ -114,12 +102,12 @@ public class ConstructTrainingset {
                 List<Parameters> series = sample.getSeries();
                 paraList.addAll(series);
             }
-            //�õ�һ��Sample����Ӧ��EntityList
-            //ȥ���ظ�Ԫ��
+            //得到一个Sample所对应的EntityList
+            //去除重复元素
             List<Parameters> simplicatedList = removeDublicate(paraList);
-            //��ʱ������
+            //按时间排序
             Collections.sort(simplicatedList);
-            List<Parameters> wholeList = ConstructTrainingset.malpositionContact(simplicatedList, 1, 1);
+            List<Parameters> wholeList = TrainTestSplit.malpositionContact(simplicatedList, 1, 1);
             List<List<Parameters>> dayList = cutByDay(wholeList);
             List<Parameters> testOneDay = new ArrayList<>();
             List<Parameters> trainingOneDay = new ArrayList<>();

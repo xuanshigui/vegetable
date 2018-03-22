@@ -24,12 +24,11 @@ public class KMeansClustering {
     private List<Sample> dataset = null;
 
     public KMeansClustering() throws IOException {
-        initDataSet();
+        initDataSet( PathHelper.getResourcePath() + "fiveparam/cut");
     }
 
-    public void initDataSet() throws IOException {
+    public void initDataSet(String filePath) throws IOException {
         dataset = new ArrayList<Sample>();
-        String filePath = PathHelper.getResourcePath() + "fiveparam/cut";
         int fileNumber = CsvUtils.countFiles(filePath);
         for (int i = 0; i < fileNumber; i++) {
             String fileName = filePath + "/fiveparam" + i + ".csv";
@@ -188,7 +187,7 @@ public class KMeansClustering {
             KMeansClustering kmc = new KMeansClustering();
 
             //初始化实验
-            kmc.initDataSet();
+            kmc.initDataSet( PathHelper.getResourcePath() + "fiveparam/cut");
             Map<Sample, List<Sample>> result = kmc.kcluster(centerNumber);
             Clustering.display(result);
 
