@@ -14,7 +14,8 @@ public class PredictWaterTemp {
     public double[] predictWaterTemp(int setSerialNumber,String filePath,int centerNumber){
         Double[][] trainingSet = this.getPredictFators(setSerialNumber,"trainingSet",filePath,centerNumber);
         Double[][] testSet = this.getPredictFators(setSerialNumber,"testSet",filePath,centerNumber);
-
+        double[] result = null;
+        return result;
     }
 
     private Double[][] getPredictFators(int setSerialNumber,String type,String filePath,int centerNumber){
