@@ -27,6 +27,7 @@ public class PredictWaterTemp {
             Double[] testLabel = this.getLabels(setMap,setSerialNumber,"testSet");
             WaterQualityPredict waterQualityPredict = new WaterQualityPredict();
             Object[] originResult = waterQualityPredict.svmpredict(1,trainingSet,trainLabel,testSet);
+            System.out.println(originResult.toString());
         }catch (IOException e){
             System.out.println("--------------------------------------------");
             System.out.println("未找到文件");
