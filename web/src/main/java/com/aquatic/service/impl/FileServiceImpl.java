@@ -5,16 +5,17 @@ import com.aquatic.utils.PathHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * created by zbs on 2018/3/11
  */
 @Service
 public class FileServiceImpl implements FileService {
+    private static int READ_ROWS = 10;
+
     @Override
     public boolean uploadFile(MultipartFile file, String fileName) {
         try {
@@ -35,5 +36,26 @@ public class FileServiceImpl implements FileService {
         }
 
         return true;
+    }
+
+    @Override
+    public List<String> getFileData(String filePath) {
+        File file = new File(filePath);
+        List<String> fileContent = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            for (int i = 0; i < READ_ROWS; i++) {
+                String tempString = reader.readLine();
+                if (tempString == null) {
+                    break;
+                }
+                fileContent.add(tempString);
+            }
+
+        } catch (Exception e) {
+        }
+
+        return fileContent;
     }
 }
