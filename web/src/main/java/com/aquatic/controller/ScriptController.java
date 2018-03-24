@@ -1,6 +1,6 @@
 package com.aquatic.controller;
 
-import com.aquatic.service.analysis.price.PriceShuichanService;
+import com.aquatic.service.analysis.PriceShuichanService;
 import com.aquatic.service.script.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

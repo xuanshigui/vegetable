@@ -121,7 +121,7 @@
             method: "POST",
             dataType: "json",
             data: {
-                "fields": fieldOrders,
+                "fields": fieldOrders.join(","),
             },
             success: function (data) {
                 if (data.data) {

@@ -1,4 +1,4 @@
-package com.aquatic.service.analysis.price;
+package com.aquatic.service.analysis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,5 +1,6 @@
-package com.aquatic.service.analysis.price;
+package com.aquatic.service.analysis;
 
+import com.aquatic.service.analysis.CalcToMonth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
