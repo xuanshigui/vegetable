@@ -97,5 +97,44 @@ public class ProcessController extends BaseController {
 
     }
 
+    @RequestMapping(value = "/data_conversion.json", method = RequestMethod.POST)
+    public Map<String, Object> dataConversion(@RequestParam("fields") String fields) {
+        try {
+            List<Integer> fieldList = Arrays.stream(fields.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+
+            return buildResponse(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return buildResponse(false);
+        }
+
+    }
+
+    @RequestMapping(value = "/data_fusion.json", method = RequestMethod.POST)
+    public Map<String, Object> dataFusion(@RequestParam("fields") String fields) {
+        try {
+            List<Integer> fieldList = Arrays.stream(fields.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+
+            return buildResponse(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return buildResponse(false);
+        }
+
+    }
+
+
+    @RequestMapping(value = "/data_normalization.json", method = RequestMethod.POST)
+    public Map<String, Object> dataNormalization(@RequestParam("fields") String fields) {
+        try {
+            List<Integer> fieldList = Arrays.stream(fields.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+
+            return buildResponse(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return buildResponse(false);
+        }
+
+    }
 
 }
