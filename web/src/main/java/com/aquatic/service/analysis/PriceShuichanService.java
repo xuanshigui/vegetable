@@ -1,4 +1,4 @@
-package com.aquatic.service.analysis.price;
+package com.aquatic.service.analysis;
 
 import java.util.List;
 

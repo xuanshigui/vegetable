@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 public class ScriptService {
 
     private static final String SCRIPT_DIR = PathHelper.getResourcePath() + PathHelper.SEPARATOR + "script" + PathHelper.SEPARATOR;
-    private static final String PY_SCRIPT = SCRIPT_DIR + "waterQualityEvaluation.py";
+    private static final String PY_SCRIPT = SCRIPT_DIR + "water.py";
     private static final String SOURCE_DIR = SCRIPT_DIR + "source" + PathHelper.SEPARATOR;
 
     private static final String CONFIG = "{\"do_catch\":{\"file\":\"DOCatch.csv\", \"seeds\":\"20,15,45,37\"},\n" +

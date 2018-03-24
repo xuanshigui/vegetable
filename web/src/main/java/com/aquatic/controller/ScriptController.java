@@ -1,6 +1,6 @@
 package com.aquatic.controller;
 
-import com.aquatic.service.analysis.price.PriceShuichanService;
+import com.aquatic.service.analysis.PriceShuichanService;
 import com.aquatic.service.script.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +38,9 @@ public class ScriptController extends BaseController {
     }
 
     @RequestMapping(value = "/call_matlab.json", method = RequestMethod.GET)
-    public Map<String, Object> callMatlat(ServletRequest request) {
+    public Map<String, Object> callMatlab(ServletRequest request) {
         String name = request.getParameter("name");
         String year = request.getParameter("year");
-        name = "草鱼";
-        year = "2017";
         double[][] result = priceShuichanService.predict(name, year);
         List<String> realValue = priceShuichanService.doubleToString(result[3]);
         List<String> predictValue = priceShuichanService.doubleToString(result[0]);
@@ -59,4 +57,9 @@ public class ScriptController extends BaseController {
         return buildResponse(res);
     }
 
+    @RequestMapping(value = "/get_name_list.json", method = RequestMethod.GET)
+    public Map<String, Object> getNameList(ServletRequest request) {
+        List<String> nameList = priceShuichanService.getNameList();
+        return buildResponse(nameList);
+    }
 }

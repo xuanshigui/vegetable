@@ -1,28 +1,28 @@
-
+﻿
 # coding: utf-8
 
-# In[24]:
-import sys
+# In[1]:
 
+import sys
 def readDataSet(path):
     import numpy  as np
     import pandas as pd
     import sklearn.preprocessing as preprocessing
     df = pd.read_csv(path)
     scaler = preprocessing.StandardScaler()
-    df['high_6_scaled'] = scaler.fit_transform(df['high_6'])
-    df['low_6_scaled'] = scaler.fit_transform(df['low_6'])
-    df['high_7_scaled'] = scaler.fit_transform(df['high_7'])
-    df['low_7_scaled'] = scaler.fit_transform(df['low_7'])
-    df['high_8_scaled'] = scaler.fit_transform(df['high_8'])
-    df['low_8_scaled'] = scaler.fit_transform(df['low_8'])
-    df['high_9_scaled'] = scaler.fit_transform(df['high_9'])
-    df['low_9_scaled'] = scaler.fit_transform(df['low_9'])
-    df['high_10_scaled'] = scaler.fit_transform(df['high_10'])
-    df['low_10_scaled'] = scaler.fit_transform(df['low_10'])
+    df['high_6_scaled'] = scaler.fit_transform(df['high_6'].values.reshape(-1,1))
+    df['low_6_scaled'] = scaler.fit_transform(df['low_6'].values.reshape(-1,1))
+    df['high_7_scaled'] = scaler.fit_transform(df['high_7'].values.reshape(-1,1))
+    df['low_7_scaled'] = scaler.fit_transform(df['low_7'].values.reshape(-1,1))
+    df['high_8_scaled'] = scaler.fit_transform(df['high_8'].values.reshape(-1,1))
+    df['low_8_scaled'] = scaler.fit_transform(df['low_8'].values.reshape(-1,1))
+    df['high_9_scaled'] = scaler.fit_transform(df['high_9'].values.reshape(-1,1))
+    df['low_9_scaled'] = scaler.fit_transform(df['low_9'].values.reshape(-1,1))
+    df['high_10_scaled'] = scaler.fit_transform(df['high_10'].values.reshape(-1,1))
+    df['low_10_scaled'] = scaler.fit_transform(df['low_10'].values.reshape(-1,1))
     #时间计数
-    df['DOLower1_scaled'] = scaler.fit_transform(df['DOLower1'])
-    df['DOLower3_scaled'] = scaler.fit_transform(df['DOLower3'])
+    df['DOLower1_scaled'] = scaler.fit_transform(df['DOLower1'].values.reshape(-1,1))
+    df['DOLower3_scaled'] = scaler.fit_transform(df['DOLower3'].values.reshape(-1,1))
     df.drop(['DOLower1','DOLower3','deviceId','high_6','low_6','high_7','low_7','high_8','low_8','high_9','low_9','high_10','low_10'], axis=1, inplace=True)
     return df
 def crossVali(seeds,df):
@@ -59,9 +59,5 @@ def do_catch(path,seedStr):
     df = readDataSet(path)
     result = crossVali(seeds,df)
     return result
-
-
-#seedStr='0,5,1,12,66,60'
-#path = 'C:\\Users\\Administrator\\Desktop\\csv\\tmp\\DOYield.csv'
 print(do_catch(sys.argv[1], sys.argv[2]))
 
