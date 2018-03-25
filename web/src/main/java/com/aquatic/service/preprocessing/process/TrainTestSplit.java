@@ -16,11 +16,11 @@ public class TrainTestSplit {
     //para所预测的参数
     //position错位结合的位数
     public static Map<String,List<List<Parameters>>> train_test_split(String filePath,int centerNumber,int para, int position) throws IOException {
-        //获取聚类结果
+
         KMeansClustering kmc = new KMeansClustering();
-        kmc.initDataSet(filePath);
+        kmc.initDataSet("E:/prediction/fiveparam/cut");
         Map<Sample, List<Sample>> result = kmc.kcluster(centerNumber);
-        //构造训练集和测试集
+
         List<List<Parameters>> trainingSet = new ArrayList<List<Parameters>>();
         List<List<Parameters>> testSet = new ArrayList<List<Parameters>>();
         converseToEntityList(result, trainingSet, testSet,para,position);
@@ -33,9 +33,9 @@ public class TrainTestSplit {
 
     private static List<Parameters> malpositionContact(
             List<Parameters> simplicatedList, int para, int position) {
-        //按日切割
+
         List<List<Parameters>> dayList = cutByDay(simplicatedList);
-        //遍历DayList,将每天的数据错position位切割
+
         List<Parameters> trainingSet = new ArrayList<>();
         for (List<Parameters> oneDay : dayList) {
             for (int i = position; i < (oneDay.size() - position); i++) {
@@ -49,7 +49,6 @@ public class TrainTestSplit {
         }
         return trainingSet;
     }
-
 
     private static List<List<Parameters>> cutByDay(
             List<Parameters> simplicatedList) {
@@ -97,7 +96,7 @@ public class TrainTestSplit {
     public static void converseToEntityList(Map<Sample, List<Sample>> sampleMap, List<List<Parameters>> trainingSet, List<List<Parameters>> testSet,int para, int position) {
 
         for (Entry<Sample, List<Sample>> entry : sampleMap.entrySet()) {
-            //先转换为SampleList
+            //鍏堣浆鎹负SampleList
             List<Sample> sampleList = new ArrayList<>();
             List<Parameters> paraList = new ArrayList<>();
             sampleList.add(entry.getKey());
@@ -106,10 +105,9 @@ public class TrainTestSplit {
                 List<Parameters> series = sample.getSeries();
                 paraList.addAll(series);
             }
-            //得到一个Sample所对应的EntityList
-            //去除重复元素
+
             List<Parameters> simplicatedList = removeDublicate(paraList);
-            //按时间排序
+
             Collections.sort(simplicatedList);
             List<Parameters> wholeList = TrainTestSplit.malpositionContact(simplicatedList,para,position);
             List<List<Parameters>> dayList = cutByDay(wholeList);

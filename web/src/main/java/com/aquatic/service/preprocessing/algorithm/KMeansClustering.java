@@ -24,13 +24,13 @@ public class KMeansClustering {
     private List<Sample> dataset = null;
 
     public KMeansClustering() throws IOException {
-        initDataSet( PathHelper.getResourcePath() + "fiveparam/cut");
+        initDataSet(PathHelper.getExamplePath()+"fiveparam/cut");
     }
 
     public void initDataSet(String filePath) throws IOException {
         dataset = new ArrayList<Sample>();
         int fileNumber = CsvUtils.countFiles(filePath);
-        for (int i = 0; i < fileNumber; i++) {
+        for(int i=0;i<fileNumber;i++){
             String fileName = filePath + "/fiveparam" + i + ".csv";
             List<Parameters> entityList = Preprocessing.getEntityList(fileName);
             Sample sample = new Sample();
@@ -39,11 +39,10 @@ public class KMeansClustering {
             dataset.add(sample);
         }
     }
-
-    public Map<Sample, List<Sample>> kcluster(int k) {
+    public Map<Sample,List<Sample>> kcluster(int k) {
         // 随机从样本集合中选取k个样本点作为聚簇中心
         // 每个聚簇中心有哪些点
-        Map<Sample, List<Sample>> nowClusterCenterMap = new HashMap<Sample, List<Sample>>();
+        Map<Sample,List<Sample>> nowClusterCenterMap = new HashMap<Sample, List<Sample>>();
         for (int i = 0; i < k; i++) {
             Random random = new Random();
             int num = random.nextInt(dataset.size());
@@ -51,7 +50,7 @@ public class KMeansClustering {
         }
 
         //上一次的聚簇中心
-        Map<Sample, List<Sample>> lastClusterCenterMap = null;
+        Map<Sample,List<Sample>> lastClusterCenterMap = null;
 
         // 找到离中心最近的点,然后加入以该中心为map键的list中
         while (true) {
@@ -60,12 +59,12 @@ public class KMeansClustering {
                 double shortest = Double.MAX_VALUE;
                 Sample key = null;
                 //当前的聚类中心键值对，有k个
-                Set<Entry<Sample, List<Sample>>> entrySet = nowClusterCenterMap.entrySet();
+                Set<Map.Entry<Sample,List<Sample>>> entrySet = nowClusterCenterMap.entrySet();
                 //遍历聚类中心
                 for (Entry<Sample, List<Sample>> entry : entrySet) {
                     //当前的聚类中心键（一个Sample）
                     Sample sampleKey = entry.getKey();
-                    double distance = distance(sample, sampleKey, 0.5, 0.5);
+                    double distance = distance(sample, sampleKey,0.5,0.5);
                     if (distance < shortest) {
                         shortest = distance;
                         key = entry.getKey();
@@ -73,24 +72,24 @@ public class KMeansClustering {
                 }
                 nowClusterCenterMap.get(key).add(sample);
             }
-            Set<Entry<Sample, List<Sample>>> entrySet = nowClusterCenterMap.entrySet();
+            Set<Map.Entry<Sample,List<Sample>>> entrySet = nowClusterCenterMap.entrySet();
             int no = 0;
-            for (Entry<Sample, List<Sample>> entry : entrySet) {
+            for(Entry<Sample, List<Sample>> entry : entrySet){
                 Sample sampleKey = entry.getKey();
                 List<Sample> list = nowClusterCenterMap.get(sampleKey);
-                System.out.println(no + "-" + list.size());
+                System.out.println(no+"-"+list.size());
                 no++;
             }
             //如果结果与上一次相同，则整个过程结束
-            if (isEqualCenter(lastClusterCenterMap, nowClusterCenterMap)) {
+            if (isEqualCenter(lastClusterCenterMap,nowClusterCenterMap)) {
                 break;
             }
             lastClusterCenterMap = nowClusterCenterMap;
             nowClusterCenterMap = new HashMap<Sample, List<Sample>>();
             //把中心点移到其所有成员的平均位置处,并构建新的聚簇中心
-            for (Entry<Sample, List<Sample>> entry : lastClusterCenterMap.entrySet()) {
+            for (Entry<Sample,List<Sample>> entry : lastClusterCenterMap.entrySet()) {
                 List<Sample> entryVaule = entry.getValue();
-                if (entryVaule.size() != 0) {
+                if(entryVaule.size()!=0){
                     nowClusterCenterMap.put(getNewCenterSample(entryVaule), new ArrayList<Sample>());
                 }
             }
@@ -103,23 +102,23 @@ public class KMeansClustering {
                                   Map<Sample, List<Sample>> nowClusterCenterMap) {
         if (lastClusterCenterMap == null) {
             return false;
-        } else {
+        }else {
             for (Entry<Sample, List<Sample>> entry : lastClusterCenterMap.entrySet()) {
                 boolean contain = false;
                 List<Parameters> lastParaList = entry.getKey().getSeries();
-                Set<Entry<Sample, List<Sample>>> entrySet = nowClusterCenterMap.entrySet();
-                for (Entry<Sample, List<Sample>> set : entrySet) {
+                Set<Map.Entry<Sample,List<Sample>>> entrySet = nowClusterCenterMap.entrySet();
+                for(Entry<Sample,List<Sample>> set:entrySet){
                     List<Parameters> nowParaList = set.getKey().getSeries();
-                    if (lastParaList.size() == nowParaList.size()) {
-                        int count = 0;
-                        for (int i = 0; i < lastParaList.size(); i++) {
+                    if(lastParaList.size()==nowParaList.size()){
+                        int count=0;
+                        for(int i=0;i<lastParaList.size();i++){
 
-                            if (lastParaList.get(i).equals(nowParaList.get(i))) {
+                            if(lastParaList.get(i).equals(nowParaList.get(i))){
                                 count++;
                             }
                         }
-                        if (count == lastParaList.size()) {
-                            contain = true;
+                        if(count==lastParaList.size()){
+                            contain=true;
                         }
                     }
                 }
@@ -131,11 +130,11 @@ public class KMeansClustering {
         return true;
     }
 
-    private double distance(Sample sample1, Sample sample2, double alpha, double beta) {
+    private double distance(Sample sample1, Sample sample2,double alpha,double beta) {
         double distance = Double.MAX_VALUE;
         double euclideanDistance = EuclideanDistance.getEuclideanDistance(sample1, sample2);
         double dtwDistance = DynamicTimeWarping.dtwDistance(sample1, sample2);
-        distance = alpha * euclideanDistance + beta * dtwDistance;
+        distance = alpha*euclideanDistance+beta*dtwDistance;
         return distance;
     }
 
@@ -147,15 +146,15 @@ public class KMeansClustering {
         //距离积累矩阵
         double[][] sumArray = new double[rows][cols];
         //初始化距离积累矩阵
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
                 sumArray[i][j] = 0.0;
             }
         }
         for (Sample sample : value) {
             double[][] array = new double[rows][cols];
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
+            for(int i=0;i<rows;i++){
+                for(int j=0;j<cols;j++){
                     array[i][j] = sample.getListValue(i, j);
                     sumArray[i][j] = sumArray[i][j] + array[i][j];
                 }
@@ -164,9 +163,9 @@ public class KMeansClustering {
         //均值Array
         double[][] avgArray = new double[rows][cols];
         Sample sample = new Sample();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                avgArray[i][j] = sumArray[i][j] / sampleNumber;
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                avgArray[i][j] = sumArray[i][j]/sampleNumber;
             }
         }
         double nearest = Double.POSITIVE_INFINITY;
@@ -174,40 +173,27 @@ public class KMeansClustering {
         Sample time = value.get(0);
         for (Sample current : value) {
             double dis = Clustering.distance(sample, current, 0.5, 0.5);
-            if (dis < nearest) {
+            if(dis<nearest){
                 time = current;
             }
         }
-        sample.setTime(sample, time);
+        sample.setTime(sample,time);
         return sample;
     }
 
-    public static void kMeansClustering(int centerNumber) {
-        try {
-            KMeansClustering kmc = new KMeansClustering();
-
+    public static void main(String[] args) throws IOException {
+        KMeansClustering kmc = new KMeansClustering();
+        double sum = 0;
+        for(int i=0;i<5;i++){
+            kmc.initDataSet("E:/prediction/fiveparam/cut");
             //初始化实验
-            kmc.initDataSet( PathHelper.getResourcePath() + "fiveparam/cut");
-            Map<Sample, List<Sample>> result = kmc.kcluster(centerNumber);
+            Map<Sample, List<Sample>> result = kmc.kcluster(6);
             Clustering.display(result);
-
-        } catch (Exception e) {
-            System.out.println("数据读取失败。");
+            double dbi = Clustering.daviesBouldinIndex(result);
+            sum = sum+dbi;
         }
-
-
-		/*double sumDBI = 0.0;
-		for(int i=0;i<5;i++){
-			kmc.initDataSet();
-			Map<Sample, List<Sample>> result = kmc.kcluster(centerNumber);
-			Clustering.display(result);
-			double dbi = Clustering.daviesBouldinIndex(result);
-			sumDBI = sumDBI + dbi; 
-			System.out.println(dbi);
-		}*/
-        //System.out.println(sumDBI/5);
+        System.out.println(sum/5);
     }
-
 
     public List<Sample> getDataset() {
         return dataset;
