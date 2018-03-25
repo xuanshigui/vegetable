@@ -57,9 +57,13 @@ public class ScriptController extends BaseController {
         return buildResponse(res);
     }
 
-    @RequestMapping(value = "/get_name_list.json", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_param_list.json", method = RequestMethod.GET)
     public Map<String, Object> getNameList(ServletRequest request) {
         List<String> nameList = priceShuichanService.getNameList();
-        return buildResponse(nameList);
+        List<String> timeList = priceShuichanService.getTimeList();
+        Map<String, List<String>> res = new HashMap<>();
+        res.put("name", nameList);
+        res.put("time", timeList);
+        return buildResponse(res);
     }
 }

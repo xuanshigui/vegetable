@@ -1,4 +1,5 @@
-﻿package com.aquatic.service.analysis.wpredict;
+package com.aquatic.service.analysis.wpredict;
+
 import com.aquatic.service.preprocessing.entity.Parameters;
 import com.aquatic.service.preprocessing.process.Normalization;
 import com.aquatic.service.preprocessing.process.Preprocessing;
@@ -12,50 +13,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 public class PredictWaterTemp {
-
-    //"E:/prediction/fiveparam/cut";
     public static List<Double> predict(String path){
         List<Double> inversedList = null;
         PredictUtils tp = new PredictUtils();
         PredictWaterTemp pwt = new PredictWaterTemp();
         Map<String, List<List<Parameters>>> setMap;
-		try {
-			setMap = TrainTestSplit.train_test_split(path,3,0,1);
-			List<Parameters> testSet = tp.getTestSet(setMap,3,"testSet");
-			List<Double> targetFactor =tp.getTargetFactor(testSet, 0);
-			List<Double> result = new ArrayList<>();
-	        for(int i=0;i<3;i++){
-	        	List<Double> predict = pwt.predictWaterTemp(i,setMap);
-	        	result.addAll(predict);
-	        }
-	        double[] normalizedArray = DataUtils.listToArray(result);
-	        List<Parameters> entityList1 = Preprocessing.getEntityList("E:/prediction/atmosphere.csv");
-			//水质数据预处理
-			List<Parameters> entityList2 = Preprocessing.preprocessWater();
-			//数据融合，得到原始数据集，即可还原序列
-			List<Parameters> fusedList = Preprocessing.dataFusion(entityList1,entityList2);
-			inversedList = Normalization.inverse(fusedList, normalizedArray, 0);
+        try {
+            setMap = TrainTestSplit.train_test_split(path,3,0,1);
+            List<Parameters> testSet = tp.getTestSet(setMap,3,"testSet");
+            List<Double> targetFactor =tp.getTargetFactor(testSet, 0);
+            List<Double> result = new ArrayList<>();
+            for(int i=0;i<3;i++){
+                List<Double> predict = pwt.predictWaterTemp(i,setMap);
+                result.addAll(predict);
+            }
+            double[] normalizedArray = DataUtils.listToArray(result);
+            List<Parameters> entityList1 = Preprocessing.getEntityList("E:/prediction/atmosphere.csv");
+            //水质数据预处理
+            List<Parameters> entityList2 = Preprocessing.preprocessWater();
+            //数据融合，得到原始数据集，即可还原序列
+            List<Parameters> fusedList = Preprocessing.dataFusion(entityList1,entityList2);
+            inversedList = Normalization.inverse(fusedList, normalizedArray, 0);
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return inversedList;
     }
 
     public List<Double> predictWaterTemp(int setSerialNumber,Map<String,List<List<Parameters>>> setMap){
-    	List<Double> result;
-    	double[] resultArray = null;
+        List<Double> result;
+        double[] resultArray = null;
         try {
             double[][] trainingSet = this.getPredictFators(setMap,setSerialNumber,"trainingSet");
             double[][] testSet = this.getPredictFators(setMap,setSerialNumber,"testSet");
-            
+
             WaterQualitySVMTrain wqsvmt = new WaterQualitySVMTrain();
             Object[] originResult = wqsvmt.water_para_train(3, trainingSet);
             System.out.println("=========================寻参完成==============================");
-            
+
             double[][] train = this.reConstructTrainingSet(testSet, trainingSet, originResult);
             WaterQualityPredict wqp = new WaterQualityPredict();
             Object[] predict = wqp.water_para_model(1, train);
@@ -82,26 +80,26 @@ public class PredictWaterTemp {
         }
         return result;
     }*/
-    
+
     private double[][] reConstructTrainingSet(double[][] testSet,double[][] trainingSet,Object[] originResult){
-    	double[] cgp = new double[originResult.length]; 
-    	//参数
-    	for(int i=0;i<originResult.length;i++){
-    		cgp[i] = Double.parseDouble(originResult[i].toString().trim());
-    	}
-    	int rows= testSet.length+trainingSet.length;
-    	double[][] train = new double[rows+1][testSet[0].length];
-    	for(int i=0;i<testSet.length;i++){
-    		train[i] = trainingSet[i];
-    	}
-    	for(int i=testSet.length;i<rows;i++){
-    		train[i] = trainingSet[i-testSet.length];
-    	}
-    	for(int i=0;i<originResult.length;i++){
-    		train[rows][i] = cgp[i];
-    	}
-    	train[rows][3]= testSet.length;
-    	return train;
+        double[] cgp = new double[originResult.length];
+        //参数
+        for(int i=0;i<originResult.length;i++){
+            cgp[i] = Double.parseDouble(originResult[i].toString().trim());
+        }
+        int rows= testSet.length+trainingSet.length;
+        double[][] train = new double[rows+1][testSet[0].length];
+        for(int i=0;i<testSet.length;i++){
+            train[i] = trainingSet[i];
+        }
+        for(int i=testSet.length;i<rows;i++){
+            train[i] = trainingSet[i-testSet.length];
+        }
+        for(int i=0;i<originResult.length;i++){
+            train[rows][i] = cgp[i];
+        }
+        train[rows][3]= testSet.length;
+        return train;
     }
 
     private double[][] getPredictFators(Map<String,List<List<Parameters>>> setMap,int setSerialNumber,String type){
@@ -125,7 +123,4 @@ public class PredictWaterTemp {
         }
         return result;
     }
-    
-    
-
 }
