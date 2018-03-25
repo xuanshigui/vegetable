@@ -36,7 +36,7 @@
             url: "get_name_list.json",
             method: "GET",
             dataType: "json",
-            data: data,
+            data: {},
             success: function (data) {
                 for (var index in data.data) {
                     $('#name').append($("<option name='" + data.data[index] + "'>" + data.data[index] + "</option>"))
@@ -63,12 +63,39 @@
     }
 
     function showData(data) {
+        var colspan = data.predictValue.length;
+
+        var tr = $("<tr></tr>");
+        $("<td>预测值</td>").appendTo(tr);
+        for (var j = 0; j < data.predictValue.length; j++) {
+            $("<td>" + data.predictValue[j] + "</td>").appendTo(tr);
+        }
+        tr.appendTo($('#tableShow'));
 
         tr = $("<tr></tr>");
-        for (var j = 0; j < cols.length; j++) {
-            $("<td>" + cols[j] + "</td>").appendTo(tr);
+        $("<td>真实值</td>").appendTo(tr);
+        for (j = 0; j < data.realValue.length; j++) {
+            $("<td>" + data.realValue[j] + "</td>").appendTo(tr);
         }
+        tr.appendTo($('#tableShow'));
 
+        tr = $("<tr></tr>");
+        $("<td>绝对误差</td>").appendTo(tr);
+        for (j = 0; j < data.jdwc.length; j++) {
+            $("<td>" + data.jdwc[j] + "</td>").appendTo(tr);
+        }
+        tr.appendTo($('#tableShow'));
+
+        tr = $("<tr></tr>");
+        $("<td>相对误差</td>").appendTo(tr);
+        for (j = 0; j < data.xdwc.length; j++) {
+            $("<td>" + data.xdwc[j] + "</td>").appendTo(tr);
+        }
+        tr.appendTo($('#tableShow'));
+
+        tr = $("<tr></tr>");
+        $("<td>均方根误差</td>").appendTo(tr);
+        $("<td colspan='" + colspan + "'>" + data.jfgwc + "</td>").appendTo(tr);
         tr.appendTo($('#tableShow'));
     }
 </script>
