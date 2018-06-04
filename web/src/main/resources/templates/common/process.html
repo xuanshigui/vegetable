@@ -92,7 +92,7 @@
 
             tr = $("<tr></tr>");
             for (var j = 0; j < cols.length; j++) {
-                $("<td>" + cols[j] + "</td>").appendTo(tr);
+                $("<td>" + cols[j].substr(0,4) + "</td>").appendTo(tr);
             }
 
             tr.appendTo($('#tableShow'));
