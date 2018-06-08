@@ -14,33 +14,47 @@ import java.util.List;
 import java.util.Map;
 
 public class PredictWaterTemp {
-    public static List<Double> predict(String path){
-        List<Double> inversedList = null;
+    public static void main(String[] args){
+        String path = "E:/prediction/fiveparam1/cut";
         PredictUtils tp = new PredictUtils();
         PredictWaterTemp pwt = new PredictWaterTemp();
         Map<String, List<List<Parameters>>> setMap;
         try {
+            long start = System.currentTimeMillis();
             setMap = TrainTestSplit.train_test_split(path,3,0,1);
             List<Parameters> testSet = tp.getTestSet(setMap,3,"testSet");
-            List<Double> targetFactor =tp.getTargetFactor(testSet, 0);
+            List<Double> targetFactor =tp.getTargetFactor(testSet, 12);
             List<Double> result = new ArrayList<>();
             for(int i=0;i<3;i++){
                 List<Double> predict = pwt.predictWaterTemp(i,setMap);
                 result.addAll(predict);
             }
+            long end =System.currentTimeMillis();
+            double time = (end-start)/1000;
+            System.out.println(time);
             double[] normalizedArray = DataUtils.listToArray(result);
             List<Parameters> entityList1 = Preprocessing.getEntityList("E:/prediction/atmosphere.csv");
             //水质数据预处理
             List<Parameters> entityList2 = Preprocessing.preprocessWater();
             //数据融合，得到原始数据集，即可还原序列
             List<Parameters> fusedList = Preprocessing.dataFusion(entityList1,entityList2);
-            inversedList = Normalization.inverse(fusedList, normalizedArray, 0);
-
+            List<Double> inversedList = Normalization.inverse(fusedList, normalizedArray, 0);
+            double[] targetArray = DataUtils.listToArray(targetFactor);
+            List<Double> inversedTarget = Normalization.inverse(fusedList, targetArray, 0);
+            double mae = DataUtils.getMAE(inversedTarget, inversedList);
+            double mape = DataUtils.getMAPE(inversedTarget, inversedList);
+            double rmse = DataUtils.getRMSE(inversedTarget,inversedList);
+            System.out.println(mae);
+            System.out.println(mape);
+            System.out.println(rmse);
+            for(int i=0;i<inversedList.size();i++){
+                System.out.println(inversedList.get(i)+"-"+inversedTarget.get(i));
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return inversedList;
+
     }
 
     public List<Double> predictWaterTemp(int setSerialNumber,Map<String,List<List<Parameters>>> setMap){
@@ -58,7 +72,6 @@ public class PredictWaterTemp {
             WaterQualityPredict wqp = new WaterQualityPredict();
             Object[] predict = wqp.water_para_model(1, train);
             resultArray = PredictUtils.result2array(predict[0].toString());
-            result = DataUtils.arrayToList(resultArray);
         }catch (Exception e){
             System.out.println("--------------------------------------------");
             System.out.println("预测出现问题！");
@@ -67,19 +80,6 @@ public class PredictWaterTemp {
         result = DataUtils.arrayToList(resultArray);
         return result;
     }
-
-/*    private double[] getLabels(Map<String,List<List<Parameters>>> setMap,int setSerialNumber,String type){
-        List<List<Parameters>> trainSets = setMap.get(type);
-        List<Parameters> trainingSet = trainSets.get(setSerialNumber);
-        double[] result = new double[trainingSet.size()];
-        int i=0;
-        for(Parameters parameters:trainingSet){
-            List<Double> paraList = parameters.getParaList();
-            result[i] = paraList.get(12);
-            i++;
-        }
-        return result;
-    }*/
 
     private double[][] reConstructTrainingSet(double[][] testSet,double[][] trainingSet,Object[] originResult){
         double[] cgp = new double[originResult.length];
@@ -116,9 +116,10 @@ public class PredictWaterTemp {
             result[i][0] = parameter.getParaList().get(0);//水温
             result[i][1] = parameter.getParaList().get(5);//相对湿度
             result[i][2] = parameter.getParaList().get(6);//大气温度
-            result[i][3] = parameter.getParaList().get(7);//大气压力
-            result[i][4] = parameter.getParaList().get(8);//风速
-            result[i][5] = parameter.getParaList().get(10);//太阳辐射
+            //result[i][3] = parameter.getParaList().get(7);//大气压力
+            result[i][3] = parameter.getParaList().get(8);//风速
+            result[i][4] = parameter.getParaList().get(9);//太阳辐射
+            result[i][5] = parameter.getParaList().get(11);//太阳辐射
             result[i][6] = parameter.getParaList().get(12);
         }
         return result;

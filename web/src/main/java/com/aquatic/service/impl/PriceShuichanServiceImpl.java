@@ -1,4 +1,4 @@
-package com.aquatic.service.analysis;
+package com.aquatic.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -6,6 +6,8 @@ import java.util.List;
 
 import aquatic_price.Predictor;
 import com.aquatic.dao.PriceShuichanDao;
+import com.aquatic.service.analysis.PriceCollector;
+import com.aquatic.service.analysis.PriceShuichanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
