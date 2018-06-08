@@ -1,15 +1,15 @@
 package com.aquatic.service.preprocessing.entity;
 
 public class PredictedValue {
-	
+
 	//0-6
-	int level;
-	
-	double predictedValue;
-	
-	double lowBound;
-	
-	double highBound;
+	private int level;
+
+	private double predictedValue;
+
+	private double lowBound;
+
+	private double highBound;
 
 	public double getPredictedValue() {
 		return predictedValue;
@@ -33,6 +33,14 @@ public class PredictedValue {
 
 	public void setHighBound(double highBound) {
 		this.highBound = highBound;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 }

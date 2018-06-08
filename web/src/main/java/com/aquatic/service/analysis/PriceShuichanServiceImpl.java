@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-
+import aquatic_price.Predictor;
 import com.aquatic.dao.PriceShuichanDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import price_prediction.Predictor;
 
 @Service("priceShuichanService")
 public class PriceShuichanServiceImpl implements PriceShuichanService {
 
-    final PriceShuichanDao priceShuichanDao;
+    private final PriceShuichanDao priceShuichanDao;
 
-    final PriceCollector pc;
+    private final PriceCollector pc;
 
     @Autowired
     public PriceShuichanServiceImpl(PriceShuichanDao priceShuichanDao, PriceCollector pc) {
@@ -64,8 +63,7 @@ public class PriceShuichanServiceImpl implements PriceShuichanService {
         double[][] processed_result = new double[5][12];
         try {
             Predictor predictor = new Predictor();
-            Object[] result = null;
-            result = predictor.price_prediction(3, originMeanPrice);
+            Object[] result = predictor.price_prediction(4, originMeanPrice);
             String predict_origin = result[0].toString().trim();
             double[] predictValue = result2array(predict_origin);
             String jdwc_origin = result[1].toString().trim();
@@ -86,7 +84,7 @@ public class PriceShuichanServiceImpl implements PriceShuichanService {
     }
 
     private static double[] result2array(String predict_origin) {
-        List<String> predictList = new ArrayList<String>();
+        List<String> predictList = new ArrayList<>();
         for (String s : predict_origin.replaceAll("[^0-9.]+", ",").split(",")) {
             if (s.length() > 0)
                 predictList.add(s);
@@ -148,8 +146,7 @@ public class PriceShuichanServiceImpl implements PriceShuichanService {
         }
         try {
             Predictor predictor = new Predictor();
-            Object[] result = null;
-            result = predictor.price_prediction(4, originMeanPrice);
+            Object[] result = predictor.price_prediction(4, originMeanPrice);
             String predict_origin = result[0].toString().trim();
             double[] predictValue = result2array(predict_origin);
             String jdwc_origin = result[1].toString().trim();

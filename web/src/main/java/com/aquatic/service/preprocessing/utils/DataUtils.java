@@ -78,6 +78,15 @@ public class DataUtils {
         return Math.sqrt(sum);
     }
 
+    public static double getStandardDeviation(List<Double> series){
+        double sum = 0;
+        double avg = getMean(series);
+        for(double element:series){
+            sum = sum + (element-avg)*(element-avg);
+        }
+        return Math.sqrt(sum);
+    }
+
     public static double[] listToArray(List<Double> list){
         double[] array = new double[list.size()];
         int count = 0;
@@ -100,10 +109,15 @@ public class DataUtils {
         double mean = getMean(series);
         return standardDeviation/mean;
     }
+    public static double getVariantCoefficient(List<Double> series){
+        double standardDeviation = getStandardDeviation(series);
+        double mean = getMean(series);
+        return standardDeviation/mean;
+    }
     //计算均方根误差
     public static double getRMSE(List<Double> list1,List<Double> list2){
         int size = list1.size();
-        double rmse = 0;
+        double rmse;
         if(size!=list2.size()){
             return Double.NaN;
         }else{
@@ -120,7 +134,7 @@ public class DataUtils {
     //计算平均绝对百分比误差
     public static double getMAPE(List<Double> list1,List<Double> list2){
         int size = list1.size();
-        double mape = 0;
+        double mape;
         if(size!=list2.size()){
             return Double.NaN;
         }else{
@@ -136,7 +150,7 @@ public class DataUtils {
     //计算平均绝对误差
     public static double getMAE(List<Double> list1,List<Double> list2){
         int size = list1.size();
-        double mae = 0;
+        double mae;
         if(size!=list2.size()){
             return Double.NaN;
         }else{

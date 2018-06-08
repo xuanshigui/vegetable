@@ -8,7 +8,7 @@ import com.aquatic.service.preprocessing.utils.DataUtils;
 public class AbnormalDetection {
 
     public static List<Double> abnormalDetect(List<Double> dataArrayList, double alpha, int windSize) {
-        //�ָʹ�ø�����˹׼����м��
+        //分割并使用格拉布斯准则进行检测
         int numberOfSubSet = dataArrayList.size() - windSize + 1;
         for (int i = 0; i < numberOfSubSet; i++) {
             List<Double> subList = new ArrayList<>();
@@ -20,15 +20,15 @@ public class AbnormalDetection {
                 dataArrayList.set(i + j, subList.get(j));
             }
         }
-        //ȥ��ͻ���0�Ϳ�ʼ��0
+        //去除突变的0和开始的0
         removeZeros(dataArrayList);
-        //ȥ��ͻ���ֵ
+        //去除突变的值
         removeSaltation(dataArrayList);
         return dataArrayList;
     }
 
-    //ȥ��ͻ���ֵ
-    public static List<Double> removeSaltation(List<Double> dataArrayList) {
+    //去除突变的值
+    private static List<Double> removeSaltation(List<Double> dataArrayList) {
         for (int i = 1; i < dataArrayList.size(); i++) {
             double difference = Math.abs((dataArrayList.get(i) - dataArrayList.get(i - 1)));
             if ((!dataArrayList.get(i).isNaN()) && (!dataArrayList.get(i - 1).isNaN())) {
@@ -40,8 +40,8 @@ public class AbnormalDetection {
         return dataArrayList;
     }
 
-    //ȥ��ͻ���0����ʼ��0��������0
-    public static List<Double> removeZeros(List<Double> dataArrayList) {
+    //去除突变的0、开始的0和连续的0
+    private static List<Double> removeZeros(List<Double> dataArrayList) {
         if (dataArrayList.get(0) == 0) {
             dataArrayList.set(0, Double.NaN);
         }
@@ -63,10 +63,10 @@ public class AbnormalDetection {
         return dataArrayList;
     }
 
-    //������˹׼��
-    public static List<Double> grubbs(List<Double> dataArrayList, double alpha) {
+    //格拉布斯准则
+    private static List<Double> grubbs(List<Double> dataArrayList, double alpha) {
         int length = dataArrayList.size();
-        //��Ϊ������˹׼��ֻ�ܶԴ��ڵ���3�����ݽ����жϣ�����������С��3ʱ��ֱ�ӷ���
+        //因为格拉布斯准则只能对大于等于3个数据进行判断，所以数据量小于3时，直接返回
         if (length < 3) {
             return dataArrayList;
         }
@@ -80,17 +80,17 @@ public class AbnormalDetection {
             proArray[count] = d.doubleValue();
             count++;
         }
-        //�������ƽ��ֵ�ͱ�׼��
+        //求出数据平均值和标准差
         double average = DataUtils.getMean(proArray);
         double minValue = DataUtils.getMinimum(proArray);
         double maxValue = DataUtils.getMaximum(proArray);
         double standard = DataUtils.getStandardDeviation(proArray);
-        //������Сֵ�����ֵG1��Gn
+        //求助最小值和最大值G1，Gn
         double dubMin = average - minValue;
         double dubMax = maxValue - average;
         double G1 = dubMin / standard;
         double Gn = dubMax / standard;
-        //���Ƚϣ��Ƿ��޳�
+        //做比较，是否剔除
         if (G1 > calcG(alpha, length)) {
             for (int i = 0; i < dataArrayList.size(); i++) {
                 if (dataArrayList.get(i) == minValue) {
