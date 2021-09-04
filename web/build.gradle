@@ -1,4 +1,4 @@
-group 'com.aquatic'
+group 'com.vege'
 version '1.0.0-SNAPSHOT'
 
 apply plugin: 'java'
