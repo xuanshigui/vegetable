@@ -1,13 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <style>
-        .displayImg {
-            width: 400px;
-            height: 320px;
-            margin: 3px;
-        }
-    </style>
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css">
+    <script src="/vendor/jquery/jquery.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
 <!-- OVERVIEW -->
@@ -16,17 +12,38 @@
         <h3 class="panel-title">系统简介</h3>
         <hr>
         <p class="panel-subtitle">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;水产时序数据分析与处理原型系统是对水产养殖中所产生的时序数据进行处理和分析的工具，其主要功能有数据管理，数据处理和数据分析等。针对水产养殖业产生的大量传感数据、生产过程数据和市场价格数据等，不仅将其妥善存储和管理起来，实时地供用户查阅，并能进行一些处理和分析操作，充分发挥历史数据的作用，辅助生产过程，支持生产决策。其中，主要的数据分析功能包括，水产品养殖水质参数预测和预警、水产品养殖水质评价和水产品价格预测。
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </p>
     </div>
 </div>
 <div class="panel" style="margin-top: -20px">
-    <div style="padding-left: 20px;">
-        <img src="/img/index1.jpg" class="displayImg" alt="">
-        <img src="/img/index2.jpg" class="displayImg" alt="">
-        <img src="/img/index3.jpg" class="displayImg" alt="">
-        <img src="/img/index4.jpg" class="displayImg" alt="">
+    <div id="myCarousel" class="carousel slide">
+        <!-- 轮播（Carousel）指标 -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+        <!-- 轮播（Carousel）项目 -->
+        <div class="carousel-inner">
+            <div class="item active">
+                <img src="/img/index1.jpg" alt="First slide" width="500px" >
+            </div>
+            <div class="item">
+                <img src="/img/index2.jpg" alt="Second slide" width="500px">
+            </div>
+            <div class="item">
+                <img src="/img/index3.jpg" alt="Third slide" width="500px">
+            </div>
+        </div>
+        <!-- 轮播（Carousel）导航 -->
+        <a class="carousel-control left" href="#myCarousel"
+           data-slide="prev"> <span _ngcontent-c3="" aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a>
+        <a class="carousel-control right" href="#myCarousel"
+           data-slide="next">&rsaquo;</a>
     </div>
 </div>
+
+
 </body>
 </html>

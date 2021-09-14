@@ -1122,14 +1122,14 @@ img {
 .carousel-inner > .item > a > img {
   display: block;
   max-width: 100%;
-  height: auto;
+  height: 100%;
 }
 .img-rounded {
   border-radius: 6px;
 }
 .img-thumbnail {
   display: inline-block;
-  max-width: 100%;
+  max-width: 80%;
   height: auto;
   padding: 4px;
   line-height: 1.42857143;

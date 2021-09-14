@@ -2,16 +2,17 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>水产养殖时序数据处理与分析原型系统</title>
+    <title>设施蔬菜知识库系统</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <!-- VENDOR CSS -->
-    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="/vendor/bootstrap-table/bootstrap-table.css">
     <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/vendor/linearicons/style.css">
     <link rel="stylesheet" href="/vendor/chartist/css/chartist-custom.css">
+
     <!-- MAIN CSS -->
     <link rel="stylesheet" href="/css/main.css">
     <!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
@@ -24,7 +25,7 @@
 <div id="wrapper">
     <!-- NAVBAR -->
     <nav class="navbar navbar-default navbar-fixed-top">
-        <span style="font-size: 40px;float: right;margin-right: 200px;padding-top: 10px;">水产养殖时序数据处理与分析原型系统</span>
+        <span style="font-size: 40px;float: right;margin-right: 200px;padding-top: 10px;">设施蔬菜知识库系统</span>
         <div class="container-fluid">
             <div id="navbar-menu">
             </div>
@@ -38,41 +39,62 @@
                 <ul id="mainNav" class="nav">
                     <li><a href="/index.html" class=""><i class="lnr lnr-home"></i> <span>首页</span></a></li>
                     <li>
-                        <a id="querySubButton" href="#querySubPages" data-toggle="collapse" class="collapsed"><i
-                                class="lnr lnr-dice"></i></i> <span>数据管理</span> <i
+                        <a id="vegeInfoSubButton" href="#vegeInfoSubPages" data-toggle="collapse" class="collapsed"><i
+                                class="lnr lnr-dice"></i></i> <span>蔬菜信息管理</span> <i
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
-                        <div id="querySubPages" class="collapse ">
-                            <ul id="querySubNav" class="nav">
-                                <li><a href="/aquatic.html" class="">水产价格</a></li>
-                                <li><a href="/water.html" class="">水质参数</a></li>
-                                <li><a href="/atmosphere.html" class="">气象参数</a></li>
+                        <div id="vegeInfoSubPages" class="collapse ">
+                            <ul id="vegeInfoSubNav" class="nav">
+                                <li><a href="/aquatic.html" class="">蔬菜基本信息管理</a></li>
+                                <li><a href="/water.html" class="">蔬菜品种管理</a></li>
+                                <li><a href="/atmosphere.html" class="">生长周期管理</a></li>
+                                <li><a href="/atmosphere.html" class="">环境参数管理</a></li>
+                                <li><a href="/atmosphere.html" class="">种植模式管理</a></li>
                             </ul>
                         </div>
                     </li>
                     <li>
-                        <a id="processSubButton" href="#processSubPages" data-toggle="collapse" class="collapsed"><i
-                                class="lnr lnr-chart-bars"></i></i> <span>数据处理</span> <i
+                        <a id="vegeKnowledgeSubButton" href="#vegeknowSubPages" data-toggle="collapse" class="collapsed"><i
+                                class="lnr lnr-chart-bars"></i></i> <span>蔬菜知识管理</span> <i
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
-                        <div id="processSubPages" class="collapse ">
-                            <ul id="processSubNav" class="nav">
-                                <li><a href="/process.html" class="">全局处理</a></li>
-                                <li><a href="/abnormal_detection.html" class="">异常数据检测</a></li>
-                                <li><a href="/data_conversion.html" class="">数据变换</a></li>
-                                <li><a href="/data_fusion.html" class="">数据融合</a></li>
-                                <li><a href="/data_normalization.html" class="">数据归一化</a></li>
+                        <div id="vegeknowSubPages" class="collapse ">
+                            <ul id="vegeknowSubNav" class="nav">
+                                <li><a href="/process.html" class="">知识类型管理</a></li>
+                                <li><a href="/abnormal_detection.html" class="">蔬菜知识管理</a></li>
+                                <li><a href="/data_conversion.html" class="">种植标准管理</a></li>
                             </ul>
                         </div>
                     </li>
                     <li>
-                        <a id="analysisSubButton" href="#analysisSubPages" data-toggle="collapse" class="collapsed"><i
-                                class="lnr lnr-linearicons"></i></i> <span>数据分析</span> <i
+                        <a id="deseaseKnowledgeSubButton" href="#deseaseSubPages" data-toggle="collapse" class="collapsed"><i
+                                class="lnr lnr-linearicons"></i></i> <span>病害知识管理</span> <i
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
-                        <div id="analysisSubPages" class="collapse ">
-                            <ul id="analysisSubNav" class="nav">
-                                <li><a href="/env.html" class="">环境评价</a></li>
-                                <li><a href="/price.html" class="">价格预测</a></li>
-                                <li><a href="/predict.html" class="">水质预测</a></li>
-                                <li><a href="/warning.html" class="">水质预警</a></li>
+                        <div id="deseaseSubPages" class="collapse ">
+                            <ul id="deseaseSubNav" class="nav">
+                                <li><a href="/env.html" class="">疾病信息管理</a></li>
+                                <li><a href="/price.html" class="">疾病症状管理</a></li>
+                                <li><a href="/predict.html" class="">防治方法管理</a></li>
+                                <li><a href="/warning.html" class="">药品信息管理</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a id="enterpriseSubButton" href="#enterpriseSubPages" data-toggle="collapse" class="collapsed"><i
+                                class="lnr lnr-diamond"></i></i> <span>企业信息管理</span> <i
+                                class="icon-submenu lnr lnr-chevron-left"></i></a>
+                        <div id="enterpriseSubPages" class="collapse ">
+                            <ul id="enterpriceSubNav" class="nav">
+                                <li><a href="/env.html" class="">企业信息管理</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a id="systemSubButton" href="#systemSubPages" data-toggle="collapse" class="collapsed"><i
+                                class="lnr lnr-coffee-cup"></i></i> <span>系统管理</span> <i
+                                class="icon-submenu lnr lnr-chevron-left"></i></a>
+                        <div id="systemSubPages" class="collapse ">
+                            <ul id="systemSubNav" class="nav">
+                                <li><a href="/env.html" class="">图片管理</a></li>
+                                <li><a href="/env.html" class="">用户管理</a></li>
                             </ul>
                         </div>
                     </li>
@@ -103,7 +125,7 @@
 <div class="clearfix"></div>
 <footer>
     <div class="container-fluid">
-        <p class="copyright">&copy; 中国农业大学 2018 . All Rights Reserved.</p>
+        <p class="copyright">&copy; 中国农业大学 2017-2021 . All Rights Reserved.</p>
     </div>
 </footer>
 </div>
