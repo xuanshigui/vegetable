@@ -11,7 +11,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/xfddata?useUnicode=true&characterEncoding=UTF8&serverTimezone=PRC
+    url: jdbc:mysql://127.0.0.1:3306/vege_knowledge?useUnicode=true&characterEncoding=UTF8&serverTimezone=PRC
     username: root
     password: root
     driverClassName: com.mysql.cj.jdbc.Driver

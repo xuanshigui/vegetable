@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * created by zbs on 2018/3/3
+ * created by lyr on 2021/9/16
  */
 @Controller
 class NavigateController extends BaseController{
@@ -17,7 +17,7 @@ class NavigateController extends BaseController{
 
     @GetMapping(path = "/{pageName}.html")
     ModelAndView page(@PathVariable("pageName") String pageName) {
-        ModelAndView modelAndView = new ModelAndView("common/aquatic");
+        ModelAndView modelAndView = new ModelAndView("common/mainmenu");
         modelAndView.addObject("page", pageName);
         return modelAndView;
     }

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- 按钮触发模态框 -->
+<button class="btn btn-primary" data-toggle="modal" onclick="insertData()">
+    添加数据
+</button>
+
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    用户查询：<input type="text" id="usernamesearch">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+
+</div>
+
+<table id="table">
+</table>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    用 户 名：<input type="text" id="username" value=""><br>
+                    密   码：<input type="text" id="password" value=""><br>
+                    真实姓名：<input type="text" id="realname" value=""><br>
+                    手 机 号：<input type="text" id="phone" value=""><br>
+                    邮 箱 号：<input type="text" id="email" value=""><br>
+                    备   注：<input type="text" id="note" value=""><br>
+                    <input type="hidden" id="userid">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button onclick="submitData()" type="button" class="btn btn-primary">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                用 户 名：<label text="" id="username_detail" value=""></label><br>
+                    密   码：<label text="" id="password_detail" value=""></label><br>
+                    真实姓名：<label text="" id="realname_detail" value=""></label><br>
+                    手 机 号：<label text="" id="phone_detail" value=""></label><br>
+                    邮 箱 号：<label text="" id="email_detail" value=""></label><br>
+                    备   注：<label text="" id="note_detail" value=""></label><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    function insertData() {
+        $('#myModal').modal("toggle");
+        $('#username').val("");
+        $('#password').val("");
+        $('#realname').val("");
+        $('#phone').val("");
+        $('#email').val("");
+        $('#note').val("");
+        $('#userid').val("");
+        $('#modalAction').html("添加");
+    }
+
+    function queryData() {
+        $.ajax({
+            url: "query_user.json?userid=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                $('#myModal').modal("toggle");
+                $('#userid').val("");
+                $('#username').val("");
+                $('#realname').val("");
+                $('#phone').val("");
+                $('#note').val("");
+            }
+        });
+    }
+
+    function updateData(row_id) {
+
+        $.ajax({
+            url: "query_userbyid.json?userid=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("修改");
+                    $('#username').val(data.data.userName);
+                    $('#realname').val(data.data.realName);
+                    $('#password').val(data.data.password);
+                    $('#phone').val(data.data.phone);
+                    $('#email').val(data.data.email);
+                    $('#note').val(data.data.note);
+                    $('#userid').val(data.data.userId);
+                    $('#myModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+    function queryDataById(row_id) {
+
+        $.ajax({
+            url: "query_userbyid.json?userid=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("详情");
+                    $('#username_detail').text(data.data.userName);
+                    $('#realname_detail').text(data.data.realName);
+                    $('#password_detail').text(data.data.password);
+                    $('#phone_detail').text(data.data.phone);
+                    $('#email_detail').text(data.data.email);
+                    $('#note_detail').text(data.data.note);
+                    $('#userid').text(data.data.userId);
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+
+    function deleteData(row_id) {
+        if (!confirm("确定删除吗？")) {
+            return;
+        }
+        $.ajax({
+            url: "delete_user.json?userid=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function submitData() {
+        var uri;
+        var data = {
+            'userName': $('#username').val(),
+            'userId': $('#userid').val(),
+            'password': $('#password').val(),
+            'realName': $('#realname').val(),
+            'phone': $('#phone').val(),
+            'email': $('#email').val(),
+            'note': $('#note').val()
+        };
+        if ($('#modalAction').html() == '添加') {
+            uri = "add_user.json";
+        } else {
+            uri = "update_user.json";
+            data.id = $('#userId').val();
+        }
+
+        $.ajax({
+            url: uri,
+            method: "Post",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_user.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "userId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'userName',
+                    title: '用户名',
+                    visible: true
+                },
+                {
+                    field: 'realName',
+                    title: '真实姓名',
+                    visible: true
+                },
+                {
+                    field: 'phone',
+                    title: '电话号码',
+                    visible: true
+                },
+                {
+                    field: 'email',
+                    title: '邮箱',
+                    visible: true
+                },
+                {
+                    field: 'userId',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.userId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.userId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.userId + ')" >详情</button>';
+
+                        return operation;
+                    }
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.userName = $('#usernamesearch').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+</script>
+</body>
+</html>

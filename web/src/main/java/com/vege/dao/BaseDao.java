@@ -19,19 +19,9 @@ public class BaseDao {
 
     protected static String buildWhere(Map<String, String> condition) {
         StringBuilder where = new StringBuilder();
-        String name = condition.get("name");
+        String name = condition.get("userName");
         if (name != null && !name.equals("")) {
-            where.append(" AND name = '").append(name).append("'");
-        }
-
-        String startDate = condition.get("start_date");
-        if (startDate != null && !startDate.equals("")) {
-            where.append(" AND date >= '").append(startDate).append("'");
-        }
-
-        String endDate = condition.get("end_date");
-        if (endDate != null && !endDate.equals("")) {
-            where.append(" AND date <= '").append(endDate).append("'");
+            where.append(" AND userName = '").append(name).append("'");
         }
 
         return where.toString();
@@ -66,7 +56,7 @@ public class BaseDao {
             }
         }
 
-        return QueryTable.SC.getTable();
+        return QueryTable.US.getTable();
     }
 
     protected boolean exec(String sql) {

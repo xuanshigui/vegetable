@@ -1,7 +1,8 @@
 package com.vege.constants;
 
 public enum QueryTable {
-    SC("shuichan", "price_shuichan"), XQ("xuqin", "price_xuqin");
+
+    US("user", "tb_sysuser"), VI("vegetables", "tb_vegeinfo"), VK("vegeknowledge", "tb_vegeknowledge");
 
     String type;
     String table;

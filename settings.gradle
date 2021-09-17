@@ -1,4 +1,5 @@
 rootProject.name = 'vegetable'
 //findProject(':web')?.name = 'aquatic'
 include 'web'
+include 'repository'
 

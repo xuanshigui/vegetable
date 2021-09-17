@@ -44,7 +44,7 @@
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
                         <div id="vegeInfoSubPages" class="collapse ">
                             <ul id="vegeInfoSubNav" class="nav">
-                                <li><a href="/aquatic.html" class="">蔬菜基本信息管理</a></li>
+                                <li><a href="/mainmenu.html" class="">蔬菜基本信息管理</a></li>
                                 <li><a href="/water.html" class="">蔬菜品种管理</a></li>
                                 <li><a href="/atmosphere.html" class="">生长周期管理</a></li>
                                 <li><a href="/atmosphere.html" class="">环境参数管理</a></li>
@@ -94,7 +94,7 @@
                         <div id="systemSubPages" class="collapse ">
                             <ul id="systemSubNav" class="nav">
                                 <li><a href="/env.html" class="">图片管理</a></li>
-                                <li><a href="/env.html" class="">用户管理</a></li>
+                                <li><a href="/user_manage.html" class="">用户管理</a></li>
                             </ul>
                         </div>
                     </li>
@@ -193,6 +193,21 @@
                 $('#processSubButton').addClass("active");
                 $('#processSubPages').addClass("in");
                 $('#processSubPages').attr("aria-expanded", true);
+                active = true;
+            }
+        });
+        if (active) {
+            return;
+        }
+        // 主页面没有选中的查看分析子菜单
+        $('#systemSubNav').children("li").each(function () {
+            var link = $(this).find("a")[0];
+            var href = link.getAttribute("href");
+            if (href == pageUri) {
+                $(link).addClass("active");
+                $('#systemSubButton').addClass("active");
+                $('#systemSubPages').addClass("in");
+                $('#systemSubPages').attr("aria-expanded", true);
                 active = true;
             }
         });
