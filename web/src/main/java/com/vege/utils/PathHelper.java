@@ -21,7 +21,7 @@ public class PathHelper {
         return path;
     }
 
-    public static String getExamplePath() {
-        return getResourcePath() + "examples" + SEPARATOR;
+    public static String getUploadPath() {
+        return "/Users/liuyiran/Downloads/resource/image" + SEPARATOR;
     }
 }

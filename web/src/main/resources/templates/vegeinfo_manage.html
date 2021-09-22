@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- 按钮触发模态框 -->
+<button class="btn btn-primary" data-toggle="modal" onclick="insertData()">
+    添加数据
+</button>
+
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    请输入要查询的蔬菜名称：<input type="text" id="vegenamesearch">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+
+</div>
+
+<table id="table">
+</table>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data">
+                    蔬菜名称：<input type="text" id="vegename" value=""><br>
+                    别   名：<input type="text" id="alias" value=""><br>
+                    蔬菜分类：<select id="classification" value="">
+                                <option>请选择</option>
+                            </select><br>
+                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
+                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
+                    </div>
+                    基本介绍：<textarea id="introduction">${data.data.content}</textarea><br>
+                    备   注：<input type="text" id="note" value=""><br>
+                    <input type="hidden" id="vegeid">
+                    <input type="hidden" id="imgpath">
+                    <input type="hidden" id="imguuid">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button onclick="submitData()" type="button" class="btn btn-primary">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                蔬菜名称：<label text="" id="vegename_detail" value=""></label><br>
+                别   名：<label text="" id="alias_detail" value=""></label><br>
+                蔬菜分类：<label text="" id="classification_detail" value=""></label><br>
+                图   片：<img src="" id="image_detail" style="width:300px;height: 200px;"></img><br>
+                基本介绍：<div id="introduction_detail"></div><br>
+                备   注：<label text="" id="note_detail" value=""></label><br>
+                更新时间：<label text="" id="updatetime_detail" value=""></label><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    function insertData() {
+        //装载富文本编辑器
+        var baseURL = "/";
+        tinymce.init({
+            selector: '#introduction',
+            language:'zh_CN',//注意大小写
+            height: 500,
+            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
+            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
+            images_upload_url: baseURL + "upload_img",//图片上传地址
+            images_upload_credentials: false,
+            image_dimensions: false,
+            image_class_list: [
+                {title: '无', value: ''},
+                {title: '预览', value: 'preview'},
+            ],
+            insert_button_items: 'image link | inserttable',
+            paste_merge_formats: true,
+            nonbreaking_force_tab: false,
+            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', baseURL + "upload_img" );
+                /* if (xhr.status != 200) {
+                     failure('HTTP Error: ' + xhr.status);
+                     return;
+                 }*/
+
+                xhr.onload = function () {
+                    var json;
+                    /*if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }*/
+                    console.log(xhr.responseText);
+                    json = JSON.parse(xhr.responseText);
+                    //json.location = json.url;
+                    success(json.location);
+
+
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                console.log(blobInfo.blob());
+                xhr.send(formData);
+                console.log(xhr.responseText)
+            }
+        });
+        $('#myModal').modal("toggle");
+        //装载下拉列表
+        uri = "load_classification.json";
+        $.ajax({
+            url: uri,
+            method: "Get",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    $.each(data.data,function(index,item){
+                        $('#classification').append(new Option(item,index));
+                    });
+                }
+            }
+        });
+        $('#vegename').val("");
+        $('#alias').val("");
+        $('#imgupload').val("");
+        $('#introduction').val("");
+        $('#note').val("");
+        $('#vegeid').val("");
+        $('#modalAction').html("添加");
+    }
+
+    function uploadImg(){
+        var file = $('#imgupload')[0].files[0];//获取选择的文件
+        var formData=new FormData();//构建form表单
+        formData.append("file",file);
+        var name = file.name;
+        // 获取文件后缀
+        var sfIndex=name.lastIndexOf(".");//后缀位置的.的位置
+        var ext=name.substring(sfIndex,name.length).toUpperCase();//截取后缀
+        console.log(ext)
+        // 文件大小  单位:M
+        var size=parseInt(file.size/1024/1024);
+        //判断文件类型,后台也要做判断
+        if(ext !='.PNG' && ext !='.GIF' && ext !='.JPG' && ext !='.JPEG' && ext !='.BMP'){
+            vmToast.show("文件类型错误,请上传正确图片类型(png、gif、jpg、jpeg、bmp)");
+            return false;
+        }
+        if(size>10){//文件过大,部分服务器流量有限制,而且后续打开会比较慢
+            alert("文件已大于10M，请换个小点的图片");
+            return false;
+        }
+
+        $.ajax({
+            url: "uploadimg",
+            method: "POST",
+            data: formData,
+            contentType:false,
+            dataType: "json",
+            processData: false,
+            success: function (data) {
+                if (data) {
+                        console.log("回显了图片");
+                        $('#imgpath').val(data.data.path);
+                        var imgPath = data.data.path;
+                        //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
+                        $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                        $('#imgload').show();
+                    alert("上传成功！")
+                }
+            },
+            error: function(ajaxobj) { //有异常
+                alert("异常："+ajaxobj.responseText);
+            }
+        });
+    }
+
+    function queryData() {
+        $.ajax({
+            url: "query_vege.json?vegeid=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                $('#myModal').modal("toggle");
+                $('#vegename').val("");
+                $('#alias').val("");
+                $('#classification').val("");
+                $('#imgupload').val("");
+                $('#introduction').val("");
+                $('#note').val("");
+                $('#updatetime').val("");
+                $('#vegeid').val("");
+            }
+        });
+    }
+
+    function updateData(row_id) {
+        var baseURL = "/";
+        tinymce.init({
+            selector: '#introduction',
+            language:'zh_CN',//注意大小写
+            height: 500,
+            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
+            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
+            images_upload_url: baseURL + "upload_img",//图片上传地址
+            images_upload_credentials: false,
+            image_dimensions: false,
+            image_class_list: [
+                {title: '无', value: ''},
+                {title: '预览', value: 'preview'},
+            ],
+            insert_button_items: 'image link | inserttable',
+            paste_merge_formats: true,
+            nonbreaking_force_tab: false,
+            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', baseURL + "upload_img" );
+                /* if (xhr.status != 200) {
+                     failure('HTTP Error: ' + xhr.status);
+                     return;
+                 }*/
+
+                xhr.onload = function () {
+                    var json;
+                    /*if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }*/
+                    console.log(xhr.responseText);
+                    json = JSON.parse(xhr.responseText);
+                    //json.location = json.url;
+                    success(json.location);
+
+
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                console.log(blobInfo.blob());
+                xhr.send(formData);
+                console.log(xhr.responseText)
+            }
+        });
+
+        $.ajax({
+            url: "query_vegebyid.json?vegeId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("修改");
+                    $('#vegename').val(data.data.vegeName);
+                    $('#alias').val(data.data.alias);
+                    //修改类型
+                    $.each(data.data.classMap,function(index,item){
+                        $('#classification').append(new Option(item,index));
+                        if(item==data.data.classificaiton){
+                            $('#classification')[index].selected = true;
+                        }
+                    });
+                    //修改图片
+                    $('#imgload').attr("src", data.data.imgPath);
+                    //修改介绍
+                    $('#introduction').val(data.data.introduction);
+                    $('#note').val(data.data.note);
+                    $('#vegeid').val(data.data.vegeId);
+                    $('#myModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+    function queryDataById(row_id) {
+
+        $.ajax({
+            url: "query_vegebyid.json?vegeId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    $('#modalAction').html("详情");
+                    $('#intro_child').remove();
+                    $('#vegename_detail').text(data.data.vegeName);
+                    $('#alias_detail').text(data.data.alias);
+                    $('#classification_detail').text(data.data.classification);
+                    $('#image_detail').attr("src",data.data.imgPath);
+                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
+                    //text(data.data.introduction);
+                    $('#note_detail').text(data.data.note);
+                    $('#updatetime_detail').text(data.data.updateTime);
+                    //$('#vegeid_detail').val(data.data.vegeId);
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+
+    function deleteData(row_id) {
+        if (!confirm("确定删除吗？")) {
+            return;
+        }
+        $.ajax({
+            url: "delete_vege.json?vegeId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function submitData() {
+        var uri;
+        var content = tinymce.activeEditor.getContent();
+        var data = {
+            'vegeName': $('#vegename').val(),
+            'vegeId': $('#vegeid').val(),
+            'alias': $('#alias').val(),
+            'classification': $('#classification').val(),
+            'vegeImg': $('#imgpath').val(),
+            'introduction': content,
+            'note': $('#note').val(),
+            'updateTime': $('#updatetime').val()
+        };
+        if ($('#modalAction').html() == '添加') {
+            uri = "add_vege.json";
+        } else {
+            uri = "update_vege.json";
+            data.id = $('#vegeId').val();
+        }
+
+        $.ajax({
+            url: uri,
+            method: "Post",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_vege.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "vegeId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'vegeName',
+                    title: '蔬菜名称',
+                    visible: true
+                },
+                {
+                    field: 'classification',
+                    title: '生物学分类',
+                    visible: true
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    visible: true
+                },
+                {
+                    field: 'note',
+                    title: '备注',
+                    visible: true
+                },
+                {
+                    field: 'vegeId',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.vegeId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.vegeId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.vegeId + ')" >详情</button>';
+
+                        return operation;
+                    }
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.vegeName = $('#vegenamesearch').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+</script>
+</body>
+</html>

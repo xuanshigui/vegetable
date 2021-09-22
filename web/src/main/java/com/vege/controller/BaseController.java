@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 abstract class BaseController {
+
     static Map<String, String> buildData(HttpServletRequest request, List<String> fields) {
         Map<String, String> data = new HashMap<>();
         for (String field : fields) {
@@ -23,4 +24,5 @@ abstract class BaseController {
         response.put("data", data);
         return response;
     }
+
 }

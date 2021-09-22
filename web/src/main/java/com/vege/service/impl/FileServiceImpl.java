@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * created by zbs on 2018/3/11
@@ -17,10 +18,12 @@ public class FileServiceImpl implements FileService {
     private static int READ_ROWS = 10;
 
     @Override
-    public boolean uploadFile(MultipartFile file, String fileName) {
+    public String uploadFile(MultipartFile file, String fileName) {
+        String path = "";
         try {
             InputStream inputStream = file.getInputStream();
-            File newFile = new File(PathHelper.getExamplePath() + fileName);
+            String newFileName = UUID.randomUUID().toString() + fileName.substring(fileName.lastIndexOf("."),fileName.length());
+            File newFile = new File(PathHelper.getUploadPath() + newFileName);
             OutputStream outputStream = new FileOutputStream(newFile);
 
             byte temp[] = new byte[1024];
@@ -28,14 +31,13 @@ public class FileServiceImpl implements FileService {
             while ((size = inputStream.read(temp)) != -1) {
                 outputStream.write(temp, 0, size);
             }
+            path = newFile.getAbsolutePath();
             outputStream.close();
             inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
-
-        return true;
+        return path;
     }
 
     @Override
