@@ -24,11 +24,15 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String add(String imgPath, String className) {
+        if(imgPath==null||"".equals(imgPath)){
+            return "12412918-82cc-47b3-af8d-3a9c5b4f1151";
+        }
         Image image = new Image();
         image.setImgPath(imgPath);
         image.setImgName(className);
-        image.setTimestamp(new Timestamp(System.currentTimeMillis()/1000));
+        image.setTimestamp(new Timestamp(System.currentTimeMillis()));
         String uuid = UUID.randomUUID().toString();
+        image.setNote("无");
         image.setUuid(uuid);
         image.setTableName(Constants.ENTITY_TABLE_MAP.get(className));
         imageDao.add(image);

@@ -4,17 +4,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.vege.model.Image;
 import com.vege.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/")
@@ -29,26 +28,29 @@ public class ImageController extends BaseController {
 
     @RequestMapping(value = "/delete_image.json", method = RequestMethod.GET)
     public Map delete(HttpServletRequest request, HttpServletResponse response) {
-        String imageId = request.getParameter("imageid");
+        String imageId = request.getParameter("imgId");
         boolean flag = imageService.delete(imageId);
         return buildResponse(flag);
     }
 
     @RequestMapping(value = "/update_image.json", method = RequestMethod.POST)
     public Map update(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("imageId", "imageName", "image", "imagePath", "note");
+        //只允许改名称，描述，图片
+        List<String> fields = Arrays.asList("imgId", "imgName", "imgPath", "note");
         Map<String, String> data = buildData(request,fields);
-        Image image = new Image();
-        image.setImgName(data.get("imageName"));
+        Image image = imageService.queryById(data.get("imgId"));
+        image.setImgName(data.get("imgName"));
         image.setNote(data.get("note"));
-        image.setImgId(Integer.parseInt(data.get("imageId")));
+        image.setImgPath(data.get("imgPath"));
+        //更新时间
+        image.setTimestamp(new Timestamp(System.currentTimeMillis()));
         boolean flag = imageService.update(image);
         return buildResponse(flag);
     }
 
     @RequestMapping(value = "/query_image.json", method = {RequestMethod.POST, RequestMethod.GET})
     public Map query(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("userName", "page", "size");
+        List<String> fields = Arrays.asList("imgName", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         List<Image> result = imageService.query(condition);
         int total = imageService.queryTotal(condition);
@@ -60,39 +62,18 @@ public class ImageController extends BaseController {
 
     @RequestMapping(value = "/query_imagebyid.json", method = {RequestMethod.POST, RequestMethod.GET})
     public Map queryById(HttpServletRequest request, HttpServletResponse response) {
-        String userid = request.getParameter("userid");
+        String userid = request.getParameter("imgId");
 
         Image image = imageService.queryById(userid);
         JSONObject data = new JSONObject();
-        data.put("imageId", image.getImgId());
-        data.put("imageName", image.getImgName());
-        data.put("imgPath", image.getImgPath());
+        data.put("imgId", image.getImgId());
+        data.put("imgName", image.getImgName());
+        data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+ image.getImgPath());
+        data.put("oldPath",image.getImgPath());
         data.put("timestamp", image.getTimestamp());
+        data.put("tableName", image.getTableName());
         data.put("note", image.getNote());
         return buildResponse(data);
-    }
-
-    @PostMapping(value = "/imgUpload")
-    public String fileUpload(@RequestParam(value = "file") MultipartFile file, Model model, HttpServletRequest request) {
-        if (file.isEmpty()) {
-            System.out.println("文件为空!");
-        }
-        String fileName = file.getOriginalFilename();  // 文件名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
-        String filePath = "D://temp-rainy//"; // 上传后的路径
-        fileName = UUID.randomUUID() + suffixName; // 新文件名
-        File dest = new File(filePath + fileName);
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
-        try {
-            file.transferTo(dest);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String filename = "/temp-rainy/" + fileName;
-        model.addAttribute("filename", filename);
-        return "file";
     }
 
 }

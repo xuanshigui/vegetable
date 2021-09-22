@@ -21,6 +21,12 @@ public class VegeInfoServiceImpl implements VegeInfoService {
 
     @Override
     public boolean add(VegeInfo vegeInfo) {
+        if("".equals(vegeInfo.getNote())||vegeInfo.getNote()==null){
+            vegeInfo.setNote("无");
+        }
+        if("".equals(vegeInfo.getAlias())||vegeInfo.getAlias()==null){
+            vegeInfo.setAlias("无");
+        }
         return vegeInfoDao.add(vegeInfo);
     }
 

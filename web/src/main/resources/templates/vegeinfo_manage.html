@@ -23,7 +23,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
                     &times;
                 </button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
@@ -48,7 +48,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
                 </button>
                 <button onclick="submitData()" type="button" class="btn btn-primary">
                     提交
@@ -62,13 +62,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                蔬菜名称：<label text="" id="vegename_detail" value=""></label><br>
-                别   名：<label text="" id="alias_detail" value=""></label><br>
-                蔬菜分类：<label text="" id="classification_detail" value=""></label><br>
-                图   片：<img src="" id="image_detail" style="width:300px;height: 200px;"></img><br>
+                蔬菜名称：<label text="" id="vegename_detail"></label><br>
+                别   名：<label text="" id="alias_detail" ></label><br>
+                蔬菜分类：<label text="" id="classification_detail"></label><br>
+                图   片：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                <img src="" id="image_detail" style="width:300px;height: 200px;"></img>
+            </div><br>
                 基本介绍：<div id="introduction_detail"></div><br>
-                备   注：<label text="" id="note_detail" value=""></label><br>
-                更新时间：<label text="" id="updatetime_detail" value=""></label><br>
+                备   注：<label text="" id="note_detail"></label><br>
+                更新时间：<label text="" id="updatetime_detail"></label><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -160,7 +162,7 @@
         var name = file.name;
         // 获取文件后缀
         var sfIndex=name.lastIndexOf(".");//后缀位置的.的位置
-        var ext=name.substring(sfIndex,name.length).toUpperCase();//截取后缀
+        var ext= name.substring(sfIndex,name.length).toUpperCase();//截取后缀
         console.log(ext)
         // 文件大小  单位:M
         var size=parseInt(file.size/1024/1024);
@@ -278,18 +280,21 @@
                     $('#vegename').val(data.data.vegeName);
                     $('#alias').val(data.data.alias);
                     //修改类型
+                    var vegeclass = data.data.classification;
                     $.each(data.data.classMap,function(index,item){
                         $('#classification').append(new Option(item,index));
-                        if(item==data.data.classificaiton){
-                            $('#classification')[index].selected = true;
+                        if(item==vegeclass){
+                            $('#classification option[value= ' + index + ']').prop("selected",true);
                         }
                     });
                     //修改图片
                     $('#imgload').attr("src", data.data.imgPath);
+                    $('#imgload').show()
                     //修改介绍
                     $('#introduction').val(data.data.introduction);
                     $('#note').val(data.data.note);
                     $('#vegeid').val(data.data.vegeId);
+                    $('#imguuid').val(data.data.imgUuid);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -344,12 +349,26 @@
     function submitData() {
         var uri;
         var content = tinymce.activeEditor.getContent();
+        var classification = $('#classification').val();
+        if(""==$('#vegename').val()||$('#vegename').val()==null){
+            alert("请选择蔬菜名称！");
+            return;
+        }
+        if("请选择"==classification){
+            alert("请选择蔬菜类别！");
+            return;
+        }
+        if(""==content||content==null){
+            alert("请选择蔬菜介绍！");
+            return;
+        }
         var data = {
             'vegeName': $('#vegename').val(),
             'vegeId': $('#vegeid').val(),
             'alias': $('#alias').val(),
-            'classification': $('#classification').val(),
+            'classification': classification,
             'vegeImg': $('#imgpath').val(),
+            'imguuid': $('#imguuid').val(),
             'introduction': content,
             'note': $('#note').val(),
             'updateTime': $('#updatetime').val()
@@ -460,6 +479,10 @@
         var param = {};
         param.vegeName = $('#vegenamesearch').val();
         return param;
+    }
+
+    function reset(){
+        window.location.reload();
     }
 
     $(function () {

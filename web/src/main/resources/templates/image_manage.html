@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<!-- 按钮触发模态框 -->
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
     图片查询：<input type="text" id="imgnamesearch">
@@ -29,10 +28,14 @@
             <div class="modal-body">
                 <form>
                     图片名称：<input type="text" id="imgname" value=""><br>
-                    上传文件：<input type="file" id="imgupload" value=""><br>
-                    关联表名：<input type="text" id="tablename" value=""><br>
+                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
+                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
+                    </div>
+                    关联表名：<label id="tablename"></label><br>
                     图片描述：<input type="text" id="note" value=""><br>
                     <input type="hidden" id="imgid">
+                    <input type="hidden" id="imgpath">
                 </form>
             </div>
             <div class="modal-footer">
@@ -66,7 +69,7 @@
 
     function queryData() {
         $.ajax({
-            url: "query_image.json?userid=" + row_id,
+            url: "query_image.json?imgId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
@@ -83,16 +86,20 @@
     function updateData(row_id) {
 
         $.ajax({
-            url: "query_imagebyid.json?userid=" + row_id,
+            url: "query_imagebyid.json?imgId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
-                    $('#imgname').val("");
-                    $('#fileupload').val("");
-                    $('#note').val("");
-                    $('#imageid').val(data.data.imgId);
+                    $('#imgname').val(data.data.imgName);
+                    //修改图片
+                    $('#imgload').attr("src", data.data.imgPath);
+                    $('#imgload').show()
+                    $('#tablename').text(data.data.tableName);
+                    $('#note').val(data.data.note);
+                    $('#imgid').val(data.data.imgId);
+                    $('#imgpath').val(data.data.oldPath);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -103,17 +110,18 @@
     function queryDataById(row_id) {
 
         $.ajax({
-            url: "query_imagebyid.json?userid=" + row_id,
+            url: "query_imagebyid.json?imgId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#imgname_detail').text(data.data.userName);
+                    $('#imgname_detail').text(data.data.imgName);
                     $('#img_detail').text(data.data.realName);
+                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
                     $('#imgpath_detail').text(data.data.password);
                     $('#note_detail').text(data.data.note);
-                    $('#imgid').text(data.data.userId);
+                    $('#imgid').text(data.data.imgId);
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -127,7 +135,7 @@
             return;
         }
         $.ajax({
-            url: "delete_image.json?imageId=" + row_id,
+            url: "delete_image.json?imgId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
@@ -142,15 +150,15 @@
     function submitData() {
         var uri;
         var data = {
-            'userName': $('#imgname').val(),
-            'userId': $('#imgid').val(),
-            'password': $('#imgupload').val(),
+            'imgName': $('#imgname').val(),
+            'imgId': $('#imgid').val(),
+            'imgPath': $('#imgpath').val(),
             'note': $('#note').val()
         };
         if ($('#modalAction').html() == '添加') {
-            uri = "add_user.json";
+            uri = "add_image.json";
         } else {
-            uri = "update_user.json";
+            uri = "update_image.json";
             data.id = $('#imgid').val();
         }
 
@@ -164,6 +172,51 @@
                     alert("成功！");
                     window.location.reload();
                 }
+            }
+        });
+    }
+
+    function uploadImg(){
+        var file = $('#imgupload')[0].files[0];//获取选择的文件
+        var formData=new FormData();//构建form表单
+        formData.append("file",file);
+        var name = file.name;
+        // 获取文件后缀
+        var sfIndex=name.lastIndexOf(".");//后缀位置的.的位置
+        var ext= name.substring(sfIndex,name.length).toUpperCase();//截取后缀
+        console.log(ext)
+        // 文件大小  单位:M
+        var size=parseInt(file.size/1024/1024);
+        //判断文件类型,后台也要做判断
+        if(ext !='.PNG' && ext !='.GIF' && ext !='.JPG' && ext !='.JPEG' && ext !='.BMP'){
+            vmToast.show("文件类型错误,请上传正确图片类型(png、gif、jpg、jpeg、bmp)");
+            return false;
+        }
+        if(size>10){//文件过大,部分服务器流量有限制,而且后续打开会比较慢
+            alert("文件已大于10M，请换个小点的图片");
+            return false;
+        }
+
+        $.ajax({
+            url: "uploadimg",
+            method: "POST",
+            data: formData,
+            contentType:false,
+            dataType: "json",
+            processData: false,
+            success: function (data) {
+                if (data) {
+                    console.log("回显了图片");
+                    var imgPath = data.data.path;
+                    //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
+                    $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                    $('#imgload').show();
+                    $('#imgpath').val(imgPath);
+                    alert("上传成功！")
+                }
+            },
+            error: function(ajaxobj) { //有异常
+                alert("异常："+ajaxobj.responseText);
             }
         });
     }
@@ -218,7 +271,7 @@
                     visible: true
                 },
                 {
-                    field: 'tablename',
+                    field: 'tableName',
                     title: '关联业务表名',
                     visible: true
                 },
@@ -228,12 +281,12 @@
                     visible: true
                 },
                 {
-                    field: 'userId',
+                    field: 'imgId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.userId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.userId + ')" >删除</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.userId + ')" >详情</button>';
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.imgId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.imgId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.imgId + ')" >详情</button>';
 
                         return operation;
                     }

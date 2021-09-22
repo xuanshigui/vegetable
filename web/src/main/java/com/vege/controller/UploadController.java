@@ -54,7 +54,6 @@ public class UploadController extends BaseController{
         //"location", downloadUrl + dir + "/" + name
 
         return map;
-
     }
 
     @RequestMapping("/show_img")

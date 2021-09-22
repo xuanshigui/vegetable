@@ -40,7 +40,7 @@ public class VegeInfoDaoImpl extends BaseDao implements VegeInfoDao {
     }
 
     public boolean update(VegeInfo data) {
-        String sql = String.format(VegeInfoDaoImpl.SQL_UPDATE, data.getVegeName(), data.getAlias(), data.getImgUuid(), data.getIntroduction(), data.getClassification(), data.getNote(), data.getUpdateTime());
+        String sql = String.format(VegeInfoDaoImpl.SQL_UPDATE, data.getVegeName(), data.getAlias(), data.getImgUuid(), data.getIntroduction(), data.getClassification(), data.getNote(), data.getUpdateTime(),data.getVegeId());
 
         return exec(sql);
     }
@@ -54,7 +54,11 @@ public class VegeInfoDaoImpl extends BaseDao implements VegeInfoDao {
     }
 
     public List<VegeInfo> query(Map<String, String> condition) {
-        String where = buildWhere(condition);
+        String buildCondition = condition.get("vegeName");
+        StringBuilder where = new StringBuilder();
+        if(buildCondition != null && !buildCondition.equals("")){
+            where.append(" AND vegename = '").append(buildCondition).append("'");
+        }
         String limit = buildLimit(condition);
         String sql = String.format(VegeInfoDaoImpl.SQL_QUERY, where, limit);
 
