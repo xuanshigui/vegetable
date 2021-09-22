@@ -47,7 +47,7 @@ public class VegeInfoController extends BaseController {
         //建立图片
         String imgUuid = imageService.add(data.get("vegeImg"),vege.getClass().getSimpleName());
         vege.setImgUuid(imgUuid);
-        vege.setUpdateTime(new Timestamp(System.currentTimeMillis()/1000));
+        vege.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         boolean flag = vegeService.add(vege);
         return buildResponse(flag);
     }
@@ -61,13 +61,23 @@ public class VegeInfoController extends BaseController {
 
     @RequestMapping(value = "/update_vege.json", method = RequestMethod.POST)
     public Map update(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList( "vegeName", "alias", "introduction", "classification", "note");
+        List<String> fields = Arrays.asList( "vegeId", "vegeName", "vegeImg", "alias", "introduction", "classification", "note", "imguuid");
         Map<String, String> data = buildData(request,fields);
         VegeInfo vege = new VegeInfo();
         vege.setVegeName(data.get("vegeName"));
         vege.setAlias(data.get("alias"));
         vege.setIntroduction(data.get("introduction"));
         vege.setClassification(data.get("classification"));
+        if(data.size()==7){
+            //旧的图片保存
+            vege.setImgUuid(data.get("imguuid"));
+        }else {
+            //建立图片
+            String imgUuid = imageService.add(data.get("vegeImg"),vege.getClass().getSimpleName());
+            vege.setImgUuid(imgUuid);
+        }
+        //建立时间戳
+        vege.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         vege.setNote(data.get("note"));
         vege.setVegeId(Integer.parseInt(data.get("vegeId")));
         boolean flag = vegeService.update(vege);
@@ -95,13 +105,15 @@ public class VegeInfoController extends BaseController {
         data.put("vegeId", vege.getVegeId());
         data.put("vegeName", vege.getVegeName());
         data.put("alias", vege.getAlias());
-        String imgPath = imageService.queryPathByUuid(vege.getImgUuid());
-        data.put("imgPath", "/show_img?imgPath="+imgPath);
+        String imgPath = "";
+        imgPath = imageService.queryPathByUuid(vege.getImgUuid());
+        data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+imgPath);
         data.put("introduction", vege.getIntroduction());
         data.put("classification", Constants.VEGE_CLASS_MAP.get(vege.getClassification()));
         data.put("note", vege.getNote());
         DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         data.put("updateTime", sdf.format(vege.getUpdateTime()));
+        data.put("imgUuid", vege.getImgUuid());
         data.put("classMap",Constants.VEGE_CLASS_MAP);
         return buildResponse(data);
     }
