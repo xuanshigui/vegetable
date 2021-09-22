@@ -1,3 +1,4 @@
 rootProject.name = 'vegetable'
 include 'web'
+include 'mobile'
 
