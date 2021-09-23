@@ -18,4 +18,5 @@ public interface VarietyDao {
     public List<Variety> query(Map<String, String> condition);
 
     public int queryTotal(Map<String, String> condition);
+
 }

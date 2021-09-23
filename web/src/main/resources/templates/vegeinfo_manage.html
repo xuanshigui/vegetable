@@ -200,24 +200,6 @@
         });
     }
 
-    function queryData() {
-        $.ajax({
-            url: "query_vege.json?vegeid=" + row_id,
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                $('#myModal').modal("toggle");
-                $('#vegename').val("");
-                $('#alias').val("");
-                $('#classification').val("");
-                $('#imgupload').val("");
-                $('#introduction').val("");
-                $('#note').val("");
-                $('#updatetime').val("");
-                $('#vegeid').val("");
-            }
-        });
-    }
 
     function updateData(row_id) {
         var baseURL = "/";
@@ -351,7 +333,7 @@
         var content = tinymce.activeEditor.getContent();
         var classification = $('#classification').val();
         if(""==$('#vegename').val()||$('#vegename').val()==null){
-            alert("请选择蔬菜名称！");
+            alert("请填写蔬菜名称！");
             return;
         }
         if("请选择"==classification){
@@ -359,7 +341,7 @@
             return;
         }
         if(""==content||content==null){
-            alert("请选择蔬菜介绍！");
+            alert("请填写蔬菜介绍！");
             return;
         }
         var data = {

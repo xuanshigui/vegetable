@@ -50,7 +50,13 @@ public class VegeInfoServiceImpl implements VegeInfoService {
         return vegeInfoDao.queryTotal(condition);
     }
 
+    @Override
     public VegeInfo queryById(String vegeId){
         return vegeInfoDao.queryById(vegeId);
+    }
+
+    @Override
+    public Map<String,String> getVegeIdAndName(){
+        return vegeInfoDao.getVegeIdAndName();
     }
 }

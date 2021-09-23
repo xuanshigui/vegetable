@@ -21,7 +21,7 @@ public class BaseDao {
         StringBuilder where = new StringBuilder();
         String name = condition.get("userName");
         if (name != null && !name.equals("")) {
-            where.append(" AND userName = '").append(name).append("'");
+            where.append(" AND userName like '%").append(name).append("%'");
         }
 
         return where.toString();

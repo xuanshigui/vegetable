@@ -18,4 +18,6 @@ public interface VegeInfoDao {
     public List<VegeInfo> query(Map<String, String> condition);
 
     public int queryTotal(Map<String, String> condition);
+
+    public Map<String,String> getVegeIdAndName();
 }

@@ -2,7 +2,9 @@ package com.vege.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vege.model.Variety;
+import com.vege.service.ImageService;
 import com.vege.service.VarietyService;
+import com.vege.service.VegeInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,10 +21,14 @@ import java.util.Map;
 public class VarietyController extends BaseController {
 
     private final VarietyService varietyService;
+    private final VegeInfoService vegeInfoService;
+    private final ImageService imageService;
 
     @Autowired
-    public VarietyController(VarietyService varietyService) {
+    public VarietyController(VarietyService varietyService, VegeInfoService vegeInfoService,ImageService imageService) {
         this.varietyService = varietyService;
+        this.vegeInfoService = vegeInfoService;
+        this.imageService = imageService;
     }
 
     @RequestMapping(value = "/add_variety.json", method = RequestMethod.POST)
@@ -39,8 +45,8 @@ public class VarietyController extends BaseController {
 
     @RequestMapping(value = "/delete_variety.json", method = RequestMethod.GET)
     public Map delete(HttpServletRequest request, HttpServletResponse response) {
-        String userid = request.getParameter("userid");
-        boolean flag = varietyService.delete(userid);
+        String varietyId = request.getParameter("varietyId");
+        boolean flag = varietyService.delete(varietyId);
         return buildResponse(flag);
     }
 
@@ -78,12 +84,23 @@ public class VarietyController extends BaseController {
         Variety variety = varietyService.queryById(userid);
         JSONObject data = new JSONObject();
         data.put("varietyId", variety.getVarietyId());
-        data.put("vegeId", variety.getVegeId());
+        data.put("vegeName", vegeInfoService.getVegeIdAndName());
         data.put("varietyName", variety.getVarietyName());
         data.put("description", variety.getDescription());
         data.put("area", variety.getArea());
+        String imgPath = "";
+        imgPath = imageService.queryPathByUuid(variety.getImgUuid());
+        data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+imgPath);
         data.put("imgUuId", variety.getImgUuid());
-        data.put("note", variety.getSource());
+        data.put("source", variety.getSource());
+        return buildResponse(data);
+    }
+    @RequestMapping(value = "/load_vegename.json", method = {RequestMethod.GET})
+    public Map getVegeNames(HttpServletRequest request, HttpServletResponse response) {
+        Map<String,String> vegeNames = vegeInfoService.getVegeIdAndName();
+        JSONObject data = new JSONObject();
+        data.put("vegeNameMap",vegeNames);
+
         return buildResponse(data);
     }
 }

@@ -70,7 +70,7 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
         }
         String tableName = condition.get("tableName");
         if(tableName != null && !tableName.equals("")){
-            where.append(" AND tablename = '").append(imgName).append("'");
+            where.append(" AND tablename like '%").append(imgName).append("%'");
         }
         String startDate = condition.get("startTime");
         if (startDate != null && !startDate.equals("")) {

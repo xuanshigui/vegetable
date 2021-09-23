@@ -15,6 +15,8 @@ public interface VegeInfoService {
 
     List<VegeInfo> query(Map<String, String> condition);
 
+    public Map<String, String> getVegeIdAndName();
+
     int queryTotal(Map<String, String> condition);
 
     VegeInfo queryById(String vegeId);

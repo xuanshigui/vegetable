@@ -80,7 +80,6 @@ public class VarietyDaoImpl extends BaseDao implements VarietyDao {
     public int queryTotal(Map<String, String> condition) {
         String where = buildWhere(condition);
         String sql = String.format(VarietyDaoImpl.SQL_QUERY_TOTAL, where);
-
         return getTotal(sql);
     }
 

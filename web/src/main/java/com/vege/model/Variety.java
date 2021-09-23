@@ -3,6 +3,8 @@ package com.vege.model;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class Variety {
@@ -14,6 +16,7 @@ public class Variety {
     private String area;
     private String imgUuid;
     private String source;
+    private Timestamp timestamp;
 
     public int getVarietyId() {
         return varietyId;
@@ -69,5 +72,13 @@ public class Variety {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 }

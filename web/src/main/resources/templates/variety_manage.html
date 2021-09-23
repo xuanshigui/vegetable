@@ -10,7 +10,8 @@
 </button>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    用户查询：<input type="text" id="varietynamesearch">
+    品种名称：<input type="text" id="varietynamesearch">
+    蔬菜名称：<input type="text" id="vegenamesearch">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -31,13 +32,18 @@
             </div>
             <div class="modal-body">
                 <form>
-                    用 户 名：<input type="text" id="username" value=""><br>
-                    密   码：<input type="text" id="password" value=""><br>
-                    真实姓名：<input type="text" id="realname" value=""><br>
-                    手 机 号：<input type="text" id="phone" value=""><br>
-                    邮 箱 号：<input type="text" id="email" value=""><br>
-                    备   注：<input type="text" id="note" value=""><br>
-                    <input type="hidden" id="userid">
+                    品种名称：<input type="text" id="varietyname" value=""><br>
+                    蔬菜名称：<input type="text" id="vegename" value=""><br>
+                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
+                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
+                    </div>
+                    基本介绍：<textarea id="introduction">${data.data.content}</textarea><br>
+                    品种产地：<input type="text" id="area" value=""><br>
+                    品种来源：<input type="text" id="source" value=""><br>
+                    <input type="hidden" id="varietyid">
+                    <input type="hidden" id="imgpath">
+                    <input type="hidden" id="imguuid">
                 </form>
             </div>
             <div class="modal-footer">
@@ -55,12 +61,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                用 户 名：<label text="" id="username_detail" value=""></label><br>
-                    密   码：<label text="" id="password_detail" value=""></label><br>
-                    真实姓名：<label text="" id="realname_detail" value=""></label><br>
-                    手 机 号：<label text="" id="phone_detail" value=""></label><br>
-                    邮 箱 号：<label text="" id="email_detail" value=""></label><br>
-                    备   注：<label text="" id="note_detail" value=""></label><br>
+                    品种名称：<label text="" id="varietyname_detail" value=""></label><br>
+                    蔬菜名称：<label text="" id="vegename_detail" value=""></label><br>
+                    图片展示：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                                <img src="" id="image_detail" style="width:300px;height: 200px;"></img>
+                            </div><br>
+                    品种介绍：<label text="" id="introduction_detail" value=""></label><br>
+                    品种产地：<label text="" id="area_detail" value=""></label><br>
+                    品种来源：<label text="" id="source_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -71,49 +79,154 @@
 </div>
 <script>
     function insertData() {
+        //装载富文本编辑器
+        var baseURL = "/";
+        tinymce.init({
+            selector: '#introduction',
+            language:'zh_CN',//注意大小写
+            height: 500,
+            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
+            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
+            images_upload_url: baseURL + "upload_img",//图片上传地址
+            images_upload_credentials: false,
+            image_dimensions: false,
+            image_class_list: [
+                {title: '无', value: ''},
+                {title: '预览', value: 'preview'},
+            ],
+            insert_button_items: 'image link | inserttable',
+            paste_merge_formats: true,
+            nonbreaking_force_tab: false,
+            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', baseURL + "upload_img" );
+                /* if (xhr.status != 200) {
+                     failure('HTTP Error: ' + xhr.status);
+                     return;
+                 }*/
+
+                xhr.onload = function () {
+                    var json;
+                    /*if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }*/
+                    console.log(xhr.responseText);
+                    json = JSON.parse(xhr.responseText);
+                    //json.location = json.url;
+                    success(json.location);
+
+
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                console.log(blobInfo.blob());
+                xhr.send(formData);
+                console.log(xhr.responseText)
+            }
+        });
         $('#myModal').modal("toggle");
-        $('#username').val("");
-        $('#password').val("");
-        $('#realname').val("");
-        $('#phone').val("");
-        $('#email').val("");
-        $('#note').val("");
-        $('#userid').val("");
+        $('#varietyname').val("");
+        //装载蔬菜名称，选择
+        uri = "load_vegename.json";
+        $.ajax({
+            url: uri,
+            method: "Get",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    $.each(data.data,function(index,item){
+                        $('vegename').append(new Option(item,index));
+                    });
+                }
+            }
+        });
+        $('#area').val("");
+        $('#source').val("");
+        $('#varietyid').val("");
         $('#modalAction').html("添加");
     }
 
-    function queryData() {
-        $.ajax({
-            url: "query_user.json?userid=" + row_id,
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                $('#myModal').modal("toggle");
-                $('#userid').val("");
-                $('#username').val("");
-                $('#realname').val("");
-                $('#phone').val("");
-                $('#note').val("");
-            }
-        });
-    }
 
     function updateData(row_id) {
 
+        //装载富文本编辑器
+        var baseURL = "/";
+        tinymce.init({
+            selector: '#introduction',
+            language:'zh_CN',//注意大小写
+            height: 500,
+            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
+            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
+            images_upload_url: baseURL + "upload_img",//图片上传地址
+            images_upload_credentials: false,
+            image_dimensions: false,
+            image_class_list: [
+                {title: '无', value: ''},
+                {title: '预览', value: 'preview'},
+            ],
+            insert_button_items: 'image link | inserttable',
+            paste_merge_formats: true,
+            nonbreaking_force_tab: false,
+            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', baseURL + "upload_img" );
+                /* if (xhr.status != 200) {
+                     failure('HTTP Error: ' + xhr.status);
+                     return;
+                 }*/
+
+                xhr.onload = function () {
+                    var json;
+                    /*if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }*/
+                    console.log(xhr.responseText);
+                    json = JSON.parse(xhr.responseText);
+                    //json.location = json.url;
+                    success(json.location);
+
+
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                console.log(blobInfo.blob());
+                xhr.send(formData);
+                console.log(xhr.responseText)
+            }
+        });
+        //后台数据回传
         $.ajax({
-            url: "query_userbyid.json?userid=" + row_id,
+            url: "query_varietybyid.json?varietyid=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
-                    $('#username').val(data.data.userName);
+                    $('#varietyname').val(data.data.varietyName);
+                    $.each(data.data,function(index,item){
+                        $('vegename').append(new Option(item,index));
+                    });
                     $('#realname').val(data.data.realName);
-                    $('#password').val(data.data.password);
-                    $('#phone').val(data.data.phone);
-                    $('#email').val(data.data.email);
-                    $('#note').val(data.data.note);
-                    $('#userid').val(data.data.userId);
+                    //修改图片
+                    $('#imgload').attr("src", data.data.imgPath);
+                    $('#imgload').show()
+                    //修改介绍
+                    $('#introduction').val(data.data.introduction);
+                    $('#area').val(data.data.area);
+                    $('#source').val(data.data.source);
+                    $('#varietyid').val(data.data.varietyId);
+                    $('#imguuid').val(data.data.imgUuid);
+                    $('#imgpath').val(data.data.imgPath);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -124,19 +237,18 @@
     function queryDataById(row_id) {
 
         $.ajax({
-            url: "query_userbyid.json?userid=" + row_id,
+            url: "query_varietybyid.json?varietyid=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#username_detail').text(data.data.userName);
-                    $('#realname_detail').text(data.data.realName);
-                    $('#password_detail').text(data.data.password);
-                    $('#phone_detail').text(data.data.phone);
-                    $('#email_detail').text(data.data.email);
-                    $('#note_detail').text(data.data.note);
-                    $('#userid').text(data.data.userId);
+                    $('#varietyname_detail').text(data.data.varietyName);
+                    $('#vegename_detail').text(data.data.realName);
+                    $('#area_detail').text(data.data.password);
+                    $('#source_detail').text(data.data.phone);
+                    $('#image_detail').attr("src",data.data.imgPath);
+                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -150,7 +262,7 @@
             return;
         }
         $.ajax({
-            url: "delete_user.json?userid=" + row_id,
+            url: "delete_variety.json?varietyId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
@@ -164,20 +276,35 @@
 
     function submitData() {
         var uri;
+        var content = tinymce.activeEditor.getContent();
+        var vegeName = $('#vegename').val();
+        if(""==$('#vegename').val()||$('#vegename').val()==null){
+            alert("请填写蔬菜品种名称！");
+            return;
+        }
+        if("请选择"==vegeName){
+            alert("请选择蔬菜名称！");
+            return;
+        }
+        if(""==content||content==null){
+            alert("请填写蔬菜品种介绍！");
+            return;
+        }
         var data = {
-            'userName': $('#username').val(),
-            'userId': $('#userid').val(),
-            'password': $('#password').val(),
-            'realName': $('#realname').val(),
-            'phone': $('#phone').val(),
-            'email': $('#email').val(),
-            'note': $('#note').val()
+            'varietyName': $('#varietyname').val(),
+            'varietyId': $('#varietyid').val(),
+            'vegeId': $('#vegename').val(),
+            'vegeImg': $('#imgpath').val(),
+            'imguuid': $('#imguuid').val(),
+            'introduction': content,
+            'area': $('#area').val(),
+            'source': $('#note').val()
         };
         if ($('#modalAction').html() == '添加') {
-            uri = "add_user.json";
+            uri = "add_variety.json";
         } else {
-            uri = "update_user.json";
-            data.id = $('#userId').val();
+            uri = "update_variety.json";
+            data.id = $('#varietyId').val();
         }
 
         $.ajax({
@@ -206,7 +333,7 @@
             cache: false,
             striped: true,                              //是否显示行间隔色
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            url: "query_user.json",
+            url: "query_variety.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
             queryParams: function queryParams(params) {
@@ -219,7 +346,7 @@
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 7,                       //每页的记录行数（*）
             pageList: [7, 12, 20],             //可供选择的每页的行数（*）
-            uniqueId: "userId",                     //每一行的唯一标识，一般为主键列
+            uniqueId: "varietyId",                     //每一行的唯一标识，一般为主键列
             showToggle: false,
             responseHandler: responseHandler,
             onLoadError: function (status) {
@@ -234,32 +361,32 @@
                     }
                 },
                 {
-                    field: 'userName',
-                    title: '用户名',
+                    field: 'varietyName',
+                    title: '品种名称',
                     visible: true
                 },
                 {
-                    field: 'realName',
-                    title: '真实姓名',
+                    field: 'vegeName',
+                    title: '蔬菜名称',
                     visible: true
                 },
                 {
-                    field: 'phone',
-                    title: '电话号码',
+                    field: 'area',
+                    title: '产地',
                     visible: true
                 },
                 {
-                    field: 'email',
-                    title: '邮箱',
+                    field: 'source',
+                    title: '来源',
                     visible: true
                 },
                 {
-                    field: 'userId',
+                    field: 'varietyId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.userId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.userId + ')" >删除</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.userId + ')" >详情</button>';
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.varietyId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.varietyId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.varietyId + ')" >详情</button>';
 
                         return operation;
                     }
@@ -277,7 +404,7 @@
 
     function getSearchParams() {
         var param = {};
-        param.userName = $('#usernamesearch').val();
+        param.varietyName = $('#varietynamesearch').val();
         return param;
     }
 

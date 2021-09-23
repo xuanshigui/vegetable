@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class VegeInfoDaoImpl extends BaseDao implements VegeInfoDao {
         String buildCondition = condition.get("vegeName");
         StringBuilder where = new StringBuilder();
         if(buildCondition != null && !buildCondition.equals("")){
-            where.append(" AND vegename = '").append(buildCondition).append("'");
+            where.append(" AND vegename like '%").append(buildCondition).append("%'");
         }
         String limit = buildLimit(condition);
         String sql = String.format(VegeInfoDaoImpl.SQL_QUERY, where, limit);
@@ -91,6 +92,22 @@ public class VegeInfoDaoImpl extends BaseDao implements VegeInfoDao {
         String sql = String.format(VegeInfoDaoImpl.SQL_QUERY_TOTAL, where);
 
         return getTotal(sql);
+    }
+
+    public Map<String,String> getVegeIdAndName(){
+        String sql = "SELECT vegeid, vegeName FROM tb_vegeinfo";
+        Map<String,String> result = new HashMap<>();
+        try {
+            List rows = jdbcTemplate.queryForList(sql);
+            for (Object row : rows) {
+                Map vege = (Map) row;
+                result.put(String.valueOf(vege.get("vegeid")),String.valueOf(vege.get("vegename")));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }
