@@ -6,7 +6,10 @@
 <body>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    图片查询：<input type="text" id="imgnamesearch">
+    图片名称：<input type="text" id="imgnamesearch">
+    关联业务表名：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="tablenamesearch"><br>
+    开始时间：<input type="datetime-local" id="starttime">
+    结束时间：<input type="datetime-local" id="endtime">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -54,8 +57,11 @@
         <div class="modal-content">
             <div class="modal-body">
                     图片名称：<label text="" id="imgname_detail" value=""></label><br>
-                    图片：<label text="" id="img_detail" value=""></label><br>
+                    图片：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                            <img src="" id="image_detail" style="width:300px;height: 200px;">
+                        </div><br>
                     关联表名：<label text="" id="tablename_detail" value=""></label><br>
+                    更新时间：<label text="" id="timestamp_detail" value=""></label><br>
                     图片描述：<label text="" id="note_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
@@ -117,11 +123,11 @@
                 if (data) {
                     $('#modalAction').html("详情");
                     $('#imgname_detail').text(data.data.imgName);
-                    $('#img_detail').text(data.data.realName);
-                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
-                    $('#imgpath_detail').text(data.data.password);
+                    $('#image_detail').attr("src", data.data.imgPath);
+                    $('#image_detail').show();
+                    $('#timestamp_detail').text(data.data.timestamp);
+                    $('#tablename_detail').text(data.data.tableName);
                     $('#note_detail').text(data.data.note);
-                    $('#imgid').text(data.data.imgId);
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -267,7 +273,7 @@
                 },
                 {
                     field: 'timestamp',
-                    title: '创建时间',
+                    title: '更新时间',
                     visible: true
                 },
                 {
@@ -285,7 +291,6 @@
                     title: '操作',
                     formatter: function (value, row, index) {
                         var operation = '<button class="btn btn-primary" onclick="updateData(' + row.imgId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.imgId + ')" >删除</button>';
                         operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.imgId + ')" >详情</button>';
 
                         return operation;
@@ -304,7 +309,10 @@
 
     function getSearchParams() {
         var param = {};
-        param.userName = $('#usernamesearch').val();
+        param.imgName = $('#imgnamesearch').val();
+        param.tableName = $('#tablenamesearch').val();
+        param.startTime = $('#starttime').val();
+        param.endTime = $('#endtime').val();
         return param;
     }
 

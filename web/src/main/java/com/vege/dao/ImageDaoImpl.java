@@ -62,7 +62,26 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
     }
 
     public List<Image> query(Map<String, String> condition) {
-        String where = buildWhere(condition);
+
+        StringBuilder where = new StringBuilder();
+        String imgName = condition.get("imgName");
+        if(imgName != null && !imgName.equals("")){
+            where.append(" AND imgname like '%").append(imgName).append("%'");
+        }
+        String tableName = condition.get("tableName");
+        if(tableName != null && !tableName.equals("")){
+            where.append(" AND tablename = '").append(imgName).append("'");
+        }
+        String startDate = condition.get("startTime");
+        if (startDate != null && !startDate.equals("")) {
+            where.append(" AND timestamp >= '").append(startDate).append("'");
+        }
+
+        String endDate = condition.get("endTime");
+        if (endDate != null && !endDate.equals("")) {
+            where.append(" AND timestamp <= '").append(endDate).append("'");
+        }
+
         String limit = buildLimit(condition);
         String sql = String.format(ImageDaoImpl.SQL_QUERY, where, limit);
 

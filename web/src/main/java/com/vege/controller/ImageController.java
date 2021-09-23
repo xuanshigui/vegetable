@@ -50,7 +50,7 @@ public class ImageController extends BaseController {
 
     @RequestMapping(value = "/query_image.json", method = {RequestMethod.POST, RequestMethod.GET})
     public Map query(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("imgName", "page", "size");
+        List<String> fields = Arrays.asList("imgName", "tableName", "startTime","endTime", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         List<Image> result = imageService.query(condition);
         int total = imageService.queryTotal(condition);
