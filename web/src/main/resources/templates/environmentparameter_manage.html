@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
 </head>
 <body>
+<!-- 按钮触发模态框 -->
+<button class="btn btn-primary" data-toggle="modal" onclick="insertData()">
+    添加数据
+</button>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    图片名称：<input type="text" id="imgnamesearch"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    关联业务表名：<input type="text" id="tablenamesearch"><br>
-    开始时间：<input type="datetime-local" id="starttime">&nbsp;
-    结束时间：<input type="datetime-local" id="endtime">
+    参数名称：<input type="text" id="paramnamesearch">
+    生长周期：<input type="text" id="breedstagesearch">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -30,15 +32,14 @@
             </div>
             <div class="modal-body">
                 <form>
-                    图片名称：<input type="text" id="imgname" value=""><br>
-                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
-                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
-                    </div>
-                    关联表名：<label id="tablename"></label><br>
-                    图片描述：<input type="text" id="note" value=""><br>
-                    <input type="hidden" id="imgid">
-                    <input type="hidden" id="imgpath">
+                    参数名称：<input type="text" id="envparamname" value=""><br>
+                    生长周期：<input type="text" id="breedstage" value=""><br>
+                    参数类型：<input type="text" id="type" value=""><br>
+                    参数单位：<input type="text" id="paramunit" value=""><br>
+                    参数上限：<input type="text" id="boundh" value=""><br>
+                    参数下限：<input type="text" id="boundl" value=""><br>
+                    备   注：<input type="text" id="note" value=""><br>
+                    <input type="hidden" id="envparamid">
                 </form>
             </div>
             <div class="modal-footer">
@@ -56,13 +57,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                    图片名称：<label text="" id="imgname_detail" value=""></label><br>
-                    图片：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                            <img src="" id="image_detail" style="width:300px;height: 200px;">
-                        </div><br>
-                    关联表名：<label text="" id="tablename_detail" value=""></label><br>
-                    更新时间：<label text="" id="timestamp_detail" value=""></label><br>
-                    图片描述：<label text="" id="note_detail" value=""></label><br>
+                    参数名称：<label text="" id="envparamname_detail" value=""></label><br>
+                    生长周期：<label text="" id="breedstage_detail" value=""></label><br>
+                    参数类型：<label text="" id="type_detail" value=""></label><br>
+                    参数单位：<label text="" id="paramunit_detail" value=""></label><br>
+                    参数上限：<label text="" id="boundh_detail" value=""></label><br>
+                    参数下限：<label text="" id="boundl_detail" value=""></label><br>
+                    备   注：<label text="" id="note_detail" value=""></label><br>
+                    更新时间：<label text="" id="updatetime_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -71,19 +73,33 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
+
+
 <script>
+
+    function insertData() {
+        $('#myModal').modal("toggle");
+        $('#envparamname').val("");
+        $('#password').val("");
+        $('#realname').val("");
+        $('#phone').val("");
+        $('#email').val("");
+        $('#note').val("");
+        $('#envparamid').val("");
+        $('#modalAction').html("添加");
+    }
 
     function queryData() {
         $.ajax({
-            url: "query_image.json?imgId=" + row_id,
+            url: "query_envparam.json?envparamid=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 $('#myModal').modal("toggle");
-                $('#imgid').val("");
-                $('#imgname').val("");
-                $('#tablename').val("");
-                $('#fileupload').val("");
+                $('#envparamid').val("");
+                $('#envparamname').val("");
+                $('#realname').val("");
+                $('#phone').val("");
                 $('#note').val("");
             }
         });
@@ -92,20 +108,19 @@
     function updateData(row_id) {
 
         $.ajax({
-            url: "query_imagebyid.json?imgId=" + row_id,
+            url: "query_envparambyid.json?envparamid=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
-                    $('#imgname').val(data.data.imgName);
-                    //修改图片
-                    $('#imgload').attr("src", data.data.imgPath);
-                    $('#imgload').show()
-                    $('#tablename').text(data.data.tableName);
+                    $('#envparamname').val(data.data.envparamName);
+                    $('#realname').val(data.data.realName);
+                    $('#password').val(data.data.password);
+                    $('#phone').val(data.data.phone);
+                    $('#email').val(data.data.email);
                     $('#note').val(data.data.note);
-                    $('#imgid').val(data.data.imgId);
-                    $('#imgpath').val(data.data.oldPath);
+                    $('#envparamid').val(data.data.envparamId);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -116,18 +131,19 @@
     function queryDataById(row_id) {
 
         $.ajax({
-            url: "query_imagebyid.json?imgId=" + row_id,
+            url: "query_envparambyid.json?envparamid=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#imgname_detail').text(data.data.imgName);
-                    $('#image_detail').attr("src", data.data.imgPath);
-                    $('#image_detail').show();
-                    $('#timestamp_detail').text(data.data.timestamp);
-                    $('#tablename_detail').text(data.data.tableName);
+                    $('#envparamname_detail').text(data.data.envparamName);
+                    $('#realname_detail').text(data.data.realName);
+                    $('#password_detail').text(data.data.password);
+                    $('#phone_detail').text(data.data.phone);
+                    $('#email_detail').text(data.data.email);
                     $('#note_detail').text(data.data.note);
+                    $('#envparamid').text(data.data.envparamId);
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -141,7 +157,7 @@
             return;
         }
         $.ajax({
-            url: "delete_image.json?imgId=" + row_id,
+            url: "delete_envparam.json?envparamid=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
@@ -156,16 +172,19 @@
     function submitData() {
         var uri;
         var data = {
-            'imgName': $('#imgname').val(),
-            'imgId': $('#imgid').val(),
-            'imgPath': $('#imgpath').val(),
+            'envparamName': $('#envparamname').val(),
+            'envparamId': $('#envparamid').val(),
+            'password': $('#password').val(),
+            'realName': $('#realname').val(),
+            'phone': $('#phone').val(),
+            'email': $('#email').val(),
             'note': $('#note').val()
         };
         if ($('#modalAction').html() == '添加') {
-            uri = "add_image.json";
+            uri = "add_envparam.json";
         } else {
-            uri = "update_image.json";
-            data.id = $('#imgid').val();
+            uri = "update_envparam.json";
+            data.id = $('#envparamId').val();
         }
 
         $.ajax({
@@ -182,51 +201,6 @@
         });
     }
 
-    function uploadImg(){
-        var file = $('#imgupload')[0].files[0];//获取选择的文件
-        var formData=new FormData();//构建form表单
-        formData.append("file",file);
-        var name = file.name;
-        // 获取文件后缀
-        var sfIndex=name.lastIndexOf(".");//后缀位置的.的位置
-        var ext= name.substring(sfIndex,name.length).toUpperCase();//截取后缀
-        console.log(ext)
-        // 文件大小  单位:M
-        var size=parseInt(file.size/1024/1024);
-        //判断文件类型,后台也要做判断
-        if(ext !='.PNG' && ext !='.GIF' && ext !='.JPG' && ext !='.JPEG' && ext !='.BMP'){
-            vmToast.show("文件类型错误,请上传正确图片类型(png、gif、jpg、jpeg、bmp)");
-            return false;
-        }
-        if(size>10){//文件过大,部分服务器流量有限制,而且后续打开会比较慢
-            alert("文件已大于10M，请换个小点的图片");
-            return false;
-        }
-
-        $.ajax({
-            url: "uploadimg",
-            method: "POST",
-            data: formData,
-            contentType:false,
-            dataType: "json",
-            processData: false,
-            success: function (data) {
-                if (data) {
-                    console.log("回显了图片");
-                    var imgPath = data.data.path;
-                    //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
-                    $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
-                    $('#imgload').show();
-                    $('#imgpath').val(imgPath);
-                    alert("上传成功！")
-                }
-            },
-            error: function(ajaxobj) { //有异常
-                alert("异常："+ajaxobj.responseText);
-            }
-        });
-    }
-
     function initQuery() {
         $('#table').bootstrapTable(getTable());
     }
@@ -239,7 +213,7 @@
             cache: false,
             striped: true,                              //是否显示行间隔色
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            url: "query_image.json",
+            url: "query_envparam.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
             queryParams: function queryParams(params) {
@@ -252,7 +226,7 @@
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 7,                       //每页的记录行数（*）
             pageList: [7, 12, 20],             //可供选择的每页的行数（*）
-            uniqueId: "imgId",                     //每一行的唯一标识，一般为主键列
+            uniqueId: "envparamId",                     //每一行的唯一标识，一般为主键列
             showToggle: false,
             responseHandler: responseHandler,
             onLoadError: function (status) {
@@ -267,31 +241,32 @@
                     }
                 },
                 {
-                    field: 'imgName',
-                    title: '图片名称',
+                    field: 'envparamName',
+                    title: '参数名称',
                     visible: true
                 },
                 {
-                    field: 'timestamp',
-                    title: '更新时间',
+                    field: 'breedStageName',
+                    title: '生长周期',
                     visible: true
                 },
                 {
-                    field: 'tableName',
-                    title: '关联业务表名',
+                    field: 'type',
+                    title: '参数类型',
                     visible: true
                 },
                 {
-                    field: 'note',
-                    title: '图片描述',
+                    field: 'paramunit',
+                    title: '参数单位',
                     visible: true
                 },
                 {
-                    field: 'imgId',
+                    field: 'envparamId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.imgId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.imgId + ')" >详情</button>';
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.envparamId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.envparamId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.envparamId + ')" >详情</button>';
 
                         return operation;
                     }
@@ -309,10 +284,7 @@
 
     function getSearchParams() {
         var param = {};
-        param.imgName = $('#imgnamesearch').val();
-        param.tableName = $('#tablenamesearch').val();
-        param.startTime = $('#starttime').val();
-        param.endTime = $('#endtime').val();
+        param.envparamName = $('#envparamnamesearch').val();
         return param;
     }
 

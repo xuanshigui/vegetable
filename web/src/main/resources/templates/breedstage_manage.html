@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- 按钮触发模态框 -->
+<button class="btn btn-primary" data-toggle="modal" onclick="insertData()">
+    添加数据
+</button>
+
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    生长阶段查询：<input type="text" id="stagenamesearch">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+
+</div>
+
+<table id="table">
+</table>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    所对应蔬菜：<select id="vegename" value="">
+                                <option value="0">请选择</option></select><br>
+                    养殖阶段名称：<input type="text" id="stagename" value=""><br>
+                    培养阶段定义：<textarea type="text" id="definition" value="" style="height: 300px;width: 500px;"></textarea><br>
+                    培养阶段时长：<input type="text" id="duration" value=""><br>
+                    <input type="hidden" id="bsid">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button onclick="submitData()" type="button" class="btn btn-primary">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                所对应蔬菜：<label text="" id="vegename_detail" value=""></label><br>
+                养殖阶段名称：<label text="" id="stagename_detail" value=""></label><br>
+                培养阶段定义：<label text="" id="definition_detail" value=""></label><br>
+                培养阶段时长：<label text="" id="duration_detail" value=""></label><br>
+                更新时间：<label text="" id="updatetime_detail" value=""></label><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    function insertData() {
+        $('#myModal').modal("toggle");
+        uri = "load_vegename.json";
+        $.ajax({
+            url: uri,
+            method: "Get",
+            dataType: "json",
+            success: function (data) {
+                if (data.data.vegeNameMap) {
+                    $.each(data.data.vegeNameMap,function(index,item){
+                        $('#vegename').append(new Option(item,index));
+                    });
+                }
+            }
+        });
+        $('#stagename').val("");
+        $('#definition').val("");
+        $('#duration').val("");
+        $('#bsid').val("");
+        $('#modalAction').html("添加");
+    }
+
+
+    function updateData(row_id) {
+
+        $.ajax({
+            url: "query_breedstagebyid.json?bsId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("修改");
+                    $('#stagename').val(data.data.stageName);
+                    if (data.data.vegeName) {
+                        $.each(data.data.vegeName,function(index,item){
+                            $('#vegename').append(new Option(item,index));
+                        });
+                    }
+                    $('#definition').val(data.data.definition);
+                    $('#duration').val(data.data.duration);
+                    $('#bsid').val(data.data.bsId);
+                    $('#myModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+    function queryDataById(row_id) {
+
+        $.ajax({
+            url: "query_breedstagebyid.json?bsId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("详情");
+                    $('#vegename_detail').text(data.data.vegeName);
+                    $('#stagename_detail').text(data.data.stageName);
+                    $('#definition_detail').text(data.data.definition);
+                    $('#duration_detail').text(data.data.duration);
+                    $('#updatetime_detail').text(data.data.updateTime);
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+
+    function deleteData(row_id) {
+        if (!confirm("确定删除吗？")) {
+            return;
+        }
+        $.ajax({
+            url: "delete_breedstage.json?bsId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function submitData() {
+        var uri;
+        if("0"==$('#vegename').val()||$('#vegename').val()==0){
+            alert("请填写蔬菜品种名称！");
+            return;
+        }
+        var data = {
+            'stageName': $('#stagename').val(),
+            'bsId': $('#bsid').val(),
+            'definition': $('#definition').val(),
+            'duration': $('#duration').val(),
+            'vegeId': $('#vegename').val(),
+        };
+        if ($('#modalAction').html() == '添加') {
+            uri = "add_breedstage.json";
+        } else {
+            uri = "update_breedstage.json";
+            data.id = $('#bsId').val();
+        }
+
+        $.ajax({
+            url: uri,
+            method: "Post",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_breedstage.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "breedstageId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'stageName',
+                    title: '养殖阶段名称',
+                    visible: true
+                },
+                {
+                    field: 'vegeName',
+                    title: '所对应蔬菜名称',
+                    visible: true
+                },
+                {
+                    field: 'duration',
+                    title: '持续时间',
+                    visible: true
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    visible: true
+                },
+                {
+                    field: 'bsId',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.bsId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.bsId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.bsId + ')" >详情</button>';
+
+                        return operation;
+                    }
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.breedstageName = $('#breedstagenamesearch').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+</script>
+</body>
+</html>

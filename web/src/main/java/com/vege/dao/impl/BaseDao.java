@@ -1,12 +1,11 @@
-package com.vege.dao;
+package com.vege.dao.impl;
 
-import com.vege.constants.QueryTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Map;
 
 @Component
 public class BaseDao {
@@ -49,15 +48,6 @@ public class BaseDao {
         return limit.toString();
     }
 
-    protected static String getTable(String type) {
-        for (QueryTable table : QueryTable.values()) {
-            if (table.getType().equals(type)) {
-                return table.getTable();
-            }
-        }
-
-        return QueryTable.US.getTable();
-    }
 
     protected boolean exec(String sql) {
         try {
@@ -81,4 +71,6 @@ public class BaseDao {
         }
         return total;
     }
+
+
 }

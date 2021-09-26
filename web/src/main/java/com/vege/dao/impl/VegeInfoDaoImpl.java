@@ -1,6 +1,7 @@
-package com.vege.dao;
+package com.vege.dao.impl;
 
 import com.vege.constants.Constants;
+import com.vege.dao.VegeInfoDao;
 import com.vege.model.VegeInfo;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -108,6 +109,11 @@ public class VegeInfoDaoImpl extends BaseDao implements VegeInfoDao {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public String getVegeNameById(String vegeId){
+        String sql = "SELECT vegeName FROM tb_vegeinfo WHERE vegeid = " + vegeId;
+        return jdbcTemplate.queryForObject(sql,String.class);
     }
 
 }

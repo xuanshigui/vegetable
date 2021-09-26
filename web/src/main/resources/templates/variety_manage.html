@@ -2,6 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>
+        //装载富文本编辑器
+        var baseURL = "/";
+        tinymce.init({
+            selector: '#introduction',
+            language:'zh_CN',//注意大小写
+            height: 500,
+            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
+            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
+            images_upload_url: baseURL + "upload_img",//图片上传地址
+            images_upload_credentials: false,
+            image_dimensions: false,
+            image_class_list: [
+                {title: '无', value: ''},
+                {title: '预览', value: 'preview'},
+            ],
+            insert_button_items: 'image link | inserttable',
+            paste_merge_formats: true,
+            nonbreaking_force_tab: false,
+            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', baseURL + "upload_img" );
+                /* if (xhr.status != 200) {
+                     failure('HTTP Error: ' + xhr.status);
+                     return;
+                 }*/
+
+                xhr.onload = function () {
+                    var json;
+                    /*if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }*/
+                    console.log(xhr.responseText);
+                    json = JSON.parse(xhr.responseText);
+                    //json.location = json.url;
+                    success(json.location);
+
+
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                console.log(blobInfo.blob());
+                xhr.send(formData);
+                console.log(xhr.responseText)
+            }
+        });
+    </script>
 </head>
 <body>
 <!-- 按钮触发模态框 -->
@@ -33,14 +85,19 @@
             <div class="modal-body">
                 <form>
                     品种名称：<input type="text" id="varietyname" value=""><br>
-                    蔬菜名称：<input type="text" id="vegename" value=""><br>
+                    蔬菜名称：<select id="vegename" value=""><option value="0">请选择</option></select><br>
                     上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
                     <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
                         <img src="" id="imgload" width="300" height="200" style="display: none"><br>
                     </div>
                     基本介绍：<textarea id="introduction">${data.data.content}</textarea><br>
                     品种产地：<input type="text" id="area" value=""><br>
-                    品种来源：<input type="text" id="source" value=""><br>
+                    品种来源：<select id="source" value="">
+                                <option id="source_option_0", value="请选择">请选择</option>
+                                <option id="source_option_1", value="0">选育品种</option>
+                                <option id="source_option_2", value="1">自有品种</option>
+                                <option id="source_option_3", value="2">引进品种</option>
+                            </select><br>
                     <input type="hidden" id="varietyid">
                     <input type="hidden" id="imgpath">
                     <input type="hidden" id="imguuid">
@@ -79,56 +136,7 @@
 </div>
 <script>
     function insertData() {
-        //装载富文本编辑器
-        var baseURL = "/";
-        tinymce.init({
-            selector: '#introduction',
-            language:'zh_CN',//注意大小写
-            height: 500,
-            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
-            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
-            images_upload_url: baseURL + "upload_img",//图片上传地址
-            images_upload_credentials: false,
-            image_dimensions: false,
-            image_class_list: [
-                {title: '无', value: ''},
-                {title: '预览', value: 'preview'},
-            ],
-            insert_button_items: 'image link | inserttable',
-            paste_merge_formats: true,
-            nonbreaking_force_tab: false,
-            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-            images_upload_handler: function (blobInfo, success, failure) {
-                var xhr, formData;
 
-                xhr = new XMLHttpRequest();
-                xhr.withCredentials = false;
-                xhr.open('POST', baseURL + "upload_img" );
-                /* if (xhr.status != 200) {
-                     failure('HTTP Error: ' + xhr.status);
-                     return;
-                 }*/
-
-                xhr.onload = function () {
-                    var json;
-                    /*if (xhr.status != 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }*/
-                    console.log(xhr.responseText);
-                    json = JSON.parse(xhr.responseText);
-                    //json.location = json.url;
-                    success(json.location);
-
-
-                };
-                formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                console.log(blobInfo.blob());
-                xhr.send(formData);
-                console.log(xhr.responseText)
-            }
-        });
         $('#myModal').modal("toggle");
         $('#varietyname').val("");
         //装载蔬菜名称，选择
@@ -138,9 +146,9 @@
             method: "Get",
             dataType: "json",
             success: function (data) {
-                if (data.data) {
-                    $.each(data.data,function(index,item){
-                        $('vegename').append(new Option(item,index));
+                if (data.data.vegeNameMap) {
+                    $.each(data.data.vegeNameMap,function(index,item){
+                        $('#vegename').append(new Option(item,index));
                     });
                 }
             }
@@ -154,67 +162,18 @@
 
     function updateData(row_id) {
 
-        //装载富文本编辑器
-        var baseURL = "/";
-        tinymce.init({
-            selector: '#introduction',
-            language:'zh_CN',//注意大小写
-            height: 500,
-            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
-            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
-            images_upload_url: baseURL + "upload_img",//图片上传地址
-            images_upload_credentials: false,
-            image_dimensions: false,
-            image_class_list: [
-                {title: '无', value: ''},
-                {title: '预览', value: 'preview'},
-            ],
-            insert_button_items: 'image link | inserttable',
-            paste_merge_formats: true,
-            nonbreaking_force_tab: false,
-            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-            images_upload_handler: function (blobInfo, success, failure) {
-                var xhr, formData;
 
-                xhr = new XMLHttpRequest();
-                xhr.withCredentials = false;
-                xhr.open('POST', baseURL + "upload_img" );
-                /* if (xhr.status != 200) {
-                     failure('HTTP Error: ' + xhr.status);
-                     return;
-                 }*/
-
-                xhr.onload = function () {
-                    var json;
-                    /*if (xhr.status != 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }*/
-                    console.log(xhr.responseText);
-                    json = JSON.parse(xhr.responseText);
-                    //json.location = json.url;
-                    success(json.location);
-
-
-                };
-                formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                console.log(blobInfo.blob());
-                xhr.send(formData);
-                console.log(xhr.responseText)
-            }
-        });
         //后台数据回传
         $.ajax({
-            url: "query_varietybyid.json?varietyid=" + row_id,
+            url: "query_varietybyid.json?varietyId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
                     $('#varietyname').val(data.data.varietyName);
-                    $.each(data.data,function(index,item){
-                        $('vegename').append(new Option(item,index));
+                    $.each(data.vegeNameMap,function(index,item){
+                        $('#vegename').append(new Option(item,index));
                     });
                     $('#realname').val(data.data.realName);
                     //修改图片
@@ -234,21 +193,72 @@
 
     }
 
-    function queryDataById(row_id) {
+    function uploadImg(){
+        var file = $('#imgupload')[0].files[0];//获取选择的文件
+        var formData=new FormData();//构建form表单
+        formData.append("file",file);
+        var name = file.name;
+        // 获取文件后缀
+        var sfIndex=name.lastIndexOf(".");//后缀位置的.的位置
+        var ext= name.substring(sfIndex,name.length).toUpperCase();//截取后缀
+        console.log(ext)
+        // 文件大小  单位:M
+        var size=parseInt(file.size/1024/1024);
+        //判断文件类型,后台也要做判断
+        if(ext !='.PNG' && ext !='.GIF' && ext !='.JPG' && ext !='.JPEG' && ext !='.BMP'){
+            vmToast.show("文件类型错误,请上传正确图片类型(png、gif、jpg、jpeg、bmp)");
+            return false;
+        }
+        if(size>10){//文件过大,部分服务器流量有限制,而且后续打开会比较慢
+            alert("文件已大于10M，请换个小点的图片");
+            return false;
+        }
 
         $.ajax({
-            url: "query_varietybyid.json?varietyid=" + row_id,
+            url: "uploadimg",
+            method: "POST",
+            data: formData,
+            contentType:false,
+            dataType: "json",
+            processData: false,
+            success: function (data) {
+                if (data) {
+                    console.log("回显了图片");
+                    $('#imgpath').val(data.data.path);
+                    var imgPath = data.data.path;
+                    //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
+                    $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                    $('#imgload').show();
+                    alert("上传成功！")
+                }
+            },
+            error: function(ajaxobj) { //有异常
+                alert("异常："+ajaxobj.responseText);
+            }
+        });
+    }
+
+    function queryDataById(row_id) {
+
+        var div = document.getElementById("introduction_detail");
+        while(div.hasChildNodes()) //当div下还存在子节点时 循环继续
+        {
+            div.removeChild(div.firstChild);
+        }
+
+        $.ajax({
+            url: "query_varietybyid.json?varietyId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
                     $('#varietyname_detail').text(data.data.varietyName);
-                    $('#vegename_detail').text(data.data.realName);
-                    $('#area_detail').text(data.data.password);
-                    $('#source_detail').text(data.data.phone);
+                    $('#vegename_detail').text(data.data.vegeName);
+                    $('#area_detail').text(data.data.area);
+                    $('#source_detail').text(data.data.source);
                     $('#image_detail').attr("src",data.data.imgPath);
-                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
+                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.description+"</div>")
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -278,11 +288,11 @@
         var uri;
         var content = tinymce.activeEditor.getContent();
         var vegeName = $('#vegename').val();
-        if(""==$('#vegename').val()||$('#vegename').val()==null){
+        if(""==$('#varietyname').val()||$('#varietyname').val()==null){
             alert("请填写蔬菜品种名称！");
             return;
         }
-        if("请选择"==vegeName){
+        if("0"==vegeName||vegeName==0){
             alert("请选择蔬菜名称！");
             return;
         }
@@ -290,15 +300,18 @@
             alert("请填写蔬菜品种介绍！");
             return;
         }
+        if("请选择"==$('#source').val()){
+            alert("请选择品种来源！");
+            return;
+        }
         var data = {
             'varietyName': $('#varietyname').val(),
             'varietyId': $('#varietyid').val(),
             'vegeId': $('#vegename').val(),
-            'vegeImg': $('#imgpath').val(),
-            'imguuid': $('#imguuid').val(),
+            'varietyImg': $('#imgpath').val(),
             'introduction': content,
             'area': $('#area').val(),
-            'source': $('#note').val()
+            'source': $('#source').val()
         };
         if ($('#modalAction').html() == '添加') {
             uri = "add_variety.json";
@@ -366,7 +379,7 @@
                     visible: true
                 },
                 {
-                    field: 'vegeName',
+                    field: 'vegeInfo.vegeName',
                     title: '蔬菜名称',
                     visible: true
                 },
@@ -378,6 +391,11 @@
                 {
                     field: 'source',
                     title: '来源',
+                    visible: true
+                },
+                {
+                    field: 'timestamp',
+                    title: '更新时间',
                     visible: true
                 },
                 {
@@ -405,6 +423,7 @@
     function getSearchParams() {
         var param = {};
         param.varietyName = $('#varietynamesearch').val();
+        param.vegeName = $('#vegenamesearch').val();
         return param;
     }
 

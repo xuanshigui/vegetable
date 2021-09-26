@@ -11,6 +11,8 @@ public class Constants {
 
     public static Map<String,String> CLASS_VEGE_MAP;
 
+    public static Map<String,String> VARIETY_SOURCE_MAP;
+
     static{
         //ENTITY_TABLE_MAP
         ENTITY_TABLE_MAP = new HashMap<String, String>();
@@ -49,5 +51,11 @@ public class Constants {
         CLASS_VEGE_MAP.put("食用菌类","11");
         CLASS_VEGE_MAP.put("芽苗菜类","12");
         CLASS_VEGE_MAP.put("野生蔬菜","13");
+
+        //VARIETY_SOURCE_MAP
+        VARIETY_SOURCE_MAP = new HashMap<>();
+        VARIETY_SOURCE_MAP.put("0","选育品种");
+        VARIETY_SOURCE_MAP.put("1","自有品种");
+        VARIETY_SOURCE_MAP.put("2","引进品种");
     }
 }

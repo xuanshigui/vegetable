@@ -20,4 +20,6 @@ public interface VegeInfoService {
     int queryTotal(Map<String, String> condition);
 
     VegeInfo queryById(String vegeId);
+
+    String getVegeNameById(String vegeId);
 }

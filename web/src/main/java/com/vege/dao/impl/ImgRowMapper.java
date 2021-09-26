@@ -1,4 +1,4 @@
-package com.vege.dao;
+package com.vege.dao.impl;
 
 import com.vege.model.Image;
 import org.springframework.jdbc.core.RowMapper;

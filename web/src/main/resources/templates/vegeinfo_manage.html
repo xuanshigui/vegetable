@@ -2,6 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>
+        //装载富文本编辑器
+        var baseURL = "/";
+        tinymce.init({
+            selector: '#introduction',
+            language:'zh_CN',//注意大小写
+            height: 500,
+            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
+            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
+            images_upload_url: baseURL + "upload_img",//图片上传地址
+            images_upload_credentials: false,
+            image_dimensions: false,
+            image_class_list: [
+                {title: '无', value: ''},
+                {title: '预览', value: 'preview'},
+            ],
+            insert_button_items: 'image link | inserttable',
+            paste_merge_formats: true,
+            nonbreaking_force_tab: false,
+            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr, formData;
+
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', baseURL + "upload_img" );
+                /* if (xhr.status != 200) {
+                     failure('HTTP Error: ' + xhr.status);
+                     return;
+                 }*/
+
+                xhr.onload = function () {
+                    var json;
+                    /*if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }*/
+                    console.log(xhr.responseText);
+                    json = JSON.parse(xhr.responseText);
+                    //json.location = json.url;
+                    success(json.location);
+
+
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                console.log(blobInfo.blob());
+                xhr.send(formData);
+                console.log(xhr.responseText)
+            }
+        });
+    </script>
 </head>
 <body>
 <!-- 按钮触发模态框 -->
@@ -81,56 +133,7 @@
 </div>
 <script>
     function insertData() {
-        //装载富文本编辑器
-        var baseURL = "/";
-        tinymce.init({
-            selector: '#introduction',
-            language:'zh_CN',//注意大小写
-            height: 500,
-            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
-            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
-            images_upload_url: baseURL + "upload_img",//图片上传地址
-            images_upload_credentials: false,
-            image_dimensions: false,
-            image_class_list: [
-                {title: '无', value: ''},
-                {title: '预览', value: 'preview'},
-            ],
-            insert_button_items: 'image link | inserttable',
-            paste_merge_formats: true,
-            nonbreaking_force_tab: false,
-            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-            images_upload_handler: function (blobInfo, success, failure) {
-                var xhr, formData;
 
-                xhr = new XMLHttpRequest();
-                xhr.withCredentials = false;
-                xhr.open('POST', baseURL + "upload_img" );
-                /* if (xhr.status != 200) {
-                     failure('HTTP Error: ' + xhr.status);
-                     return;
-                 }*/
-
-                xhr.onload = function () {
-                    var json;
-                    /*if (xhr.status != 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }*/
-                    console.log(xhr.responseText);
-                    json = JSON.parse(xhr.responseText);
-                    //json.location = json.url;
-                    success(json.location);
-
-
-                };
-                formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                console.log(blobInfo.blob());
-                xhr.send(formData);
-                console.log(xhr.responseText)
-            }
-        });
         $('#myModal').modal("toggle");
         //装载下拉列表
         uri = "load_classification.json";
@@ -202,56 +205,6 @@
 
 
     function updateData(row_id) {
-        var baseURL = "/";
-        tinymce.init({
-            selector: '#introduction',
-            language:'zh_CN',//注意大小写
-            height: 500,
-            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
-            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
-            images_upload_url: baseURL + "upload_img",//图片上传地址
-            images_upload_credentials: false,
-            image_dimensions: false,
-            image_class_list: [
-                {title: '无', value: ''},
-                {title: '预览', value: 'preview'},
-            ],
-            insert_button_items: 'image link | inserttable',
-            paste_merge_formats: true,
-            nonbreaking_force_tab: false,
-            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-            images_upload_handler: function (blobInfo, success, failure) {
-                var xhr, formData;
-
-                xhr = new XMLHttpRequest();
-                xhr.withCredentials = false;
-                xhr.open('POST', baseURL + "upload_img" );
-                /* if (xhr.status != 200) {
-                     failure('HTTP Error: ' + xhr.status);
-                     return;
-                 }*/
-
-                xhr.onload = function () {
-                    var json;
-                    /*if (xhr.status != 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }*/
-                    console.log(xhr.responseText);
-                    json = JSON.parse(xhr.responseText);
-                    //json.location = json.url;
-                    success(json.location);
-
-
-                };
-                formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                console.log(blobInfo.blob());
-                xhr.send(formData);
-                console.log(xhr.responseText)
-            }
-        });
-
         $.ajax({
             url: "query_vegebyid.json?vegeId=" + row_id,
             method: "GET",

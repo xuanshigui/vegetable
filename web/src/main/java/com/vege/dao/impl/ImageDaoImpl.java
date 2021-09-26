@@ -1,5 +1,6 @@
-package com.vege.dao;
+package com.vege.dao.impl;
 
+import com.vege.dao.ImageDao;
 import com.vege.model.Image;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +22,7 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
     private static String SQL_QUERY = "SELECT * FROM tb_img WHERE 1=1 %s %s";
     private static String SQL_QUERY_TOTAL = "SELECT count(*) as total FROM tb_img WHERE 1=1 %s";
     private static String SQL_QUERY_BYID = "SELECT imgid as imgId, imguuid as uuid, imgname as imgName, timestamp, imgpath as imgPath, note, tablename as tableName FROM tb_img WHERE imgid = %s";
-    private static String SQL_QUERY_BYUUID = "SELECT imgid as imgId, imguuid as uuid, imgname as imgName, timestamp, imgpath as imgPath, note, tablename as tableName FROM tb_img WHERE imguuid = '%s'";
+    private static String SQL_QUERY_BYUUID = "SELECT imgid as imgId, imguuid as imgUuid, imgname as imgName, timestamp, imgpath as imgPath, note, tablename as tableName FROM tb_img WHERE imguuid = '%s'";
 
     public ImageDaoImpl(JdbcTemplate jdbcTemplate) {
         super(jdbcTemplate);

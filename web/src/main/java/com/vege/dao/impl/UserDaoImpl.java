@@ -1,5 +1,6 @@
-package com.vege.dao;
+package com.vege.dao.impl;
 
+import com.vege.dao.UserDao;
 import com.vege.model.User;
 import com.vege.utils.MD5Utils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

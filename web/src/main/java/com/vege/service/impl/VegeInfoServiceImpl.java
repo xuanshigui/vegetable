@@ -59,4 +59,9 @@ public class VegeInfoServiceImpl implements VegeInfoService {
     public Map<String,String> getVegeIdAndName(){
         return vegeInfoDao.getVegeIdAndName();
     }
+
+    @Override
+    public String getVegeNameById(String vegeId){
+        return vegeInfoDao.getVegeNameById(vegeId);
+    }
 }

@@ -11,6 +11,7 @@ public class Variety {
 
     private int varietyId;
     private int vegeId;
+    private VegeInfo vegeInfo;
     private String varietyName;
     private String description;
     private String area;
@@ -32,6 +33,14 @@ public class Variety {
 
     public void setVegeId(int vegeId) {
         this.vegeId = vegeId;
+    }
+
+    public VegeInfo getVegeInfo() {
+        return vegeInfo;
+    }
+
+    public void setVegeInfo(VegeInfo vegeInfo) {
+        this.vegeInfo = vegeInfo;
     }
 
     public String getVarietyName() {

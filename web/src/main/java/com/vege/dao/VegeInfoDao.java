@@ -20,4 +20,6 @@ public interface VegeInfoDao {
     public int queryTotal(Map<String, String> condition);
 
     public Map<String,String> getVegeIdAndName();
+
+    public String getVegeNameById(String vegeId);
 }

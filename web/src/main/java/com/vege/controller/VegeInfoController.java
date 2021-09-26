@@ -123,4 +123,13 @@ public class VegeInfoController extends BaseController {
 
         return buildResponse(Constants.VEGE_CLASS_MAP);
     }
+
+    @RequestMapping(value = "/load_vegename.json", method = {RequestMethod.GET})
+    public Map getVegeNames(HttpServletRequest request, HttpServletResponse response) {
+        Map<String,String> vegeNames = vegeService.getVegeIdAndName();
+        JSONObject data = new JSONObject();
+        data.put("vegeNameMap",vegeNames);
+
+        return buildResponse(data);
+    }
 }
