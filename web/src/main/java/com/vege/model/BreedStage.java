@@ -28,15 +28,16 @@ public class BreedStage {
     @Column(name = "duration")
     private String duration;
 
-    @Column(name = "vegeid")
-    private Integer vegeId;
-
     @Column(name = "update_time")
     private Timestamp updateTime;
 
     //一对多
     @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
     private List<EnvParam> envParams = new LinkedList<>();
+
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "vegeid", referencedColumnName = "vegeid")
+    private VegeInfo vegeInfo;
 
     public Integer getBsId() {
         return bsId;
@@ -70,14 +71,6 @@ public class BreedStage {
         this.duration = duration;
     }
 
-    public Integer getVegeId() {
-        return vegeId;
-    }
-
-    public void setVegeId(Integer vegeId) {
-        this.vegeId = vegeId;
-    }
-
     public Timestamp getUpdateTime() {
         return updateTime;
     }
@@ -92,5 +85,13 @@ public class BreedStage {
 
     public void setEnvParams(List<EnvParam> envParams) {
         this.envParams = envParams;
+    }
+
+    public VegeInfo getVegeInfo() {
+        return vegeInfo;
+    }
+
+    public void setVegeInfo(VegeInfo vegeInfo) {
+        this.vegeInfo = vegeInfo;
     }
 }

@@ -20,4 +20,6 @@ public interface BreedStageService {
     public BreedStage queryById(String breedStageId);
 
     Map<String,String> getBsIdAndName();
+
+    Map<String,String> getBsIdAndNameByvegeId(String vegeId);
 }

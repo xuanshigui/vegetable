@@ -3,27 +3,45 @@ package com.vege.model;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "tb_vegeinfo")
 public class VegeInfo {
 
+    @Id
+    @GeneratedValue
+    @Column(name ="vegeid")
     private int vegeId;
 
+    @Column(name = "vegename")
     private String vegeName;
 
+    @Column(name = "alias")
     private String alias;
 
+    @Column(name = "imguuid")
     private String imgUuid;
 
+    @Column(name = "introduction")
     private String introduction;
 
+    @Column(name = "classification")
     private String classification;
 
+    @Column(name = "note")
     private String note;
 
+    @Column(name = "updatetime")
     private Timestamp updateTime;
+
+    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    private List<BreedStage> breedStages = new LinkedList<>();
 
     public int getVegeId() {
         return vegeId;
@@ -87,5 +105,13 @@ public class VegeInfo {
 
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public List<BreedStage> getBreedStages() {
+        return breedStages;
+    }
+
+    public void setBreedStages(List<BreedStage> breedStages) {
+        this.breedStages = breedStages;
     }
 }

@@ -65,4 +65,14 @@ public class BreedStageServiceImpl extends BaseService implements BreedStageServ
         }
         return idNameMap;
     }
+
+    @Override
+    public Map<String, String> getBsIdAndNameByvegeId(String vegeId) {
+        Map<String,String> idNameMap = new HashMap<>();
+        List<BreedStage> bsList = breedStageRepository.findAllByVegeInfo_VegeId(Integer.parseInt(vegeId));
+        for(BreedStage breedStage:bsList){
+            idNameMap.put(breedStage.getBsId().toString(),breedStage.getStageName());
+        }
+        return idNameMap;
+    }
 }

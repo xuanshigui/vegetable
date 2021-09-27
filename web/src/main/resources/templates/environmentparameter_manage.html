@@ -32,8 +32,11 @@
             </div>
             <div class="modal-body">
                 <form>
-                    参数名称：<input type="text" id="paramname" value=""><br>
-                    生长周期：<select id="breedstage" value="0">
+                    参数名称：<input type="text" id="paramname" value="" style="width: 300px;"><br>
+                    蔬菜名称：<select id="vegename" value="0" style="width:300px;">
+                                <option>请选择</option>
+                            </select><br>
+                    生长周期：<select id="breedstage" value="0" style="width: 300px;">
                                 <option>请选择</option>
                             </select><br>
                     参数类型：<label class="radio-inline">
@@ -41,10 +44,10 @@
                             </label><label class="radio-inline">
                                 <input type="radio" id="type2" value="1" name="type">地面参数
                             </label><br>
-                    参数单位：<input type="text" id="paramunit" value=""><br>
-                    参数上限：<input type="text" id="boundh" value=""><br>
-                    参数下限：<input type="text" id="boundl" value=""><br>
-                    备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：<textarea id="note" value="" style="width: 300px;height: 300px"></textarea><br>
+                    参数单位：<input type="text" id="paramunit" value="" style="width: 300px;"><br>
+                    参数上限：<input type="text" id="boundh" value="" style="width: 300px;"><br>
+                    参数下限：<input type="text" id="boundl" value="" style="width: 300px;"><br>
+                    备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：<textarea id="note" value="" style="width: 400px;height: 300px"></textarea><br>
                     <input type="hidden" id="epid">
                 </form>
             </div>
@@ -87,15 +90,15 @@
         $('#myModal').modal("toggle");
         $('#paramname').val("");
         //装载BreedStage
-        uri = "load_breedstage.json";
+        uri = "load_vegename.json";
         $.ajax({
             url: uri,
             method: "Get",
             dataType: "json",
             success: function (data) {
-                if (data.data.breedStageMap) {
-                    $.each(data.data.breedStageMap,function(index,item){
-                        $('#breedstage').append(new Option(item,index));
+                if (data.data.vegeNameMap) {
+                    $.each(data.data.vegeNameMap,function(index,item){
+                        $('#vegename').append(new Option(item,index));
                     });
                 }
             }
@@ -134,7 +137,16 @@
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
+                    //导入蔬菜列表
                     $('#paramname').val(data.data.paramName);
+                    if (data.data.vegeMap) {
+                        $.each(data.data.vegeMap,function(index,item){
+                            $('#vegename').append(new Option(item,index));
+                            if(data.data.vegeName==item){
+                                $('#vegename').val(index)
+                            }
+                        });
+                    }
                     if (data.data.breedStageMap) {
                         $.each(data.data.breedStageMap,function(index,item){
                             $('#breedstage').append(new Option(item,index));
@@ -213,6 +225,10 @@
             alert("请填写参数名称！");
             return;
         }
+        if("请选择"==$('#vegename').val()){
+            alert("请选择蔬菜名称！");
+            return;
+        }
         if("请选择"==$('#breedstage').val()){
             alert("请选择所属生长周期！");
             return;
@@ -234,11 +250,8 @@
             'paramUnit': $('#paramunit').val(),
             'note': $('#note').val()
         };
-        if($('#type1').val()==1){
-            data.type = 0;
-        }else {
-            data.type = 1;
-        }
+        var checked = $('[name=type]:checked').val();
+        data.type = checked;
         if ($('#modalAction').html() == '添加') {
             uri = "add_envparam.json";
         } else {
@@ -305,6 +318,11 @@
                     visible: true
                 },
                 {
+                    field: 'breedStage.vegeInfo.vegeName',
+                    title: '蔬菜名称',
+                    visible: true
+                },
+                {
                     field: 'breedStage.stageName',
                     title: '生长周期',
                     visible: true
@@ -368,9 +386,29 @@
             $('#table').bootstrapTable('refresh', getTable());
         });
     });
+
     $('[name=type]').change(function () {
         var checked = $('[name=type]:checked')
         console.log('选中的值:', checked.val())
+    })
+
+    $('#vegename').change(function () {
+        var vegeId = $('#vegename').val();
+        $.ajax({
+            url: "load_breedstage.json?vegeId=" + vegeId,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data.breedStageMap) {
+                    $.each(data.data.breedStageMap,function(index,item){
+                        $('#breedstage').append(new Option(item,index));
+                        if(data.data.stageName==item){
+                            $('#breedstage').val(index)
+                        }
+                    });
+                }
+            }
+        });
     })
 
     function reset(){

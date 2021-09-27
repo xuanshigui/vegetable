@@ -56,38 +56,6 @@ public class EnvParamServiceImpl extends BaseService implements EnvParamService 
         return envParamRepository.findAll(pageable);
     }
 
-    /*
-    @Override
-    public List<EnvParam> queryByConditions(Map<String, String> condition) {
-        String paramNameStr = condition.get("paramName");
-        String stageNameStr = condition.get("stageName");
-        if (paramNameStr != null && !paramNameStr.equals("")) {
-            paramNameStr = "%" + paramNameStr + "%";
-            if (stageNameStr != null && !stageNameStr.equals("")) {
-                stageNameStr = "%" + stageNameStr + "%";
-
-                int page = 0;
-                int size = 0;
-                String pageStr = condition.get("page");
-                if (pageStr != null && !pageStr.equals("")) {
-                    page = Integer.valueOf(pageStr);
-                }
-
-                String sizeStr = condition.get("size");
-                if (sizeStr != null && !sizeStr.equals("")) {
-                    size = Integer.valueOf(sizeStr);
-                }
-
-                if (page != 0 && size != 0) {
-                    int offset = (page - 1) * size;
-                    return envParamRepository.findAllByParaNameAndStageName(paramNameStr, stageNameStr,offset,size);
-                }
-            }
-        }
-        return null;
-    }
-
-    */
     @Override
     public long queryTotal(Map<String, String> condition) {
         return envParamRepository.count();

@@ -37,6 +37,7 @@
                     培养阶段定义：<textarea type="text" id="definition" value="" style="height: 300px;width: 500px;"></textarea><br>
                     培养阶段时长：<input type="text" id="duration" value=""><br>
                     <input type="hidden" id="bsid">
+                    <input type="hidden" id="vegeid">
                 </form>
             </div>
             <div class="modal-footer">
@@ -101,14 +102,18 @@
                 if (data) {
                     $('#modalAction').html("修改");
                     $('#stagename').val(data.data.stageName);
-                    if (data.data.vegeName) {
-                        $.each(data.data.vegeName,function(index,item){
+                    if (data.data.vegeNameMap) {
+                        $.each(data.data.vegeNameMap,function(index,item){
                             $('#vegename').append(new Option(item,index));
+                            if(data.data.vegeName==item){
+                                $('#vegename').val(index);
+                            }
                         });
                     }
                     $('#definition').val(data.data.definition);
                     $('#duration').val(data.data.duration);
                     $('#bsid').val(data.data.bsId);
+                    $('#vegeid').val(data.data.vegeInfo.vegeId);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -125,7 +130,7 @@
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#vegename_detail').text(data.data.vegeName);
+                    $('#vegename_detail').text(data.data.vegeInfo.vegeName);
                     $('#stagename_detail').text(data.data.stageName);
                     $('#definition_detail').text(data.data.definition);
                     $('#duration_detail').text(data.data.duration);
@@ -234,7 +239,7 @@
                     visible: true
                 },
                 {
-                    field: 'vegeName',
+                    field: 'vegeInfo.vegeName',
                     title: '所对应蔬菜名称',
                     visible: true
                 },

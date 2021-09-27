@@ -5,6 +5,7 @@ import com.vege.model.BreedStage;
 import com.vege.model.EnvParam;
 import com.vege.service.BreedStageService;
 import com.vege.service.EnvParamService;
+import com.vege.service.VegeInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,12 @@ public class EnvParamController extends BaseController {
 
     private final BreedStageService breedStageService;
 
+    private final VegeInfoService vegeInfoService;
+
     @Autowired
-    public EnvParamController(EnvParamService envparamService, BreedStageService breedStageService) {
+    public EnvParamController(EnvParamService envparamService, BreedStageService breedStageService,VegeInfoService vegeInfoService) {
         this.envparamService = envparamService;
+        this.vegeInfoService = vegeInfoService;
         this.breedStageService = breedStageService;
     }
 
@@ -114,6 +118,9 @@ public class EnvParamController extends BaseController {
         JSONObject data = new JSONObject();
         data.put("epId",envParam.getEpId());
         data.put("paramName",envParam.getParaName());
+        Map vegeMap = vegeInfoService.getVegeIdAndName();
+        data.put("vegeMap",vegeMap);
+        data.put("vegeName",envParam.getBreedStage().getVegeInfo().getVegeName());
         //传回所有BreedStage
         Map breedStages = breedStageService.getBsIdAndName();
         data.put("breedStageMap",breedStages);
@@ -134,9 +141,10 @@ public class EnvParamController extends BaseController {
     //loadBreedStage
     @RequestMapping(value = "/load_breedstage.json", method = {RequestMethod.GET})
     public Map getBreedStageNames(HttpServletRequest request, HttpServletResponse response) {
-        Map<String,String> breedStage = breedStageService.getBsIdAndName();
+        String vegeId = request.getParameter("vegeId");
+        Map<String,String> breedStageMap = breedStageService.getBsIdAndNameByvegeId(vegeId);
         JSONObject data = new JSONObject();
-        data.put("breedStageMap",breedStage);
+        data.put("breedStageMap",breedStageMap);
         return buildResponse(data);
     }
 }

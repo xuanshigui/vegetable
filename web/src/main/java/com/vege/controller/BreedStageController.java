@@ -2,6 +2,7 @@ package com.vege.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vege.model.BreedStage;
+import com.vege.model.VegeInfo;
 import com.vege.service.BreedStageService;
 import com.vege.service.VegeInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,12 @@ public class BreedStageController extends BaseController {
     @RequestMapping(value = "/add_breedstage.json", method = RequestMethod.POST)
     public Map add(HttpServletRequest request, HttpServletResponse response) {
 
-        List<String> fields = Arrays.asList( "stageName", "definition", "duration", "vegeid");
+        List<String> fields = Arrays.asList( "stageName", "definition", "duration", "vegeId");
         Map<String, String> data = buildData(request,fields);
         BreedStage breedStage = new BreedStage();
         breedStage.setStageName(data.get("stageName"));
+        VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
+        breedStage.setVegeInfo(vegeInfo);
         breedStage.setDefinition(data.get("definition"));
         breedStage.setDuration(data.get("duration"));
         breedStage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -61,6 +64,8 @@ public class BreedStageController extends BaseController {
         List<String> fields = Arrays.asList("bsId", "stageName", "vegeId", "definition", "duration");
         Map<String, String> data = buildData(request,fields);
         BreedStage breedStage = new BreedStage();
+        VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
+        breedStage.setVegeInfo(vegeInfo);
         breedStage.setStageName(data.get("stageName"));
         breedStage.setBsId(Integer.parseInt(data.get("bsId")));
         breedStage.setDefinition(data.get("definition"));
@@ -94,8 +99,10 @@ public class BreedStageController extends BaseController {
         BreedStage breedStage = breedstageService.queryById(breedstageid);
         JSONObject data = new JSONObject();
         data.put("stageName",breedStage.getStageName());
-        data.put("vegeName", vegeInfoService.getVegeIdAndName());
+        data.put("vegeNameMap", vegeInfoService.getVegeIdAndName());
+        data.put("vegeName", breedStage.getVegeInfo().getVegeName());
         data.put("bsId",breedStage.getBsId());
+        data.put("vegeInfo",breedStage.getVegeInfo());
         data.put("definition",breedStage.getDefinition());
         data.put("duration",breedStage.getDuration());
         data.put("updateTime",breedStage.getUpdateTime());
