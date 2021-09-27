@@ -226,7 +226,7 @@
                     $('#imgload').attr("src", data.data.imgPath);
                     $('#imgload').show()
                     //修改介绍
-                    $('#introduction').val(data.data.introduction);
+                    tinymce.activeEditor.setContent(data.data.introduction);
                     $('#note').val(data.data.note);
                     $('#vegeid').val(data.data.vegeId);
                     $('#imguuid').val(data.data.imgUuid);

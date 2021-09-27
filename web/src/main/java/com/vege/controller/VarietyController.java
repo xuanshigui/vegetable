@@ -1,7 +1,6 @@
 package com.vege.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.vege.constants.Constants;
 import com.vege.model.Variety;
 import com.vege.service.ImageService;
 import com.vege.service.VarietyService;
@@ -95,13 +94,15 @@ public class VarietyController extends BaseController {
         data.put("varietyId", variety.getVarietyId());
         data.put("vegeName", variety.getVegeInfo().getVegeName());
         data.put("varietyName", variety.getVarietyName());
+        Map<String,String> vegeNames = vegeInfoService.getVegeIdAndName();
+        data.put("vegeNameMap",vegeNames);
         data.put("description", variety.getDescription());
         data.put("area", variety.getArea());
         String imgPath = "";
         imgPath = imageService.queryPathByUuid(variety.getImgUuid());
         data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+imgPath);
         data.put("imgUuId", variety.getImgUuid());
-        data.put("source", Constants.VARIETY_SOURCE_MAP.get(variety.getSource()));
+        data.put("source", variety.getSource());
         return buildResponse(data);
     }
 

@@ -68,7 +68,7 @@ public class BreedStageController extends BaseController {
         breedStage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         BreedStage breedStageNew = breedstageService.update(breedStage);
         boolean flag = false;
-        if(!(breedStageNew.getBsId()==0)){
+        if(breedStageNew.getBsId()!=null){
             flag = true;
         }
         return buildResponse(flag);

@@ -18,4 +18,6 @@ public interface BreedStageService {
     public long queryTotal(Map<String, String> condition);
 
     public BreedStage queryById(String breedStageId);
+
+    Map<String,String> getBsIdAndName();
 }

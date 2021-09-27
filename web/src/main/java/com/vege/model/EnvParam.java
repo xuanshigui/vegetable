@@ -39,8 +39,8 @@ public class EnvParam {
     private Timestamp updateTime;
 
     //多对一
-    @ManyToOne(targetEntity = BreedStage.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "bsid", referencedColumnName = "bsid", insertable = false, unique = false)
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "bsid", referencedColumnName = "bsid")
     private BreedStage breedStage;
 
     public Integer getEpId() {

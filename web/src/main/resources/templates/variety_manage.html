@@ -76,7 +76,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
                     &times;
                 </button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
@@ -90,7 +90,7 @@
                     <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
                         <img src="" id="imgload" width="300" height="200" style="display: none"><br>
                     </div>
-                    基本介绍：<textarea id="introduction">${data.data.content}</textarea><br>
+                    基本介绍：<textarea id="introduction">${data.data.description}</textarea><br>
                     品种产地：<input type="text" id="area" value=""><br>
                     品种来源：<select id="source" value="">
                                 <option id="source_option_0", value="请选择">请选择</option>
@@ -123,12 +123,12 @@
                     图片展示：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
                                 <img src="" id="image_detail" style="width:300px;height: 200px;"></img>
                             </div><br>
-                    品种介绍：<label text="" id="introduction_detail" value=""></label><br>
+                    品种介绍：<br><label text="" id="introduction_detail" value=""></label><br>
                     品种产地：<label text="" id="area_detail" value=""></label><br>
                     品种来源：<label text="" id="source_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
                 </button>
             </div>
         </div><!-- /.modal-content -->
@@ -172,15 +172,18 @@
                 if (data) {
                     $('#modalAction').html("修改");
                     $('#varietyname').val(data.data.varietyName);
-                    $.each(data.vegeNameMap,function(index,item){
+                    $.each(data.data.vegeNameMap,function(index,item){
                         $('#vegename').append(new Option(item,index));
+                        if(data.data.vegeName==item){
+                            $('#vegename').val(index)
+                        }
                     });
                     $('#realname').val(data.data.realName);
                     //修改图片
                     $('#imgload').attr("src", data.data.imgPath);
                     $('#imgload').show()
                     //修改介绍
-                    $('#introduction').val(data.data.introduction);
+                    tinymce.activeEditor.setContent(data.data.description);
                     $('#area').val(data.data.area);
                     $('#source').val(data.data.source);
                     $('#varietyid').val(data.data.varietyId);
@@ -256,7 +259,13 @@
                     $('#varietyname_detail').text(data.data.varietyName);
                     $('#vegename_detail').text(data.data.vegeName);
                     $('#area_detail').text(data.data.area);
-                    $('#source_detail').text(data.data.source);
+                    if(data.data.source=="0"){
+                        $('#source_detail').text("选育品种");
+                    }else if(data.data.source=="1"){
+                        $('#source_detail').text("自有品种");
+                    }else{
+                        $('#source_detail').text("引进品种");
+                    }
                     $('#image_detail').attr("src",data.data.imgPath);
                     $('#introduction_detail').append("<div id='intro_child'>"+data.data.description+"</div>")
                     $('#detailModal').modal('toggle');
@@ -433,6 +442,10 @@
             $('#table').bootstrapTable('refresh', getTable());
         });
     });
+
+    function reset(){
+        window.location.reload();
+    }
 </script>
 </body>
 </html>

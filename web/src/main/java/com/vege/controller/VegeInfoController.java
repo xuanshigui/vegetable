@@ -129,7 +129,6 @@ public class VegeInfoController extends BaseController {
         Map<String,String> vegeNames = vegeService.getVegeIdAndName();
         JSONObject data = new JSONObject();
         data.put("vegeNameMap",vegeNames);
-
         return buildResponse(data);
     }
 }

@@ -5,14 +5,15 @@ import com.vege.model.BreedStage;
 import com.vege.service.BreedStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
-public class BreedStageServiceImpl implements BreedStageService {
+public class BreedStageServiceImpl extends BaseService implements BreedStageService {
 
 
     @Autowired
@@ -40,19 +41,8 @@ public class BreedStageServiceImpl implements BreedStageService {
 
     @Override
     public Page<BreedStage> query(Map<String, String> condition) {
-        int page = 0;
-        int size = 7;
-        String pageStr = condition.get("page");
-        if (pageStr != null && !pageStr.equals("")) {
-            page = Integer.valueOf(pageStr)-1;
-        }
 
-        String sizeStr = condition.get("size");
-        if (sizeStr != null && !sizeStr.equals("")) {
-            size = Integer.valueOf(sizeStr);
-        }
-
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = getPageable(condition);
         return breedStageRepository.findAll(pageable);
     }
 
@@ -64,5 +54,15 @@ public class BreedStageServiceImpl implements BreedStageService {
     @Override
     public BreedStage queryById(String breedStageId) {
         return breedStageRepository.findByBsId(Integer.parseInt(breedStageId));
+    }
+
+    @Override
+    public Map<String, String> getBsIdAndName() {
+        Map<String,String> idNameMap = new HashMap<>();
+        List<BreedStage> bsList = breedStageRepository.findAll();
+        for(BreedStage breedStage:bsList){
+            idNameMap.put(breedStage.getBsId().toString(),breedStage.getStageName());
+        }
+        return idNameMap;
     }
 }

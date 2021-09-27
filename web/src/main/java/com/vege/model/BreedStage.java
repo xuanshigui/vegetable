@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,8 +35,8 @@ public class BreedStage {
     private Timestamp updateTime;
 
     //一对多
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<EnvParam> envParams = new HashSet<>();
+    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    private List<EnvParam> envParams = new LinkedList<>();
 
     public Integer getBsId() {
         return bsId;
@@ -86,11 +86,11 @@ public class BreedStage {
         this.updateTime = updateTime;
     }
 
-    public Set<EnvParam> getEnvParams() {
+    public List<EnvParam> getEnvParams() {
         return envParams;
     }
 
-    public void setEnvParams(Set<EnvParam> envParams) {
+    public void setEnvParams(List<EnvParam> envParams) {
         this.envParams = envParams;
     }
 }

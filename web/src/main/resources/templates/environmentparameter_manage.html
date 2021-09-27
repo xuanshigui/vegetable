@@ -24,7 +24,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
                     &times;
                 </button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
@@ -32,18 +32,24 @@
             </div>
             <div class="modal-body">
                 <form>
-                    参数名称：<input type="text" id="envparamname" value=""><br>
-                    生长周期：<input type="text" id="breedstage" value=""><br>
-                    参数类型：<input type="text" id="type" value=""><br>
+                    参数名称：<input type="text" id="paramname" value=""><br>
+                    生长周期：<select id="breedstage" value="0">
+                                <option>请选择</option>
+                            </select><br>
+                    参数类型：<label class="radio-inline">
+                                <input type="radio" id="type1" value="0" name="type" checked="checked">土壤参数
+                            </label><label class="radio-inline">
+                                <input type="radio" id="type2" value="1" name="type">地面参数
+                            </label><br>
                     参数单位：<input type="text" id="paramunit" value=""><br>
                     参数上限：<input type="text" id="boundh" value=""><br>
                     参数下限：<input type="text" id="boundl" value=""><br>
-                    备   注：<input type="text" id="note" value=""><br>
-                    <input type="hidden" id="envparamid">
+                    备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：<textarea id="note" value="" style="width: 300px;height: 300px"></textarea><br>
+                    <input type="hidden" id="epid">
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
                 </button>
                 <button onclick="submitData()" type="button" class="btn btn-primary">
                     提交
@@ -57,7 +63,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                    参数名称：<label text="" id="envparamname_detail" value=""></label><br>
+                    参数名称：<label text="" id="paramname_detail" value=""></label><br>
                     生长周期：<label text="" id="breedstage_detail" value=""></label><br>
                     参数类型：<label text="" id="type_detail" value=""></label><br>
                     参数单位：<label text="" id="paramunit_detail" value=""></label><br>
@@ -79,13 +85,27 @@
 
     function insertData() {
         $('#myModal').modal("toggle");
-        $('#envparamname').val("");
-        $('#password').val("");
-        $('#realname').val("");
-        $('#phone').val("");
-        $('#email').val("");
+        $('#paramname').val("");
+        //装载BreedStage
+        uri = "load_breedstage.json";
+        $.ajax({
+            url: uri,
+            method: "Get",
+            dataType: "json",
+            success: function (data) {
+                if (data.data.breedStageMap) {
+                    $.each(data.data.breedStageMap,function(index,item){
+                        $('#breedstage').append(new Option(item,index));
+                    });
+                }
+            }
+        });
+        $('#type1').val("");
+        $('#boundh').val("");
+        $('#boundl').val("");
+        $('#paramunit').val("");
         $('#note').val("");
-        $('#envparamid').val("");
+        $('#epid').val("");
         $('#modalAction').html("添加");
     }
 
@@ -108,19 +128,31 @@
     function updateData(row_id) {
 
         $.ajax({
-            url: "query_envparambyid.json?envparamid=" + row_id,
+            url: "query_envparambyid.json?epId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
-                    $('#envparamname').val(data.data.envparamName);
-                    $('#realname').val(data.data.realName);
-                    $('#password').val(data.data.password);
-                    $('#phone').val(data.data.phone);
-                    $('#email').val(data.data.email);
+                    $('#paramname').val(data.data.paramName);
+                    if (data.data.breedStageMap) {
+                        $.each(data.data.breedStageMap,function(index,item){
+                            $('#breedstage').append(new Option(item,index));
+                            if(data.data.stageName==item){
+                                $('#breedstage').val(index)
+                            }
+                        });
+                    }
+                    if(data.data.type=="0"){
+                        $('#type1').attr("checked","checked");
+                    }else {
+                        $('#type2').attr("checked","checked");
+                    }
+                    $('#boundh').val(data.data.boundH);
+                    $('#boundl').val(data.data.boundL);
+                    $('#paramunit').val(data.data.paramUnit);
                     $('#note').val(data.data.note);
-                    $('#envparamid').val(data.data.envparamId);
+                    $('#epid').val(data.data.epId);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -131,19 +163,25 @@
     function queryDataById(row_id) {
 
         $.ajax({
-            url: "query_envparambyid.json?envparamid=" + row_id,
+            url: "query_envparambyid.json?epId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#envparamname_detail').text(data.data.envparamName);
-                    $('#realname_detail').text(data.data.realName);
-                    $('#password_detail').text(data.data.password);
-                    $('#phone_detail').text(data.data.phone);
-                    $('#email_detail').text(data.data.email);
+                    $('#paramname_detail').text(data.data.paramName);
+                    if(data.data.type=="0"){
+                        $('#type_detail').text("土壤参数");
+                    }else {
+                        $('#type_detail').text("地面参数");
+                    }
+                    $('#breedstage_detail').text(data.data.stageName);
+                    $('#boundh_detail').text(data.data.boundH);
+                    $('#boundl_detail').text(data.data.boundL);
+                    $('#paramunit_detail').text(data.data.paramUnit);
                     $('#note_detail').text(data.data.note);
-                    $('#envparamid').text(data.data.envparamId);
+                    $('#updatetime_detail').text(data.data.updateTime);
+                    $('#epid').text(data.data.epId);
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -157,7 +195,7 @@
             return;
         }
         $.ajax({
-            url: "delete_envparam.json?envparamid=" + row_id,
+            url: "delete_envparam.json?epId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
@@ -171,20 +209,41 @@
 
     function submitData() {
         var uri;
+        if(""==$('#paramname').val()||$('#paramname').val()==null){
+            alert("请填写参数名称！");
+            return;
+        }
+        if("请选择"==$('#breedstage').val()){
+            alert("请选择所属生长周期！");
+            return;
+        }
+        //判断是否为数字
+        var reg = /^[\+-]?(\d+\.?\d*|\.\d+|\d\.\d+e\+\d+)$/;
+        var boundH = $('#boundh').val();
+        var boundL = $('#boundl').val();
+        if(!reg.test(boundH)||!reg.test(boundL)){
+            alert("填写数字！");
+            return;
+        }
         var data = {
-            'envparamName': $('#envparamname').val(),
-            'envparamId': $('#envparamid').val(),
-            'password': $('#password').val(),
-            'realName': $('#realname').val(),
-            'phone': $('#phone').val(),
-            'email': $('#email').val(),
+            'paramName': $('#paramname').val(),
+            'bsId': $('#breedstage').val(),
+            'epId': $('#epid').val(),
+            'boundH': $('#boundh').val(),
+            'boundL': $('#boundl').val(),
+            'paramUnit': $('#paramunit').val(),
             'note': $('#note').val()
         };
+        if($('#type1').val()==1){
+            data.type = 0;
+        }else {
+            data.type = 1;
+        }
         if ($('#modalAction').html() == '添加') {
             uri = "add_envparam.json";
         } else {
             uri = "update_envparam.json";
-            data.id = $('#envparamId').val();
+            data.id = $('#epid').val();
         }
 
         $.ajax({
@@ -226,7 +285,7 @@
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 7,                       //每页的记录行数（*）
             pageList: [7, 12, 20],             //可供选择的每页的行数（*）
-            uniqueId: "envparamId",                     //每一行的唯一标识，一般为主键列
+            uniqueId: "epId",                     //每一行的唯一标识，一般为主键列
             showToggle: false,
             responseHandler: responseHandler,
             onLoadError: function (status) {
@@ -241,32 +300,46 @@
                     }
                 },
                 {
-                    field: 'envparamName',
+                    field: 'paraName',
                     title: '参数名称',
                     visible: true
                 },
                 {
-                    field: 'breedStageName',
+                    field: 'breedStage.stageName',
                     title: '生长周期',
                     visible: true
                 },
                 {
                     field: 'type',
                     title: '参数类型',
-                    visible: true
+                    visible: true,
+                    formatter:function (type) {
+                        var typeSig;
+                        if(type==false){
+                            typeSig = '<p>土壤参数</p>';
+                        }else {
+                            typeSig = '<p>地面参数</p>';
+                        }
+                        return typeSig;
+                    }
                 },
                 {
-                    field: 'paramunit',
+                    field: 'paramUnit',
                     title: '参数单位',
                     visible: true
                 },
                 {
-                    field: 'envparamId',
+                    field: 'updateTime',
+                    title: '更新时间',
+                    visible: true
+                },
+                {
+                    field: 'epId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.envparamId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.envparamId + ')" >删除</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.envparamId + ')" >详情</button>';
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.epId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.epId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.epId + ')" >详情</button>';
 
                         return operation;
                     }
@@ -284,7 +357,8 @@
 
     function getSearchParams() {
         var param = {};
-        param.envparamName = $('#envparamnamesearch').val();
+        param.paramName = $('#paramnamesearch').val();
+        param.stageName = $('#breedstagesearch').val();
         return param;
     }
 
@@ -294,6 +368,14 @@
             $('#table').bootstrapTable('refresh', getTable());
         });
     });
+    $('[name=type]').change(function () {
+        var checked = $('[name=type]:checked')
+        console.log('选中的值:', checked.val())
+    })
+
+    function reset(){
+        window.location.reload();
+    }
 </script>
 </body>
 </html>
