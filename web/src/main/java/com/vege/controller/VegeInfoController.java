@@ -6,6 +6,7 @@ import com.vege.model.VegeInfo;
 import com.vege.service.ImageService;
 import com.vege.service.VegeInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -88,11 +89,11 @@ public class VegeInfoController extends BaseController {
     public Map query(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("vegeName", "page", "size");
         Map<String, String> condition = buildData(request, fields);
-        List<VegeInfo> result = vegeService.query(condition);
-        int total = vegeService.queryTotal(condition);
+        Page<VegeInfo> result = vegeService.query(condition);
+        long total = vegeService.queryTotal(condition);
         JSONObject data = new JSONObject();
         data.put("total", total);
-        data.put("rows", result);
+        data.put("rows", result.getContent());
         return buildResponse(data);
     }
 
@@ -124,11 +125,5 @@ public class VegeInfoController extends BaseController {
         return buildResponse(Constants.VEGE_CLASS_MAP);
     }
 
-    @RequestMapping(value = "/load_vegename.json", method = {RequestMethod.GET})
-    public Map getVegeNames(HttpServletRequest request, HttpServletResponse response) {
-        Map<String,String> vegeNames = vegeService.getVegeIdAndName();
-        JSONObject data = new JSONObject();
-        data.put("vegeNameMap",vegeNames);
-        return buildResponse(data);
-    }
+
 }

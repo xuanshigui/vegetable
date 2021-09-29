@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class VegeInfo {
 
     @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
     private List<BreedStage> breedStages = new LinkedList<>();
+
+    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    private List<Variety> varieties = new ArrayList<>();
 
     public int getVegeId() {
         return vegeId;
@@ -113,5 +117,13 @@ public class VegeInfo {
 
     public void setBreedStages(List<BreedStage> breedStages) {
         this.breedStages = breedStages;
+    }
+
+    public List<Variety> getVarieties() {
+        return varieties;
+    }
+
+    public void setVarieties(List<Variety> varieties) {
+        this.varieties = varieties;
     }
 }

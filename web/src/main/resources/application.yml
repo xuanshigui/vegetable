@@ -24,3 +24,4 @@ spring:
     # 关闭模板缓存，便于调试
     cache: false
     suffix: .html
+    prefix: classpath:/templates/

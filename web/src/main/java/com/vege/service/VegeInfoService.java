@@ -1,8 +1,8 @@
 package com.vege.service;
 
 import com.vege.model.VegeInfo;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Map;
 
 public interface VegeInfoService {
@@ -13,11 +13,11 @@ public interface VegeInfoService {
 
     boolean update(VegeInfo data);
 
-    List<VegeInfo> query(Map<String, String> condition);
+    Page<VegeInfo> query(Map<String, String> condition);
 
     public Map<String, String> getVegeIdAndName();
 
-    int queryTotal(Map<String, String> condition);
+    long queryTotal(Map<String, String> condition);
 
     VegeInfo queryById(String vegeId);
 

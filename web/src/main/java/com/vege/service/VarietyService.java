@@ -1,8 +1,8 @@
 package com.vege.service;
 
 import com.vege.model.Variety;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Map;
 
 public interface VarietyService {
@@ -13,9 +13,9 @@ public interface VarietyService {
 
     boolean update(Variety data);
 
-    List<Variety> query(Map<String, String> condition);
+    Page<Variety> query(Map<String, String> condition);
 
-    int queryTotal(Map<String, String> condition);
+    long queryTotal(Map<String, String> condition);
 
     Variety queryById(String varietyId);
 }

@@ -1,23 +1,23 @@
 package com.vege.service.impl;
 
-import com.vege.dao.VegeInfoDao;
+import com.vege.dao.VegeInfoRepository;
 import com.vege.model.VegeInfo;
 import com.vege.service.VegeInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class VegeInfoServiceImpl implements VegeInfoService {
+public class VegeInfoServiceImpl extends BaseService implements VegeInfoService {
 
-    private final VegeInfoDao vegeInfoDao;
 
     @Autowired
-    public VegeInfoServiceImpl(VegeInfoDao vegeInfoDao) {
-        this.vegeInfoDao = vegeInfoDao;
-    }
+    private VegeInfoRepository vegeInfoRepository;
 
     @Override
     public boolean add(VegeInfo vegeInfo) {
@@ -27,41 +27,71 @@ public class VegeInfoServiceImpl implements VegeInfoService {
         if("".equals(vegeInfo.getAlias())||vegeInfo.getAlias()==null){
             vegeInfo.setAlias("无");
         }
-        return vegeInfoDao.add(vegeInfo);
+        try {
+            vegeInfoRepository.save(vegeInfo);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
     public boolean delete(String vegeId) {
-        return vegeInfoDao.delete(vegeId);
+
+        VegeInfo vegeInfo = vegeInfoRepository.findByVegeId(Integer.parseInt(vegeId));
+        try {
+            vegeInfoRepository.delete(vegeInfo);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
     public boolean update(VegeInfo vegeInfo) {
-        return vegeInfoDao.update(vegeInfo);
+        try {
+            vegeInfoRepository.save(vegeInfo);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
-    public List<VegeInfo> query(Map<String, String> condition) {
-        return vegeInfoDao.query(condition);
+    public Page<VegeInfo> query(Map<String, String> condition) {
+
+        String vegeName = condition.get("vegeName");
+        Pageable pageable = getPageable(condition);
+        if (vegeName != null && !vegeName.equals("")) {
+            vegeName = "%" + vegeName + "%";
+            return vegeInfoRepository.findAllByVegeNameLike(vegeName,pageable);
+        }
+        return vegeInfoRepository.findAll(pageable);
     }
 
     @Override
-    public int queryTotal(Map<String, String> condition) {
-        return vegeInfoDao.queryTotal(condition);
+    public long queryTotal(Map<String, String> condition) {
+        return vegeInfoRepository.count();
     }
 
     @Override
     public VegeInfo queryById(String vegeId){
-        return vegeInfoDao.queryById(vegeId);
+        return vegeInfoRepository.findByVegeId(Integer.parseInt(vegeId));
     }
 
     @Override
     public Map<String,String> getVegeIdAndName(){
-        return vegeInfoDao.getVegeIdAndName();
+        List<VegeInfo> vegeInfoList = vegeInfoRepository.findAll();
+        Map<String,String> vegeIdAndNameMap = new HashMap<>();
+        for(VegeInfo vegeInfo:vegeInfoList){
+            vegeIdAndNameMap.put(String.valueOf(vegeInfo.getVegeId()),vegeInfo.getVegeName());
+        }
+        return vegeIdAndNameMap;
     }
 
     @Override
     public String getVegeNameById(String vegeId){
-        return vegeInfoDao.getVegeNameById(vegeId);
+        VegeInfo vegeInfo = vegeInfoRepository.findByVegeId(Integer.parseInt(vegeId));
+        return vegeInfo.getVegeName();
     }
 }

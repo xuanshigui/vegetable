@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <script>
@@ -86,6 +86,8 @@
                 <form>
                     品种名称：<input type="text" id="varietyname" value=""><br>
                     蔬菜名称：<select id="vegename" value=""><option value="0">请选择</option></select><br>
+                    种植模式：<div id="cultivatemode" style="padding-left: 66px"></div>
+
                     上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
                     <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
                         <img src="" id="imgload" width="300" height="200" style="display: none"><br>
@@ -151,6 +153,18 @@
                         $('#vegename').append(new Option(item,index));
                     });
                 }
+
+                if (data.data.modeNameMap) {
+                    $.each(data.data.modeNameMap,function(index,item){
+                        $('#cultivatemode').append("<label>"
+                            + "<input name='items' type='checkbox' value="
+                            + index
+                            + ">"
+                            + item
+                            +"</label>" + "&nbsp;&nbsp;");
+                    });
+                }
+
             }
         });
         $('#area').val("");
@@ -178,6 +192,25 @@
                             $('#vegename').val(index)
                         }
                     });
+                    if (data.data.modeNameMap) {
+                        $.each(data.data.modeNameMap,function(index,item){
+                            $('#cultivatemode').append("<label>"
+                                + "<input name='items' id = '"+ index +"' type='checkbox' value='"
+                                + index
+                                + ">"
+                                + item
+                                +"</label>" + "&nbsp;&nbsp;");
+
+                        });
+                    }
+                    $("input[name='items']")
+                    // $.each(data.data.cultivatemodes, function (i) {
+                    //
+                    //     if (data.data.cultivatemodes[i].cmId ==) {
+                    //
+                    //     }
+                    // });
+
                     $('#realname').val(data.data.realName);
                     //修改图片
                     $('#imgload').attr("src", data.data.imgPath);
@@ -313,6 +346,10 @@
             alert("请选择品种来源！");
             return;
         }
+        var cultivateModes="";
+        $("input[name=items]:checkbox:checked").each(function(){
+            cultivateModes = cultivateModes + $(this).val() + ",";
+        });
         var data = {
             'varietyName': $('#varietyname').val(),
             'varietyId': $('#varietyid').val(),
@@ -320,7 +357,9 @@
             'varietyImg': $('#imgpath').val(),
             'introduction': content,
             'area': $('#area').val(),
-            'source': $('#source').val()
+            'source': $('#source').val(),
+            'imguuid': $('#imguuid').val(),
+            "cultivateModes": cultivateModes
         };
         if ($('#modalAction').html() == '添加') {
             uri = "add_variety.json";

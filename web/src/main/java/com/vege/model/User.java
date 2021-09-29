@@ -1,21 +1,32 @@
 package com.vege.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import javax.persistence.*;
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "tb_sysuser")
 public class User {
 
+    @Id
+    @GeneratedValue
+    @Column(name ="userid")
     private Integer userId;
+
     private String userName;
+
     private String password;
     private String salt;
+
     private String realName;
+
     private String phone;
+
     private String email;
+
     private String note;
 
     public Integer getUserId() {
@@ -49,8 +60,6 @@ public class User {
     public void setSalt(String salt) {
         this.salt = salt;
     }
-
-
 
     public String getPhone() {
         return phone;
