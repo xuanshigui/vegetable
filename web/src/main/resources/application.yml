@@ -25,3 +25,4 @@ spring:
     cache: false
     suffix: .html
     prefix: classpath:/templates/
+    mode: LEGACYHTML5

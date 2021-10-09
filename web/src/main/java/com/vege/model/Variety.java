@@ -41,7 +41,7 @@ public class Variety {
     @Column(name = "timestamp")
     private Timestamp timestamp;
 
-    @ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.LAZY)
     private List<CultivateMode> cultivateModes = new ArrayList<>();
 
     public int getVarietyId() {

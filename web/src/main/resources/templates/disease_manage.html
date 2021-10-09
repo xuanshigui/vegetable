@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- 按钮触发模态框 -->
+<button class="btn btn-primary" data-toggle="modal" onclick="insertData()">
+    添加数据
+</button>
+
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    疾病名称：<input type="text" id="diseasenamesearch">
+    蔬菜名称：<input type="text" id="vegenamesearch">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+
+</div>
+
+<table id="table">
+</table>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    疾病名称：<input type="text" id="diseasename" value=""><br>
+                    蔬菜名称：<select id="vegename" value=""><option value="0">请选择</option></select><br>
+                    疾病图片：
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div id="imgborder0" style="height: 210px;width: 320px; margin-left: 100px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                <input type="file" id="imgupload0" value="0" onchange="uploadImg(this)" style="display: none">
+                                <img id="imgload0" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200" onclick="changeImg(0)">
+                                <input type="hidden" id="imgpath0">
+                                <input type="hidden" id="imguuid0">
+                            </div>
+                            <div id="imgborder1" style="height: 210px;width: 320px; margin-left: 10px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                <input type="file" id="imgupload1" value="1" onchange="uploadImg(this)" style="display: none">
+                                <img id="imgload1" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200" onclick="changeImg(1)">
+                                <input type="hidden" id="imgpath1">
+                                <input type="hidden" id="imguuid1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="imgborder2" style="height: 210px;width: 320px;  margin-left: 100px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                <input type="file" id="imgupload2" value="2" onchange="uploadImg(this)" style="display: none">
+                                <img id="imgload2" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200"  onclick="changeImg(2)">
+                                <input type="hidden" id="imgpath2">
+                                <input type="hidden" id="imguuid2">
+                            </div>
+                            <div id="imgborder3" style="height: 210px;width: 320px;  margin-left: 10px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                <input type="file" id="imgupload3" value="3" onchange="uploadImg(this)" style="display: none">
+                                <img id="imgload3" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200"  onclick="changeImg(3)">
+                                <input type="hidden" id="imgpath3">
+                                <input type="hidden" id="imguuid3">
+                            </div>
+                        </div>
+                    </div>
+                    疾病病原：<textarea id="etiology" value="" style="width: 700px;height: 200px;" ></textarea><br>
+                    发病规律：<textarea id="regularity" value="" style="width: 700px;height: 200px;"></textarea><br>
+                    疾病类型：<select id="diseasetype" value=""><option value="0">请选择</option></select><br>
+
+                    <input type="hidden" id="diseaseid">
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
+                </button>
+                <button onclick="submitData()" type="button" class="btn btn-primary">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade bd-example-modal-lg" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                    疾病名称：<label text="" id="diseasename_detail" value=""></label><br>
+                    蔬菜名称：<label text="" id="vegename_detail" value=""></label><br>
+                    疾病图片：<div class="container-fluid" id = "imgcontainer">
+                                <div class="row">
+                                    <div id="imgborder4" style="height: 200px;width: 300px; margin:5px; display: inline-block; ">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image0_detail" style="width:300px;height: 200px;">
+                                    </div>
+                                    <div id="imgborder5" style="height: 200px;width: 300px; margin:5px; display: inline-block; ">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image1_detail" style="width:300px;height: 200px;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="imgborder6" style="height: 200px;width: 300px; margin:5px; display: inline-block; ">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image2_detail" style="width:300px;height: 200px;">
+                                    </div>
+                                    <div id="imgborder7" style="height: 200px;width: 300px; margin:5px; display: inline-block;">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image3_detail" style="width:300px; height: 200px;">
+                                    </div>
+                                </div>
+                            </div><br>
+                    疾病病原：<label text="" id="etiology_detail" value=""></label><br>
+                    发病规律：<label text="" id="regularity_detail" value=""></label><br>
+                    疾病类型：<label text="" id="diseasetype_detail" value=""></label><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    function insertData() {
+
+        $('#myModal').modal("toggle");
+        $('#diseasename').val("");
+        //装载蔬菜名称，选择
+        uri = "load_diseasetype.json";
+        $.ajax({
+            url: uri,
+            method: "Get",
+            dataType: "json",
+            success: function (data) {
+                if (data.data.vegeNameMap) {
+                    $.each(data.data.vegeNameMap,function(index,item){
+                        $('#vegename').append(new Option(item,index));
+                    });
+                }
+
+                if (data.data.diseaseTypeMap) {
+                    $.each(data.data.diseaseTypeMap,function(index,item){
+                        $('#diseasetype').append(new Option(item,index));
+                    });
+                }
+
+            }
+        });
+        $('#etiology').val("");
+        $('#regularity').val("");
+        $('#diseaseid').val("");
+        $('#modalAction').html("添加");
+    }
+
+
+    function updateData(row_id) {
+
+        //后台数据回传
+        $.ajax({
+            url: "query_diseasebyid.json?diseaseId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("修改");
+                    $('#diseasename').val(data.data.diseaseName);
+                    $.each(data.data.vegeNameMap,function(index,item){
+                        $('#vegename').append(new Option(item,index));
+                        if(data.data.vegeName==item){
+                            $('#vegename').val(index);
+                        }
+                    });
+                    if (data.data.diseaseTypeMap) {
+                        $.each(data.data.diseaseTypeMap,function(index,item){
+                            $('#diseasetype').append(new Option(item,index));
+                            if(data.data.diseaseType == index){
+                                $('#diseasetype').val(index);
+                            }
+                        });
+                    }
+                    //修改图片
+                    if(data.data.imgPath0){
+                        $('#imgload0').attr("src", data.data.imgPath0);
+                        $('#imguuid0').val(data.data.imgUuid0);
+                        $('#imgpath0').val(data.data.imgPath0);
+                    }
+                    if(data.data.imgPath1){
+                        $('#imgload1').attr("src", data.data.imgPath1);
+                        $('#imguuid1').val(data.data.imgUuid1);
+                        $('#imgpath1').val(data.data.imgPath1);
+                    }
+                    if(data.data.imgPath2){
+                        $('#imgload2').attr("src", data.data.imgPath2);
+                        $('#imguuid2').val(data.data.imgUuid2);
+                        $('#imgpath2').val(data.data.imgPath2);
+                    }
+                    if(data.data.imgPath3){
+                        $('#imgload3').attr("src", data.data.imgPath3);
+                        $('#imguuid3').val(data.data.imgUuid3);
+                        $('#imgpath3').val(data.data.imgPath3);
+                    }
+
+                    $('#etiology').val(data.data.etiology);
+                    $('#regularity').val(data.data.regularity);
+                    $('#diseasetype').val(data.data.diseaseType);
+                    //id回传
+                    $('#diseaseid').val(data.data.diseaseId);
+                    $('#myModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+    
+    function changeImg(flag) {
+        if(flag==0){
+            $('#imgupload0').click();
+        }else if(flag==1){
+            $('#imgupload1').click();
+        }else if(flag==2){
+            $('#imgupload2').click();
+        }else {
+            $('#imgupload3').click();
+        }
+
+    }
+
+    function uploadImg(flag){
+        var file;//获取选择的文件
+        if($(flag).attr("id")=="imgupload0"){
+            file = $('#imgupload0')[0].files[0];
+        }else if($(flag).attr("id")=="imgupload1"){
+            file = $('#imgupload1')[0].files[0];
+        }else if($(flag).attr("id")=="imgupload2"){
+            file = $('#imgupload2')[0].files[0];
+        }else {
+            file = $('#imgupload3')[0].files[0];
+        }
+        var formData=new FormData();//构建form表单
+        formData.append("file",file);
+        var name = file.name;
+        // 获取文件后缀
+        var sfIndex=name.lastIndexOf(".");//后缀位置的.的位置
+        var ext= name.substring(sfIndex,name.length).toUpperCase();//截取后缀
+        console.log(ext)
+        // 文件大小  单位:M
+        var size=parseInt(file.size/1024/1024);
+        //判断文件类型,后台也要做判断
+        if(ext !='.PNG' && ext !='.GIF' && ext !='.JPG' && ext !='.JPEG' && ext !='.BMP'){
+            vmToast.show("文件类型错误,请上传正确图片类型(png、gif、jpg、jpeg、bmp)");
+            return false;
+        }
+        if(size>10){//文件过大,部分服务器流量有限制,而且后续打开会比较慢
+            alert("文件已大于10M，请换个小点的图片");
+            return false;
+        }
+
+        $.ajax({
+            url: "uploadimg",
+            method: "POST",
+            data: formData,
+            contentType:false,
+            dataType: "json",
+            processData: false,
+            success: function (data) {
+                if (data) {
+                    console.log("回显了图片");
+                    if($(flag).attr("id")=="imgupload0"){
+                        $('#imgpath0').val(data.data.path);
+                        var imgPath = data.data.path;
+                        $('#imgload0').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                        $('#imgload0').show();
+                        $('#imguuid0').val('');
+                    }else if($(flag).attr("id")=="imgupload1"){
+                        $('#imgpath1').val(data.data.path);
+                        var imgPath = data.data.path;
+                        $('#imgload1').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                        $('#imgload1').show();
+                        $('#imguuid1').val('');
+                    }else if($(flag).attr("id")=="imgupload2"){
+                        $('#imgpath2').val(data.data.path);
+                        var imgPath = data.data.path;
+                        $('#imgload2').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                        $('#imgload2').show();
+                        $('#imguuid2').val('');
+                    }else{
+                        $('#imgpath3').val(data.data.path);
+                        var imgPath = data.data.path;
+                        $('#imgload3').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                        $('#imgload3').show();
+                        $('#imguuid3').val('');
+                    }
+                }
+            },
+            error: function(ajaxobj) { //有异常
+                alert("异常："+ajaxobj.responseText);
+            }
+        });
+    }
+
+    function queryDataById(row_id) {
+
+        $.ajax({
+            url: "query_diseasebyid.json?diseaseId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("详情");
+                    $('#diseasename_detail').text(data.data.diseaseName);
+                    $('#vegename_detail').text(data.data.vegeName);
+                    //载入图片
+                    $('#image0_detail').attr("src",data.data.imgPath0);
+                    $('#image1_detail').attr("src",data.data.imgPath1);
+                    $('#image2_detail').attr("src",data.data.imgPath2);
+                    $('#image3_detail').attr("src",data.data.imgPath3);
+
+                    $('#etiology_detail').text(data.data.etiology);
+                    $('#regularity_detail').text(data.data.regularity);
+                    if(data.data.diseaseType==0){
+                        $('#diseasetype_detail').text("病害");
+                    }else {
+                        $('#diseasetype_detail').text("虫害");
+                    }
+                    $('#updatetime_detail').text(data.data.updateTime);
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+
+    function deleteData(row_id) {
+        if (!confirm("确定删除吗？")) {
+            return;
+        }
+        $.ajax({
+            url: "delete_disease.json?diseaseId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function submitData() {
+        var uri;
+        var vegeName = $('#vegename').val();
+        if(""==$('#diseasename').val()||$('#diseasename').val()==null){
+            alert("请填写疾病名称！");
+            return;
+        }
+        if("0"==vegeName||vegeName==0){
+            alert("请选择蔬菜名称！");
+            return;
+        }
+
+        var data = {
+            'diseaseName': $('#diseasename').val(),
+            'diseaseId': $('#diseaseid').val(),
+            'vegeId': $('#vegename').val(),
+            'etiology': $('#etiology').val(),
+            'regularity': $('#regularity').val(),
+            'diseaseType': $('#diseasetype').val(),
+            'diseaseImg0': $('#imgpath0').val(),
+            'diseaseImg1': $('#imgpath1').val(),
+            'diseaseImg2': $('#imgpath2').val(),
+            'diseaseImg3': $('#imgpath3').val(),
+            'imguuid0': $('#imguuid0').val(),
+            'imguuid1': $('#imguuid1').val(),
+            'imguuid2': $('#imguuid2').val(),
+            'imguuid3': $('#imguuid3').val(),
+            'diseaseType':$('#diseasetype').val(),
+        };
+        if ($('#modalAction').html() == '添加') {
+            uri = "add_disease.json";
+        } else {
+            uri = "update_disease.json";
+        }
+
+        $.ajax({
+            url: uri,
+            method: "Post",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                if (data.data) {
+                    alert("成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_disease.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "diseaseId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'diseaseName',
+                    title: '疾病名称',
+                    visible: true
+                },
+                {
+                    field: 'vegeInfo.vegeName',
+                    title: '蔬菜名称',
+                    visible: true
+                },
+                {
+                    field: 'diseaseType',
+                    title: '疾病类型',
+                    visible: true,
+                    formatter:function (type) {
+                        var typeSig;
+                        if(type==0){
+                            typeSig = '<p>病害</p>';
+                        }else {
+                            typeSig = '<p>虫害</p>';
+                        }
+                        return typeSig;
+                    }
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    visible: true
+                },
+                {
+                    field: 'diseaseId',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.diseaseId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.diseaseId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.diseaseId + ')" >详情</button>';
+
+                        return operation;
+                    }
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.diseaseName = $('#diseasenamesearch').val();
+        param.vegeName = $('#vegenamesearch').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+
+    function reset(){
+        window.location.reload();
+    }
+</script>
+</body>
+</html>

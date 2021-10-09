@@ -47,6 +47,12 @@ public class VegeInfo {
     @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
     private List<Variety> varieties = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    private List<VegeKnowledge> vegeKnowledges = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    private List<Disease> diseases = new ArrayList<>();
+
     public int getVegeId() {
         return vegeId;
     }
@@ -125,5 +131,21 @@ public class VegeInfo {
 
     public void setVarieties(List<Variety> varieties) {
         this.varieties = varieties;
+    }
+
+    public List<VegeKnowledge> getVegeKnowledges() {
+        return vegeKnowledges;
+    }
+
+    public void setVegeKnowledges(List<VegeKnowledge> vegeKnowledges) {
+        this.vegeKnowledges = vegeKnowledges;
+    }
+
+    public List<Disease> getDiseases() {
+        return diseases;
+    }
+
+    public void setDiseases(List<Disease> diseases) {
+        this.diseases = diseases;
     }
 }

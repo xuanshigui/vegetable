@@ -93,6 +93,7 @@ public class CultivateModeController extends BaseController {
         JSONObject data = new JSONObject();
         data.put("cmId",cultivateMode.getCmId());
         data.put("cultivateModeName",cultivateMode.getCultivateModeName());
+        data.put("varietyList",cultivateMode.getVarieties());
         data.put("note",cultivateMode.getNote());
         data.put("updateTime",cultivateMode.getUpdateTime());
         return buildResponse(data);

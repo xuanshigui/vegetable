@@ -10,7 +10,7 @@
 </button>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    种植阶段名称：<input type="text" id="cultivatemodenamesearch">
+    类别名称：<input type="text" id="knowledgecategorynamesearch">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -31,9 +31,9 @@
             </div>
             <div class="modal-body">
                 <form>
-                    种植模式名称：<input type="text" id="cultivatemodename" value="" style="width: 300px;"><br>
-                    种植模式说明：<textarea id="note" value="" style="width: 400px;height: 300px"></textarea><br>
-                    <input type="hidden" id="cmid">
+                    知识分类名称：<input type="text" id="knowledgecategoryname" value="" style="width: 300px;"><br>
+                    知识分类说明：<textarea id="introduction" value="" style="width: 400px;height: 300px"></textarea><br>
+                    <input type="hidden" id="kcid">
                 </form>
             </div>
             <div class="modal-footer">
@@ -51,9 +51,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                    种植模式名称：<label text="" id="cultivatemodename_detail" value=""></label><br>
-                    种植模式说明：<label text="" id="note_detail" value=""></label><br>
-                    关联品种：<label id="variety_detail"></label><br>
+                    知识分类名称：<label text="" id="knowledgecategoryname_detail" value=""></label><br>
+                    知识分类说明：<label text="" id="introduction_detail" value=""></label><br>
                     更新时间：<label text="" id="updatetime_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
@@ -69,25 +68,25 @@
 
     function insertData() {
         $('#myModal').modal("toggle");
-        $('#cultivatemodename').val("");
-        $('#note').val("");
-        $('#cmid').val("");
+        $('#knowledgecategoryname').val("");
+        $('#introduction').val("");
+        $('#kcid').val("");
         $('#modalAction').html("添加");
     }
 
     function updateData(row_id) {
 
         $.ajax({
-            url: "query_cultivatemodebyid.json?cmId=" + row_id,
+            url: "query_knowledgecategorybyid.json?kcId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
                     //导入蔬菜列表
-                    $('#cultivatemodename').val(data.data.cultivateModeName);
-                    $('#note').val(data.data.note);
-                    $('#cmid').val(data.data.cmId);
+                    $('#knowledgecategoryname').val(data.data.knowledgeCategoryName);
+                    $('#introduction').val(data.data.introduction);
+                    $('#kcid').val(data.data.kcId);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -98,19 +97,16 @@
     function queryDataById(row_id) {
 
         $.ajax({
-            url: "query_cultivatemodebyid.json?cmId=" + row_id,
+            url: "query_knowledgecategorybyid.json?kcId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#cultivatemodename_detail').text(data.data.cultivateModeName);
-                    $.each(data.data.varietyList, function(index, item){
-                        $('#variety_detail').text(item.varietyName);
-                    });
-                    $('#note_detail').text(data.data.note);
+                    $('#knowledgecategoryname_detail').text(data.data.knowledgeCategoryName);
+                    $('#introduction_detail').text(data.data.introduction);
                     $('#updatetime_detail').text(data.data.updateTime);
-                    $('#cmid').text(data.data.cmId);
+                    $('#kcid').text(data.data.kcId);
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -124,7 +120,7 @@
             return;
         }
         $.ajax({
-            url: "delete_cultivatemode.json?cmId=" + row_id,
+            url: "delete_knowledgecategory.json?kcId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
@@ -138,26 +134,26 @@
 
     function submitData() {
         var uri;
-        if(""==$('#cultivatemodename').val()||$('#cultivatemodename').val()==null){
-            alert("请填写种植模式名称！");
+        if(""==$('#knowledgecategoryname').val()||$('#knowledgecategoryname').val()==null){
+            alert("请填写知识分类名称！");
             return;
         }
-        if(""==$('#note').val()||$('#note').val()==null){
-            alert("请填写种植模式介绍！");
+        if(""==$('#introduction').val()||$('#introduction').val()==null){
+            alert("请填写知识分类介绍！");
             return;
         }
         var data = {
-            'cultivateModeName': $('#cultivatemodename').val(),
-            'cmId': $('#cmid').val(),
-            'note': $('#note').val()
+            'knowledgeCategoryName': $('#knowledgecategoryname').val(),
+            'kcId': $('#kcid').val(),
+            'introduction': $('#introduction').val()
         };
 
 
         if ($('#modalAction').html() == '添加') {
-            uri = "add_cultivatemode.json";
+            uri = "add_knowledgecategory.json";
         } else {
-            uri = "update_cultivatemode.json";
-            data.id = $('#cmid').val();
+            uri = "update_knowledgecategory.json";
+            data.id = $('#kcid').val();
         }
 
         $.ajax({
@@ -186,7 +182,7 @@
             cache: false,
             striped: true,                              //是否显示行间隔色
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            url: "query_cultivatemode.json",
+            url: "query_knowledgecategory.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
             queryParams: function queryParams(params) {
@@ -199,7 +195,7 @@
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 7,                       //每页的记录行数（*）
             pageList: [7, 12, 20],             //可供选择的每页的行数（*）
-            uniqueId: "cmId",                     //每一行的唯一标识，一般为主键列
+            uniqueId: "epId",                     //每一行的唯一标识，一般为主键列
             showToggle: false,
             responseHandler: responseHandler,
             onLoadError: function (status) {
@@ -214,8 +210,8 @@
                     }
                 },
                 {
-                    field: 'cultivateModeName',
-                    title: '种植模式名称',
+                    field: 'knowledgeCategoryName',
+                    title: '知识分类名称',
                     visible: true
                 },
                 {
@@ -224,12 +220,12 @@
                     visible: true
                 },
                 {
-                    field: 'cmId',
+                    field: 'kcId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.cmId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.cmId + ')" >删除</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.cmId + ')" >详情</button>';
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.kcId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.kcId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.kcId + ')" >详情</button>';
 
                         return operation;
                     }
@@ -247,7 +243,7 @@
 
     function getSearchParams() {
         var param = {};
-        param.cultivateModeName = $('#cultivatemodenamesearch').val();
+        param.knowledgeCategoryName = $('#knowledgecategorynamesearch').val();
         return param;
     }
 

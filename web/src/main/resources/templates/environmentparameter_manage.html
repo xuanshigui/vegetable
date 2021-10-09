@@ -394,6 +394,8 @@
 
     $('#vegename').change(function () {
         var vegeId = $('#vegename').val();
+        $('#breedstage').empty();
+        $('#breedstage').append(new Option("请选择",0));
         $.ajax({
             url: "load_breedstage.json?vegeId=" + vegeId,
             method: "GET",

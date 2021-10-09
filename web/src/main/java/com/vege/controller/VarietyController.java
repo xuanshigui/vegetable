@@ -75,20 +75,26 @@ public class VarietyController extends BaseController {
 
     @RequestMapping(value = "/update_variety.json", method = RequestMethod.POST)
     public Map update(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("varietyId", "varietyName", "varietyImg", "imguuid", "introduction", "vegeId", "area", "source");
+        List<String> fields = Arrays.asList("varietyId", "varietyName", "varietyImg", "imguuid", "introduction", "vegeId", "area", "source", "cultivateModes");
         Map<String, String> data = buildData(request,fields);
         Variety variety = varietyService.queryById(data.get("varietyId"));
         VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
         variety.setVegeInfo(vegeInfo);
         variety.setVarietyName(data.get("varietyName"));
-        if(data.size()==8){
-            //旧的图片保存
-            variety.setImgUuid(data.get("imguuid"));
-        }else {
+        if (data.get("imguuid")==null||data.get("imguuid").equals("")){
             //建立图片
             String imgUuid = imageService.add(data.get("varietyImg"),variety.getClass().getSimpleName());
             variety.setImgUuid(imgUuid);
+        } else {
+            variety.setImgUuid(data.get("imguuid"));
         }
+        //添加养殖模式
+        String[] cm = data.get("cultivateModes").split(",");
+        List<CultivateMode> cultivateModeList = new ArrayList<>();
+        for(String cmId:cm){
+            cultivateModeList.add(cultivateModeService.queryById(cmId));
+        }
+        variety.setCultivateModes(cultivateModeList);
         variety.setDescription(data.get("introduction"));
         variety.setArea(data.get("area"));
         variety.setSource(data.get("source"));
@@ -124,7 +130,7 @@ public class VarietyController extends BaseController {
         String imgPath = "";
         imgPath = imageService.queryPathByUuid(variety.getImgUuid());
         data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+imgPath);
-        data.put("imgUuId", variety.getImgUuid());
+        data.put("imgUuid", variety.getImgUuid());
         data.put("source", variety.getSource());
 
         //载入列表选项

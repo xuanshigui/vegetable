@@ -1,12 +1,15 @@
 package com.vege.service.impl;
 
 import com.vege.dao.CultivateModeRepository;
+import com.vege.dao.VarietyRepository;
 import com.vege.model.CultivateMode;
+import com.vege.model.Variety;
 import com.vege.service.CultivateModeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,15 +20,25 @@ public class CultivateModeServiceImpl extends BaseService implements CultivateMo
     @Autowired
     CultivateModeRepository cultivateModeRepository;
 
+    @Autowired
+    VarietyRepository varietyRepository;
+
     @Override
     public CultivateMode add(CultivateMode cultivateMode) {
         return cultivateModeRepository.save(cultivateMode);
     }
 
+    @Transactional
     @Override
     public boolean delete(String cmId) {
         try {
-            cultivateModeRepository.deleteById(Integer.parseInt(cmId));
+            CultivateMode cultivateMode = cultivateModeRepository.findByCmId(Integer.parseInt(cmId));
+            List<Variety> varietyList = cultivateMode.getVarieties();
+            for(Variety variety: varietyList){
+                variety.getCultivateModes().remove(cultivateMode);
+                varietyRepository.save(variety);
+            }
+            cultivateModeRepository.delete(cultivateMode);
             return true;
         }catch (Exception e){
             return false;

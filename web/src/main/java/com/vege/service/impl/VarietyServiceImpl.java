@@ -21,6 +21,7 @@ public class VarietyServiceImpl extends BaseService implements VarietyService {
     public boolean add(Variety variety) {
 
         try {
+
             varietyRepository.save(variety);
             return true;
         }catch (Exception e){

@@ -13,11 +13,19 @@ public class Constants {
 
     public static Map<String,String> VARIETY_SOURCE_MAP;
 
+    public static Map<String,String> COMPANY_TYPE_MAP;
+
+    public static Map<String,String> DISEASE_TYPE_MAP;
+
+    public static Map<String,String> SYMPTOM_LOCATION_MAP;
+
     static{
         //ENTITY_TABLE_MAP
         ENTITY_TABLE_MAP = new HashMap<String, String>();
         ENTITY_TABLE_MAP.put("VegeInfo","tb_vegeinfo");
         ENTITY_TABLE_MAP.put("Variety","tb_variety");
+        ENTITY_TABLE_MAP.put("Company","tb_company");
+        ENTITY_TABLE_MAP.put("Disease","tb_disease");
 
         //VEGE_CLASS_MAP
         VEGE_CLASS_MAP = new HashMap<String,String>();
@@ -57,5 +65,26 @@ public class Constants {
         VARIETY_SOURCE_MAP.put("0","选育品种");
         VARIETY_SOURCE_MAP.put("1","自有品种");
         VARIETY_SOURCE_MAP.put("2","引进品种");
+
+        //COMPANY_TYPE_MAP
+        COMPANY_TYPE_MAP = new HashMap<>();
+        COMPANY_TYPE_MAP.put("0","国有企业");
+        COMPANY_TYPE_MAP.put("1","私营企业");
+        COMPANY_TYPE_MAP.put("2","集体企业");
+        COMPANY_TYPE_MAP.put("3","合资企业");
+        COMPANY_TYPE_MAP.put("4","外资企业");
+        COMPANY_TYPE_MAP.put("5","其他");
+
+        //DISEASE_TYPE_MAP
+        DISEASE_TYPE_MAP = new HashMap<>();
+        DISEASE_TYPE_MAP.put("0","病害");
+        DISEASE_TYPE_MAP.put("1","虫害");
+
+        //SYMPTOM_LOCATION_MAP
+        SYMPTOM_LOCATION_MAP = new HashMap<>();
+        SYMPTOM_LOCATION_MAP.put("0","根");
+        SYMPTOM_LOCATION_MAP.put("1","茎");
+        SYMPTOM_LOCATION_MAP.put("2","叶");
+        SYMPTOM_LOCATION_MAP.put("3","花");
     }
 }

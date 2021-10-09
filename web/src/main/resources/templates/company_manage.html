@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <script>
@@ -31,10 +31,13 @@
 
                 xhr.onload = function () {
                     var json;
+
                     console.log(xhr.responseText);
                     json = JSON.parse(xhr.responseText);
                     //json.location = json.url;
                     success(json.location);
+
+
                 };
                 formData = new FormData();
                 formData.append('file', blobInfo.blob(), blobInfo.filename());
@@ -52,7 +55,7 @@
 </button>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    请输入要查询的蔬菜名称：<input type="text" id="vegenamesearch">
+    企业名称：<input type="text" id="companynamesearch">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -72,19 +75,19 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <form enctype="multipart/form-data">
-                    蔬菜名称：<input type="text" id="vegename" value=""><br>
-                    别   名：<input type="text" id="alias" value=""><br>
-                    蔬菜分类：<select id="classification" value="">
-                                <option>请选择</option>
-                            </select><br>
+                <form>
+                    企业名称：<input type="text" id="companyname" value=""><br>
                     上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
                     <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
                         <img src="" id="imgload" width="300" height="200" style="display: none"><br>
                     </div>
-                    基本介绍：<textarea id="introduction">${data.data.content}</textarea><br>
-                    备   注：<input type="text" id="note" value=""><br>
-                    <input type="hidden" id="vegeid">
+                    企业性质：<select id="type" value=""><option value="5">请选择</option></select><br>
+                    企业介绍：<textarea id="introduction"></textarea><br>
+                    企业地址：<input type="text" id="location" value=""><br>
+                    联 系 人：<input type="text" id="contact" value=""><br>
+                    联系电话：<input type="text" id="telephone" value=""><br>
+                    企业首页：<input type="text" id="website" value=""><br>
+                    <input type="hidden" id="companyid">
                     <input type="hidden" id="imgpath">
                     <input type="hidden" id="imguuid">
                 </form>
@@ -104,18 +107,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                蔬菜名称：<label text="" id="vegename_detail"></label><br>
-                别   名：<label text="" id="alias_detail" ></label><br>
-                蔬菜分类：<label text="" id="classification_detail"></label><br>
-                图   片：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                <img src="" id="image_detail" style="width:300px;height: 200px;"></img>
-            </div><br>
-                基本介绍：<div id="introduction_detail"></div><br>
-                备   注：<label text="" id="note_detail"></label><br>
-                更新时间：<label text="" id="updatetime_detail"></label><br>
+                    企业名称：<label text="" id="companyname_detail" value=""></label><br>
+                    企业风采：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                                <img src="" id="image_detail" style="width:300px;height: 200px;"></img>
+                            </div><br>
+                    企业性质：<label text="" id="type_detail" value=""></label><br>
+                    企业介绍：<br><label text="" id="introduction_detail" value=""></label><br>
+                    企业地址：<label text="" id="location_detail" value=""></label><br>
+                    联 系 人：<label text="" id="contact_detail" value=""></label><br>
+                    联系电话：<label text="" id="telephone_detail" value=""></label><br>
+                    企业首页：<label text="" id="website_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
                 </button>
             </div>
         </div><!-- /.modal-content -->
@@ -125,27 +129,68 @@
     function insertData() {
 
         $('#myModal').modal("toggle");
-        //装载下拉列表
-        uri = "load_classification.json";
+        $('#companyname').val("");
+        //装载蔬菜名称，选择
+        uri = "load_companytype.json";
         $.ajax({
             url: uri,
             method: "Get",
             dataType: "json",
             success: function (data) {
-                if (data.data) {
-                    $.each(data.data,function(index,item){
-                        $('#classification').append(new Option(item,index));
+                if (data.data.companyTypeMap) {
+                    $.each(data.data.companyTypeMap,function(index,item){
+                        $('#type').append(new Option(item,index));
                     });
                 }
             }
         });
-        $('#vegename').val("");
-        $('#alias').val("");
-        $('#imgupload').val("");
-        $('#introduction').val("");
-        $('#note').val("");
-        $('#vegeid').val("");
+        $('#location').val("");
+        $('#contact').val("");
+        $('#telephone').val("");
+        $('#website').val("");
+        $('#imgpath').val("");
+        $('#imguuid').val("");
+        $('#companyid').val("");
         $('#modalAction').html("添加");
+    }
+
+
+    function updateData(row_id) {
+
+        //后台数据回传
+        $.ajax({
+            url: "query_companybyid.json?companyId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("修改");
+                    $('#companyname').val(data.data.companyName);
+                    $.each(data.data.companyTypeMap,function(index,item){
+                        $('#type').append(new Option(item,index));
+                        if(data.data.type==index){
+                            $('#type').val(index)
+                        }
+                    });
+
+                    //修改图片
+                    $('#imgload').attr("src", data.data.imgPath);
+                    $('#imgload').show()
+                    //修改介绍
+                    tinymce.activeEditor.setContent(data.data.introduction);
+
+                    $('#location').val(data.data.location);
+                    $('#contact').val(data.data.contact);
+                    $('#telephone').val(data.data.telephone);
+                    $('#website').val(data.data.website);
+                    $('#companyid').val(data.data.companyId);
+                    $('#imguuid').val(data.data.imgUuid);
+                    $('#imgpath').val(data.data.imgPath);
+                    $('#myModal').modal('toggle');
+                }
+            }
+        });
+
     }
 
     function uploadImg(){
@@ -178,12 +223,13 @@
             processData: false,
             success: function (data) {
                 if (data) {
-                        console.log("回显了图片");
-                        $('#imgpath').val(data.data.path);
-                        var imgPath = data.data.path;
-                        //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
-                        $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
-                        $('#imgload').show();
+                    console.log("回显了图片");
+                    $('#imgpath').val(data.data.path);
+                    var imgPath = data.data.path;
+                    //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
+                    $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
+                    $('#imgload').show();
+                    $('#imguuid').val('');
                     alert("上传成功！")
                 }
             },
@@ -193,59 +239,41 @@
         });
     }
 
+    function queryDataById(row_id) {
 
-    function updateData(row_id) {
+        var div = document.getElementById("introduction_detail");
+        while(div.hasChildNodes()) //当div下还存在子节点时 循环继续
+        {
+            div.removeChild(div.firstChild);
+        }
+
         $.ajax({
-            url: "query_vegebyid.json?vegeId=" + row_id,
+            url: "query_companybyid.json?companyId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
-                    $('#modalAction').html("修改");
-                    $('#vegename').val(data.data.vegeName);
-                    $('#alias').val(data.data.alias);
-                    //修改类型
-                    var vegeclass = data.data.classification;
-                    $.each(data.data.classMap,function(index,item){
-                        $('#classification').append(new Option(item,index));
-                        if(item==vegeclass){
-                            $('#classification option[value= ' + index + ']').prop("selected",true);
-                        }
-                    });
-                    //修改图片
-                    $('#imgload').attr("src", data.data.imgPath);
-                    $('#imgload').show()
-                    //修改介绍
-                    tinymce.activeEditor.setContent(data.data.introduction);
-                    $('#note').val(data.data.note);
-                    $('#vegeid').val(data.data.vegeId);
-                    $('#imguuid').val(data.data.imgUuid);
-                    $('#myModal').modal('toggle');
-                }
-            }
-        });
-
-    }
-
-    function queryDataById(row_id) {
-
-        $.ajax({
-            url: "query_vegebyid.json?vegeId=" + row_id,
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                if (data.data) {
                     $('#modalAction').html("详情");
-                    $('#intro_child').remove();
-                    $('#vegename_detail').text(data.data.vegeName);
-                    $('#alias_detail').text(data.data.alias);
-                    $('#classification_detail').text(data.data.classification);
+                    $('#companyname_detail').text(data.data.companyName);
+                    $('#location_detail').text(data.data.location);
+                    $('#contact_detail').text(data.data.contact);
+                    $('#telephone_detail').text(data.data.telephone);
+                    $('#website_detail').text(data.data.website);
+                    if(data.data.type=="0"){
+                        $('#type_detail').text("国有企业");
+                    }else if(data.data.type=="1"){
+                        $('#type_detail').text("私营企业");
+                    }else if(data.data.type=="2"){
+                        $('#type_detail').text("集体企业");
+                    }else if(data.data.type=="3"){
+                        $('#type_detail').text("合资企业");
+                    }else if(data.data.type=="4"){
+                        $('#type_detail').text("外资企业");
+                    }else{
+                        $('#type_detail').text("其他");
+                    }
                     $('#image_detail').attr("src",data.data.imgPath);
                     $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
-                    //text(data.data.introduction);
-                    $('#note_detail').text(data.data.note);
-                    $('#updatetime_detail').text(data.data.updateTime);
-                    //$('#vegeid_detail').val(data.data.vegeId);
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -259,15 +287,13 @@
             return;
         }
         $.ajax({
-            url: "delete_vege.json?vegeId=" + row_id,
+            url: "delete_company.json?companyId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
-                if (data.data==true) {
+                if (data.data) {
                     alert("成功！");
                     window.location.reload();
-                }else {
-                    alert("还有关联品种！");
                 }
             }
         });
@@ -276,35 +302,35 @@
     function submitData() {
         var uri;
         var content = tinymce.activeEditor.getContent();
-        var classification = $('#classification').val();
-        if(""==$('#vegename').val()||$('#vegename').val()==null){
-            alert("请填写蔬菜名称！");
-            return;
-        }
-        if("请选择"==classification){
-            alert("请选择蔬菜类别！");
+
+        if(""==$('#companyname').val()||$('#companyname').val()==null){
+            alert("请填写企业名称！");
             return;
         }
         if(""==content||content==null){
-            alert("请填写蔬菜介绍！");
+            alert("请填写企业介绍！");
             return;
         }
+
+        //增加联系方式的检查
+
         var data = {
-            'vegeName': $('#vegename').val(),
-            'vegeId': $('#vegeid').val(),
-            'alias': $('#alias').val(),
-            'classification': classification,
-            'vegeImg': $('#imgpath').val(),
-            'imguuid': $('#imguuid').val(),
+            'companyName': $('#companyname').val(),
+            'companyId': $('#companyid').val(),
+            'type': $('#type').val(),
+            'companyImg': $('#imgpath').val(),
             'introduction': content,
-            'note': $('#note').val(),
-            'updateTime': $('#updatetime').val()
+            'location': $('#location').val(),
+            'contact': $('#contact').val(),
+            'telephone': $('#telephone').val(),
+            'website': $('#website').val(),
+            'imguuid': $('#imguuid').val(),
         };
         if ($('#modalAction').html() == '添加') {
-            uri = "add_vege.json";
+            uri = "add_company.json";
         } else {
-            uri = "update_vege.json";
-            data.id = $('#vegeId').val();
+            uri = "update_company.json";
+            data.id = $('#companyId').val();
         }
 
         $.ajax({
@@ -333,7 +359,7 @@
             cache: false,
             striped: true,                              //是否显示行间隔色
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            url: "query_vege.json",
+            url: "query_company.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
             queryParams: function queryParams(params) {
@@ -346,7 +372,7 @@
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 7,                       //每页的记录行数（*）
             pageList: [7, 12, 20],             //可供选择的每页的行数（*）
-            uniqueId: "vegeId",                     //每一行的唯一标识，一般为主键列
+            uniqueId: "companyId",                     //每一行的唯一标识，一般为主键列
             showToggle: false,
             responseHandler: responseHandler,
             onLoadError: function (status) {
@@ -361,32 +387,37 @@
                     }
                 },
                 {
-                    field: 'vegeName',
-                    title: '蔬菜名称',
+                    field: 'companyName',
+                    title: '企业名称',
                     visible: true
                 },
                 {
-                    field: 'classification',
-                    title: '生物学分类',
+                    field: 'contact',
+                    title: '联系人',
                     visible: true
                 },
                 {
-                    field: 'updateTime',
-                    title: '更新时间',
+                    field: 'telephone',
+                    title: '联系电话',
                     visible: true
                 },
                 {
-                    field: 'note',
-                    title: '备注',
+                    field: 'location',
+                    title: '企业地址',
                     visible: true
                 },
                 {
-                    field: 'vegeId',
+                    field: 'website',
+                    title: '企业首页',
+                    visible: true
+                },
+                {
+                    field: 'companyId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.vegeId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.vegeId + ')" >删除</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.vegeId + ')" >详情</button>';
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.companyId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.companyId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.companyId + ')" >详情</button>';
 
                         return operation;
                     }
@@ -404,12 +435,8 @@
 
     function getSearchParams() {
         var param = {};
-        param.vegeName = $('#vegenamesearch').val();
+        param.companyName = $('#companynamesearch').val();
         return param;
-    }
-
-    function reset(){
-        window.location.reload();
     }
 
     $(function () {
@@ -418,6 +445,10 @@
             $('#table').bootstrapTable('refresh', getTable());
         });
     });
+
+    function reset(){
+        window.location.reload();
+    }
 </script>
 </body>
 </html>

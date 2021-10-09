@@ -29,7 +29,7 @@ public class CultivateMode {
     @Column(name = "updatetime")
     private Timestamp updateTime;
 
-    @ManyToMany(mappedBy = "cultivateModes", cascade = {CascadeType.REMOVE,CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "cultivateModes", cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Variety> varieties = new ArrayList<>();
 
