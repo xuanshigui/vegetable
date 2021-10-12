@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +16,9 @@ public class Cure {
     @Column(name ="cureid")
     private int cureId;
 
+    @Column(name="cureName")
+    private String cureName;
+
     @Column(name = "agricontrol")
     private String agriControl;
 
@@ -25,13 +26,10 @@ public class Cure {
     private String bioControl;
 
     @Column(name = "chemcontrol")
-    private String chenControl;
+    private String chemControl;
 
     @ManyToOne
     private Disease disease;
-
-    @OneToMany
-    private List<Drug> drugs = new ArrayList<>();
 
     public int getCureId() {
         return cureId;
@@ -39,6 +37,14 @@ public class Cure {
 
     public void setCureId(int cureId) {
         this.cureId = cureId;
+    }
+
+    public String getCureName() {
+        return cureName;
+    }
+
+    public void setCureName(String cureName) {
+        this.cureName = cureName;
     }
 
     public String getAgriControl() {
@@ -57,12 +63,12 @@ public class Cure {
         this.bioControl = bioControl;
     }
 
-    public String getChenControl() {
-        return chenControl;
+    public String getChemControl() {
+        return chemControl;
     }
 
-    public void setChenControl(String chenControl) {
-        this.chenControl = chenControl;
+    public void setChemControl(String chemControl) {
+        this.chemControl = chemControl;
     }
 
     public Disease getDisease() {
@@ -71,13 +77,5 @@ public class Cure {
 
     public void setDisease(Disease disease) {
         this.disease = disease;
-    }
-
-    public List<Drug> getDrugs() {
-        return drugs;
-    }
-
-    public void setDrugs(List<Drug> drugs) {
-        this.drugs = drugs;
     }
 }

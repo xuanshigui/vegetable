@@ -5,6 +5,7 @@ import com.vege.model.Drug;
 import com.vege.service.DrugService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -51,6 +52,8 @@ public class DrugServiceImpl extends BaseService implements DrugService {
     public Page<Drug> query(Map<String, String> condition) {
 
         String drugName = condition.get("drugName");
+
+        Pageable pageable = getPageable(condition);
         if(drugName != null && !drugName.equals("")){
             drugName = "%" + drugName + "%";
             return drugRepository.findAllByDrugNameLike(drugName,getPageable(condition));

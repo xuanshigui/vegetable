@@ -99,8 +99,9 @@ public class SymptomController extends BaseController {
         data.put("description", symptom.getDescription());
         data.put("location", symptom.getLocation());
         data.put("updateTime", symptom.getUpdateTime());
+
         Integer vegeId = symptom.getDisease().getVegeInfo().getVegeId();
-        Map<Integer,String> diseaseNameMap = diseaseService.getDiseaseMaoByVegeId(vegeId);
+        Map<Integer,String> diseaseNameMap = diseaseService.getDiseaseMapByVegeId(vegeId);
         data.put("diseaseNameMap",diseaseNameMap);
 
 
@@ -115,7 +116,7 @@ public class SymptomController extends BaseController {
     @RequestMapping(value = "/load_diseasename.json", method = {RequestMethod.GET})
     public Map getDiseaseNames(HttpServletRequest request, HttpServletResponse response) {
         String vegeId = request.getParameter("vegeId");
-        Map<Integer,String> diseaseNameMap = diseaseService.getDiseaseMaoByVegeId(Integer.parseInt(vegeId));
+        Map<Integer,String> diseaseNameMap = diseaseService.getDiseaseMapByVegeId(Integer.parseInt(vegeId));
         JSONObject data = new JSONObject();
         data.put("diseaseNameMap",diseaseNameMap);
         return buildResponse(data);

@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 
 public interface CureRepository extends JpaRepository<Cure, Integer> {
 
@@ -15,4 +17,5 @@ public interface CureRepository extends JpaRepository<Cure, Integer> {
 
     Page<Cure> findAllByDisease_DiseaseNameLike(String diseaseName, Pageable pageable);
 
+    List<Cure> findAllByDisease_DiseaseId(Integer diseaseId);
 }

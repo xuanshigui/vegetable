@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,9 +26,6 @@ public class Drug {
     @Column(name = "dosage")
     private String dosage;
 
-    @Column(name = "immunityperiod")
-    private String immunityPeriod;
-
     @Column(name = "saveperiod")
     private String savePeriod;
 
@@ -35,10 +33,7 @@ public class Drug {
     private String attention;
 
     @Column(name = "updatetime")
-    private String updateTime;
-
-    @ManyToOne
-    private Cure cure;
+    private Timestamp updateTime;
 
     public int getDrugId() {
         return drugId;
@@ -72,14 +67,6 @@ public class Drug {
         this.dosage = dosage;
     }
 
-    public String getImmunityPeriod() {
-        return immunityPeriod;
-    }
-
-    public void setImmunityPeriod(String immunityPeriod) {
-        this.immunityPeriod = immunityPeriod;
-    }
-
     public String getSavePeriod() {
         return savePeriod;
     }
@@ -96,19 +83,11 @@ public class Drug {
         this.attention = attention;
     }
 
-    public String getUpdateTime() {
+    public Timestamp getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Cure getCure() {
-        return cure;
-    }
-
-    public void setCure(Cure cure) {
-        this.cure = cure;
     }
 }

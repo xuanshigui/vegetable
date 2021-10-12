@@ -19,6 +19,8 @@ public class Constants {
 
     public static Map<String,String> SYMPTOM_LOCATION_MAP;
 
+    public static Map<String,String> STANDARD_TYPE_MAP;
+
     static{
         //ENTITY_TABLE_MAP
         ENTITY_TABLE_MAP = new HashMap<String, String>();
@@ -43,6 +45,7 @@ public class Constants {
         VEGE_CLASS_MAP.put("11","食用菌类");
         VEGE_CLASS_MAP.put("12","芽苗菜类");
         VEGE_CLASS_MAP.put("13","野生蔬菜");
+
         //CLASS_VEGE_MAP
         CLASS_VEGE_MAP = new HashMap<String,String>();
         CLASS_VEGE_MAP.put("根菜类","0");
@@ -86,5 +89,13 @@ public class Constants {
         SYMPTOM_LOCATION_MAP.put("1","茎");
         SYMPTOM_LOCATION_MAP.put("2","叶");
         SYMPTOM_LOCATION_MAP.put("3","花");
+
+        //STANDARD_TYPE_MAP
+        STANDARD_TYPE_MAP = new HashMap<>();
+        STANDARD_TYPE_MAP.put("0","国际标准");
+        STANDARD_TYPE_MAP.put("1","国家标准");
+        STANDARD_TYPE_MAP.put("2","地方标准");
+        STANDARD_TYPE_MAP.put("3","企业标准");
+        STANDARD_TYPE_MAP.put("4","行业标准");
     }
 }

@@ -14,5 +14,4 @@ public interface DrugRepository extends JpaRepository<Drug, Integer> {
     Page<Drug> findAll(Pageable pageable);
 
     Page<Drug> findAllByDrugNameLike(String drugName, Pageable pageable);
-
 }

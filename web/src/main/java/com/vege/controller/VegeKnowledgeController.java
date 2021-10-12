@@ -71,7 +71,7 @@ public class VegeKnowledgeController extends BaseController {
         List<String> fields = Arrays.asList("headline", "content", "kcId", "vegeId","vkId");
         Map<String, String> data = buildData(request,fields);
 
-        VegeKnowledge vegeKnowledge = new VegeKnowledge();
+        VegeKnowledge vegeKnowledge = vegeKnowledgeService.queryById(data.get("vkId"));
         vegeKnowledge.setVkId(Integer.parseInt(data.get("vkId")));
 
         vegeKnowledge.setHeadline(data.get("headline"));
@@ -103,7 +103,6 @@ public class VegeKnowledgeController extends BaseController {
     @RequestMapping(value = "/query_vegeknowledgebyid.json", method = {RequestMethod.GET, RequestMethod.GET})
     public Map queryById(HttpServletRequest request, HttpServletResponse response) {
         String vkId = request.getParameter("vkId");
-
         VegeKnowledge vegeKnowledge = vegeKnowledgeService.queryById(vkId);
         JSONObject data = new JSONObject();
         data.put("vkId", vegeKnowledge.getVkId());

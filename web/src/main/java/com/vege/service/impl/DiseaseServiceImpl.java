@@ -83,7 +83,7 @@ public class DiseaseServiceImpl extends BaseService implements DiseaseService {
     }
 
     @Override
-    public Map<Integer, String> getDiseaseMaoByVegeId(Integer vegeId) {
+    public Map<Integer, String> getDiseaseMapByVegeId(Integer vegeId) {
         List<Disease> diseaseList = diseaseRepository.findAllByVegeInfo_VegeId(vegeId);
         Map<Integer,String> diseaseNameMap = new HashMap<>();
         for(Disease disease:diseaseList){

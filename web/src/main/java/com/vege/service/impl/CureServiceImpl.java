@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -68,5 +70,13 @@ public class CureServiceImpl extends BaseService implements CureService {
         return cureRepository.findByCureId(Integer.parseInt(cureId));
     }
 
-
+    @Override
+    public Map<Integer, String> getCureMapByDiseaseId(Integer diseaseId) {
+        Map<Integer, String> cureNameMap = new HashMap<>();
+        List<Cure> cureList = cureRepository.findAllByDisease_DiseaseId(diseaseId);
+        for(Cure cure:cureList){
+            cureNameMap.put(cure.getCureId(),cure.getCureName());
+        }
+        return cureNameMap;
+    }
 }

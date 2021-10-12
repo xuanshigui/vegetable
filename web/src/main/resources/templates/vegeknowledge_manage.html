@@ -28,20 +28,10 @@
                 xhr = new XMLHttpRequest();
                 xhr.withCredentials = false;
                 xhr.open('POST', baseURL + "upload_img" );
-                /* if (xhr.status != 200) {
-                     failure('HTTP Error: ' + xhr.status);
-                     return;
-                 }*/
-
                 xhr.onload = function () {
                     var json;
-                    /*if (xhr.status != 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }*/
                     console.log(xhr.responseText);
                     json = JSON.parse(xhr.responseText);
-                    //json.location = json.url;
                     success(json.location);
 
                 };
@@ -73,8 +63,8 @@
 </table>
 
 <!-- 模态框（Modal） -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
@@ -108,8 +98,8 @@
     </div><!-- /.modal -->
 </div>
 <!-- 模态框（Modal） -->
-<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade bd-example-modal-lg" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
                 知识标题：<label text="" id="headline_detail"></label><br>
@@ -207,8 +197,9 @@
                     $('#modalAction').html("详情");
                     $('#intro_child').remove();
                     $('#headline_detail').text(data.data.headline);
-                    $('#vagename_detail').text(data.data.vegeInfo.vegeName);
-
+                    if(data.data.vegeInfo!=null){
+                        $('#vagename_detail').text(data.data.vegeInfo.vegeName);
+                    }
                     $('#knowledgecategory_detail').text(data.data.knowledgeCategory.knowledgeCategoryName);
 
                     $('#introduction_detail').append("<div id='intro_child'>"+data.data.content+"</div>")

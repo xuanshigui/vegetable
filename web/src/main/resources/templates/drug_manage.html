@@ -1,49 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <script>
-        //装载富文本编辑器
-        var baseURL = "/";
-        tinymce.init({
-            selector: '#description',
-            language:'zh_CN',//注意大小写
-            height: 500,
-            plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
-            toolbar: ' formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen',
-            images_upload_url: baseURL + "upload_img",//图片上传地址
-            images_upload_credentials: false,
-            image_dimensions: false,
-            image_class_list: [
-                {title: '无', value: ''},
-                {title: '预览', value: 'preview'},
-            ],
-            insert_button_items: 'image link | inserttable',
-            paste_merge_formats: true,
-            nonbreaking_force_tab: false,
-            imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-            images_upload_handler: function (blobInfo, success, failure) {
-                var xhr, formData;
-
-                xhr = new XMLHttpRequest();
-                xhr.withCredentials = false;
-                xhr.open('POST', baseURL + "upload_img" );
-
-                xhr.onload = function () {
-                    var json;
-                    console.log(xhr.responseText);
-                    json = JSON.parse(xhr.responseText);
-                    //json.location = json.url;
-                    success(json.location);
-                };
-                formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                console.log(blobInfo.blob());
-                xhr.send(formData);
-                console.log(xhr.responseText)
-            }
-        });
-    </script>
 </head>
 <body>
 <!-- 按钮触发模态框 -->
@@ -52,8 +10,8 @@
 </button>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    症状名称：<input type="text" id="symptomnamesearch">
-    疾病名称：<input type="text" id="diseasenamesearch">
+    药品名称：<input type="text" id="drugnamesearch">
+    疾病名称：<input type="text" id="diseaseamesearch">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -74,12 +32,21 @@
             </div>
             <div class="modal-body">
                 <form>
-                    症状名称：<input type="text" id="symptomname" value=""><br>
+                    药品名称：<input id="drugname" type="text"><br>
                     蔬菜名称：<select id="vegename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
                     疾病名称：<select id="diseasename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
-                    症状描述：<textarea id="description"></textarea><br>
-                    发病部位：<select id="location" value="" style="width: 178px"><option value="4">请选择</option></select><br>
-                    <input type="hidden" id="symptomid">
+                    治疗方法名称：<select id="curename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
+                    <div>
+                        <span style="vertical-align: middle;display: inline-block">使用方法：</span>
+                        <textarea id="methods" value="" style="width: 700px;height: 200px; vertical-align: middle; display: inline-block" ></textarea><br>
+                    </div>
+                    使用量：<input id="dosage" type="text"><br>
+                    保存时间：<input id="saveperiod" type="text"><br>
+                    <div>
+                        <span style="vertical-align: middle;display: inline-block">注意事项：</span>
+                        <textarea id="attention" value="" style="width: 700px;height: 200px; vertical-align: middle; display: inline-block"></textarea><br>
+                    </div>
+                    <input type="hidden" id="drugid">
                 </form>
             </div>
             <div class="modal-footer">
@@ -97,12 +64,12 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                    症状名称：<label text="" id="symptomname_detail" value=""></label><br>
-                    蔬菜名称：<label text="" id="vegename_detail" value=""></label><br>
-                    疾病名称：<label id="diseasename_detail"></label><br>
-                    症状描述：<br><label text="" id="description_detail" value=""></label><br>
-                    发病部位：<label text="" id="location_detail" value=""></label><br>
-                    更新时间：<label text="" id="updatetime_detail" value=""></label><br>
+                <span>药品名称：</span><label text="" id="drugname_detail" value=""></label><br>
+                <span>使用方法：</span><label text="" id="method_detail" value=""></label><br>
+                <span>使用量：</span><label text="" id="dosage_detail" value=""></label><br>
+                <span>保存时间：</span><label text="" id="saveperiod_detail" value=""></label><br>
+                <span>注意事项：</span><label text="" id="attention_detail" value=""></label><br>
+                <span>更新时间：</span><label text="" id="updatetime_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
@@ -115,9 +82,8 @@
     function insertData() {
 
         $('#myModal').modal("toggle");
-        $('#symptomname').val("");
         //装载蔬菜名称，选择
-        uri = "load_locations.json";
+        uri = "load_vegename.json";
         $.ajax({
             url: uri,
             method: "Get",
@@ -128,33 +94,33 @@
                         $('#vegename').append(new Option(item,index));
                     });
                 }
-                if (data.data.symptomLoctationMap) {
-                    $.each(data.data.symptomLoctationMap,function(index,item){
-                        $('#location').append(new Option(item,index));
-                    });
-                }
             }
         });
-        $('#description').val("");
-        $('#symptomid').val("");
+        $('#drugname').val("");
+        $('#methods').val("");
+        $('#dosage').val("");
+        $('#saveperiod').val("");
+        $('#attention').val("");
+        $('#drugid').val("");
         $('#modalAction').html("添加");
     }
+
 
     function updateData(row_id) {
 
         //后台数据回传
         $.ajax({
-            url: "query_symptombyid.json?symptomId=" + row_id,
+            url: "query_drugbyid.json?drugId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
-                    $('#symptomname').val(data.data.symptomName);
+                    $('#drugname').val(data.data.drugName);
                     $.each(data.data.vegeNameMap,function(index,item){
                         $('#vegename').append(new Option(item,index));
-                        if(data.data.vegeName == item){
-                            $('#vegename').val(index)
+                        if(data.data.vegeName==item){
+                            $('#vegename').val(index);
                         }
                     });
                     if (data.data.diseaseNameMap) {
@@ -165,17 +131,20 @@
                             }
                         });
                     }
-                    if (data.data.symptomLoctationMap) {
-                        $.each(data.data.symptomLoctationMap,function(index,item){
-                            $('#location').append(new Option(item,index));
-                            if(data.data.location == index){
-                                $('#location').val(index)
+                    if (data.data.cureNameMap) {
+                        $.each(data.data.cureNameMap,function(index,item){
+                            $('#curename').append(new Option(item,index));
+                            if(data.data.cureName == item){
+                                $('#curename').val(index)
                             }
                         });
                     }
-                    //修改介绍
-                    tinymce.activeEditor.setContent(data.data.description);
-                    $('#symptomid').val(data.data.symptomId);
+                    $('#methods').val(data.data.methods);
+                    $('#dosage').val(data.data.dosage);
+                    $('#saveperiod').val(data.data.savePeriod);
+                    $('#attention').val(data.data.attention);
+                    //id回传
+                    $('#drugid').val(data.data.drugId);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -183,35 +152,20 @@
 
     }
 
-
     function queryDataById(row_id) {
 
-        var div = document.getElementById("description_detail");
-        while(div.hasChildNodes()) //当div下还存在子节点时 循环继续
-        {
-            div.removeChild(div.firstChild);
-        }
-
         $.ajax({
-            url: "query_symptombyid.json?symptomId=" + row_id,
+            url: "query_drugbyid.json?drugId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#symptomname_detail').text(data.data.symptomName);
-                    $('#vegename_detail').text(data.data.disease.vegeInfo.vegeName);
-                    $('#diseasename_detail').text(data.data.disease.diseaseName);
-                    if(data.data.location==0){
-                        $('#location_detail').text("根");
-                    }else if(data.data.location==1){
-                        $('#location_detail').text("茎");
-                    }else if(data.data.location==2){
-                        $('#location_detail').text("叶");
-                    }else {
-                        $('#location_detail').text("花");
-                    }
-                    $('#description_detail').append("<div id='intro_child'>"+data.data.description+"</div>")
+                    $('#drugname_detail').text(data.data.drugName);
+                    $('#method_detail').text(data.data.methods);
+                    $('#dosage_detail').text(data.data.dosage);
+                    $('#saveperiod_detail').text(data.data.savePeriod);
+                    $('#attention_detail').text(data.data.attention);
                     $('#updatetime_detail').text(data.data.updateTime);
                     $('#detailModal').modal('toggle');
                 }
@@ -226,15 +180,13 @@
             return;
         }
         $.ajax({
-            url: "delete_symptom.json?symptomId=" + row_id,
+            url: "delete_drug.json?drugId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data.data) {
                     alert("成功！");
                     window.location.reload();
-                }else {
-                    alert("出现错误！");
                 }
             }
         });
@@ -242,45 +194,35 @@
 
     function submitData() {
         var uri;
-        var content = tinymce.activeEditor.getContent();
-        var vegeName = $('#vegename').val();
-        if(""==$('#symptomname').val()||$('#symptomname').val()==null){
-            alert("请填写症状名称！");
+        if(""==$('#drugname').val()||$('#drugname').val()==null){
+            alert("请填写药品名称！");
             return;
         }
-        if("0"==vegeName||vegeName==0){
-            alert("请选择蔬菜名称！");
+        if("0"==$('#vegename').val()||$('#vegename').val()==null){
+            alert("请填蔬菜名称！");
             return;
         }
-        if("0"==$('#diseasename').val()){
-            alert("请选择症状疾病！");
+        if("0"==$('#diseasename').val()||$('#diseasename').val()==null){
+            alert("请填所治疗疾病名称！");
             return;
         }
-        if(""==content||content==null){
-            alert("请填写症状介绍！");
+        if("0"==$('#curename').val()||$('#curename').val()==null){
+            alert("请填治疗方法名称！");
             return;
         }
-        if("4"==$('#location').val()){
-            alert("请选择发病部位！");
-            return;
-        }
-        var cultivateModes="";
-        $("input[name=items]:checkbox:checked").each(function(){
-            cultivateModes = cultivateModes + $(this).val() + ",";
-        });
-
         var data = {
-            'symptomName': $('#symptomname').val(),
-            'symptomId': $('#symptomid').val(),
-            'vegeId': $('#vegename').val(),
-            'diseaseId': $('#diseasename').val(),
-            'description': content,
-            'location': $('#location').val(),
+            'drugId': $('#drugid').val(),
+            'cureId': $('#curename').val(),
+            'drugName': $('#drugname').val(),
+            'methods': $('#methods').val(),
+            'dosage': $('#dosage').val(),
+            'savePeriod': $('#saveperiod').val(),
+            'attention': $('#attention').val(),
         };
         if ($('#modalAction').html() == '添加') {
-            uri = "add_symptom.json";
+            uri = "add_drug.json";
         } else {
-            uri = "update_symptom.json";
+            uri = "update_drug.json";
         }
 
         $.ajax({
@@ -289,11 +231,9 @@
             dataType: "json",
             data: data,
             success: function (data) {
-                if (data.data==true) {
+                if (data.data) {
                     alert("成功！");
                     window.location.reload();
-                }else{
-                    a
                 }
             }
         });
@@ -311,7 +251,7 @@
             cache: false,
             striped: true,                              //是否显示行间隔色
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            url: "query_symptom.json",
+            url: "query_drug.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
             queryParams: function queryParams(params) {
@@ -324,8 +264,9 @@
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 7,                       //每页的记录行数（*）
             pageList: [7, 12, 20],             //可供选择的每页的行数（*）
-            uniqueId: "symptomId",                     //每一行的唯一标识，一般为主键列
+            uniqueId: "drugId",                     //每一行的唯一标识，一般为主键列
             showToggle: false,
+            cardView: false,
             responseHandler: responseHandler,
             onLoadError: function (status) {
                 alert("数据加载失败，请刷新后重试。")
@@ -334,37 +275,20 @@
                 {
                     field: 'number',
                     title: '序号',
+                    width: '50px',
                     formatter: function (value, row, index) {
                         return index+1;
                     }
                 },
                 {
-                    field: 'symptomName',
-                    title: '症状名称',
+                    field: 'drugName',
+                    title: '药品名称',
                     visible: true
                 },
                 {
-                    field: 'disease.diseaseName',
-                    title: '疾病名称',
+                    field: 'savePeriod',
+                    title: '保存时间',
                     visible: true
-                },
-                {
-                    field: 'location',
-                    title: '发病部位',
-                    visible: true,
-                    formatter:function (location) {
-                        var typeSig;
-                        if(location==0){
-                            typeSig = '<p>根</p>';
-                        }else if(location==1){
-                            typeSig = '<p>茎</p>';
-                        }else if(location==2){
-                            typeSig = '<p>叶</p>';
-                        }else{
-                            typeSig = '<p>花</p>';
-                        }
-                        return typeSig;
-                    }
                 },
                 {
                     field: 'updateTime',
@@ -372,13 +296,13 @@
                     visible: true
                 },
                 {
-                    field: 'symptomId',
+                    field: 'drugId',
                     title: '操作',
+                    width: '300px',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.symptomId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.symptomId + ')" >删除</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.symptomId + ')" >详情</button>';
-
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.drugId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.drugId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.drugId + ')" >详情</button>';
                         return operation;
                     }
                 }
@@ -395,8 +319,8 @@
 
     function getSearchParams() {
         var param = {};
-        param.symptomName = $('#symptomnamesearch').val();
-        param.diseaseName = $('#diseasenamesearch').val();
+        param.drugName = $('#drugnamesearch').val();
+        param.diseaseName = $('#diseaseamesearch').val();
         return param;
     }
 
@@ -411,6 +335,9 @@
         var vegeId = $('#vegename').val();
         $('#diseasename').empty();
         $('#diseasename').append(new Option("请选择",0));
+        var diseaseId = $('#diseasename').val();
+        $('#curename').empty();
+        $('#curename').append(new Option("请选择",0));
         $.ajax({
             url: "load_diseasename.json?vegeId=" + vegeId,
             method: "GET",
@@ -421,6 +348,27 @@
                         $('#diseasename').append(new Option(item,index));
                         if(data.data.diseaseName==item){
                             $('#diseasename').val(index)
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    $('#diseasename').change(function () {
+        var diseaseId = $('#diseasename').val();
+        $('#curename').empty();
+        $('#curename').append(new Option("请选择",0));
+        $.ajax({
+            url: "load_curename.json?diseaseId=" + diseaseId,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data.cureNameMap) {
+                    $.each(data.data.cureNameMap,function(index,item){
+                        $('#curename').append(new Option(item,index));
+                        if(data.data.cureName==item){
+                            $('#curename').val(index)
                         }
                     });
                 }

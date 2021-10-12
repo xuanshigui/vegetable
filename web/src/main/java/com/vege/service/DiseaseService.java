@@ -19,6 +19,6 @@ public interface DiseaseService {
 
     Disease queryById(String diseaseId);
 
-    Map<Integer,String> getDiseaseMaoByVegeId(Integer vegeId);
+    Map<Integer,String> getDiseaseMapByVegeId(Integer vegeId);
 
 }

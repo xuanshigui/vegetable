@@ -1,0 +1,49 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css">
+    <script src="/vendor/jquery/jquery.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+<!-- OVERVIEW -->
+<div class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">系统简介</h3>
+        <hr>
+        <p class="panel-subtitle">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </p>
+    </div>
+</div>
+<div class="panel" style="margin-top: -20px">
+    <div id="myCarousel" class="carousel slide">
+        <!-- 轮播（Carousel）指标 -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+        <!-- 轮播（Carousel）项目 -->
+        <div class="carousel-inner">
+            <div class="item active">
+                <img src="/img/index1.jpg" alt="First slide" width="500px" >
+            </div>
+            <div class="item">
+                <img src="/img/index2.jpg" alt="Second slide" width="500px">
+            </div>
+            <div class="item">
+                <img src="/img/index3.jpg" alt="Third slide" width="500px">
+            </div>
+        </div>
+        <!-- 轮播（Carousel）导航 -->
+        <a class="carousel-control left" href="#myCarousel"
+           data-slide="prev"> <span _ngcontent-c3="" aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a>
+        <a class="carousel-control right" href="#myCarousel"
+           data-slide="next">&rsaquo;</a>
+    </div>
+</div>
+
+
+</body>
+</html>

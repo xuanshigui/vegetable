@@ -94,6 +94,7 @@ public class VegeInfoController extends BaseController {
         JSONObject data = new JSONObject();
         data.put("total", total);
         data.put("rows", result.getContent());
+        data.put("classificationMap",Constants.CLASS_VEGE_MAP);
         return buildResponse(data);
     }
 

@@ -259,7 +259,6 @@
                     console.log("回显了图片");
                     $('#imgpath').val(data.data.path);
                     var imgPath = data.data.path;
-                    //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
                     $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
                     $('#imgload').show();
                     $('#imguuid').val('');
@@ -440,7 +439,10 @@
                 {
                     field: 'source',
                     title: '来源',
-                    visible: true
+                    visible: true,
+                    formatter:function (classification) {
+                        return showClass(classification);
+                    }
                 },
                 {
                     field: 'timestamp',
@@ -485,6 +487,11 @@
 
     function reset(){
         window.location.reload();
+    }
+
+    function showClass(classification) {
+        var classes = ['选育品种','自有品种','引进品种'];
+        return classes[classification];
     }
 </script>
 </body>

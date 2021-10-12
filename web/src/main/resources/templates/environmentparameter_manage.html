@@ -112,22 +112,6 @@
         $('#modalAction').html("添加");
     }
 
-    function queryData() {
-        $.ajax({
-            url: "query_envparam.json?envparamid=" + row_id,
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                $('#myModal').modal("toggle");
-                $('#envparamid').val("");
-                $('#envparamname').val("");
-                $('#realname').val("");
-                $('#phone').val("");
-                $('#note').val("");
-            }
-        });
-    }
-
     function updateData(row_id) {
 
         $.ajax({
@@ -238,7 +222,7 @@
         var boundH = $('#boundh').val();
         var boundL = $('#boundl').val();
         if(!reg.test(boundH)||!reg.test(boundL)){
-            alert("填写数字！");
+            alert("请填写数字！");
             return;
         }
         var data = {

@@ -19,4 +19,6 @@ public interface CureService {
 
     Cure queryById(String cureId);
 
+    Map<Integer,String> getCureMapByDiseaseId(Integer diseaseId);
+
 }

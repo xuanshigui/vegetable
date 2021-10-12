@@ -6,7 +6,7 @@
         //装载富文本编辑器
         var baseURL = "/";
         tinymce.init({
-            selector: '#introduction',
+            selector: '#content',
             language:'zh_CN',//注意大小写
             height: 500,
             plugins: 'paste importcss code table advlist fullscreen imagetools  textcolor colorpicker hr  autolink link image lists preview media wordcount',
@@ -28,13 +28,12 @@
                 xhr = new XMLHttpRequest();
                 xhr.withCredentials = false;
                 xhr.open('POST', baseURL + "upload_img" );
-
                 xhr.onload = function () {
                     var json;
                     console.log(xhr.responseText);
                     json = JSON.parse(xhr.responseText);
-                    //json.location = json.url;
                     success(json.location);
+
                 };
                 formData = new FormData();
                 formData.append('file', blobInfo.blob(), blobInfo.filename());
@@ -52,7 +51,9 @@
 </button>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    请输入要查询的蔬菜名称：<input type="text" id="vegenamesearch">
+    标准名称：<input type="text" id="headlinesearch">
+    开始时间：<input type="date" id="starttime">&nbsp;
+    结束时间：<input type="date" id="endtime">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -73,20 +74,21 @@
             </div>
             <div class="modal-body">
                 <form enctype="multipart/form-data">
-                    蔬菜名称：<input type="text" id="vegename" value=""><br>
-                    别   名：<input type="text" id="alias" value=""><br>
-                    蔬菜分类：<select id="classification" value="">
-                                <option>请选择</option>
+                    标准名称：<input type="text" id="headline" value="" style="width: 500px;"><br>
+                    标准编号：<input type="text" id="code" value="" style="width: 300px;"><br>
+                    标准类型：<select id="type" value="" style="width: 300px;">
+                                <option value="5">请选择</option>
                             </select><br>
-                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
-                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
-                    </div>
-                    基本介绍：<textarea id="introduction">${data.data.content}</textarea><br>
-                    备   注：<input type="text" id="note" value=""><br>
-                    <input type="hidden" id="vegeid">
-                    <input type="hidden" id="imgpath">
-                    <input type="hidden" id="imguuid">
+                    <span style="display: inline-block">标准状态：</span><div class="form-check form-check-inline" style="display: inline-block">
+                                <input class="form-check-input" type="radio" name="state" id="state0" value="0" checked="checked">
+                                <label class="form-check-label" for="state0">现行</label>
+                                <input class="form-check-input" type="radio" name="state" id="state1" value="1">
+                                <label class="form-check-label" for="state0">废止</label>
+                            </div><br>
+                    标准链接：<input type="text" id="filelink" value="" style="width: 500px;"><br>
+                    发布时间：<input type="date" id="publictime" value="" style="width: 200px;"><br>
+                    内   容：<textarea id="content"></textarea><br>
+                    <input type="hidden" id="standardid">
                 </form>
             </div>
             <div class="modal-footer">
@@ -104,15 +106,13 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                蔬菜名称：<label text="" id="vegename_detail"></label><br>
-                别   名：<label text="" id="alias_detail" ></label><br>
-                蔬菜分类：<label text="" id="classification_detail"></label><br>
-                图   片：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                <img src="" id="image_detail" style="width:300px;height: 200px;"></img>
-            </div><br>
-                基本介绍：<div id="introduction_detail"></div><br>
-                备   注：<label text="" id="note_detail"></label><br>
-                更新时间：<label text="" id="updatetime_detail"></label><br>
+                标准名称：<label text="" id="headline_detail"></label><br>
+                标准编号：<label text="" id="code_detail"></label><br>
+                标准类型：<label text="" id="type_detail"></label><br>
+                标准状态：<label text="" id="state_detail"></label><br>
+                标准链接：<label text="" id="filelink_detail"></label><br>
+                发布时间：<label text="" id="publictime_detail"></label><br>
+                内   容：<div id="content_detail"></div><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -126,100 +126,67 @@
 
         $('#myModal').modal("toggle");
         //装载下拉列表
-        uri = "load_classification.json";
+        uri = "load_standardtype.json";
         $.ajax({
             url: uri,
             method: "Get",
             dataType: "json",
             success: function (data) {
                 if (data.data) {
-                    $.each(data.data,function(index,item){
-                        $('#classification').append(new Option(item,index));
+                    $.each(data.data.typeMap,function(index,item){
+                        $('#type').append(new Option(item,index));
                     });
                 }
             }
         });
-        $('#vegename').val("");
-        $('#alias').val("");
-        $('#imgupload').val("");
-        $('#introduction').val("");
-        $('#note').val("");
-        $('#vegeid').val("");
+        $('#headline').val("");
+        $('#standardId').val("");
+        $('#publictime').val("");
+        $('#content').val("");
+        $('#state0').val("");
+        $('#state1').val("");
+        $('#code').val("");
+        $('#filelink').val("");
         $('#modalAction').html("添加");
-    }
-
-    function uploadImg(){
-        var file = $('#imgupload')[0].files[0];//获取选择的文件
-        var formData=new FormData();//构建form表单
-        formData.append("file",file);
-        var name = file.name;
-        // 获取文件后缀
-        var sfIndex=name.lastIndexOf(".");//后缀位置的.的位置
-        var ext= name.substring(sfIndex,name.length).toUpperCase();//截取后缀
-        console.log(ext)
-        // 文件大小  单位:M
-        var size=parseInt(file.size/1024/1024);
-        //判断文件类型,后台也要做判断
-        if(ext !='.PNG' && ext !='.GIF' && ext !='.JPG' && ext !='.JPEG' && ext !='.BMP'){
-            vmToast.show("文件类型错误,请上传正确图片类型(png、gif、jpg、jpeg、bmp)");
-            return false;
-        }
-        if(size>10){//文件过大,部分服务器流量有限制,而且后续打开会比较慢
-            alert("文件已大于10M，请换个小点的图片");
-            return false;
-        }
-
-        $.ajax({
-            url: "uploadimg",
-            method: "POST",
-            data: formData,
-            contentType:false,
-            dataType: "json",
-            processData: false,
-            success: function (data) {
-                if (data) {
-                        console.log("回显了图片");
-                        $('#imgpath').val(data.data.path);
-                        var imgPath = data.data.path;
-                        //$('#imgload').attr("src","https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F0818%2F96d73724j00qy0uqu001xc000hs00a1g.jpg&thumbnail=650x2147483647&quality=80&type=jpg");
-                        $('#imgload').attr("src","http://127.0.0.1:8080/show_img?imgPath="+imgPath);
-                        $('#imgload').show();
-                    alert("上传成功！")
-                }
-            },
-            error: function(ajaxobj) { //有异常
-                alert("异常："+ajaxobj.responseText);
-            }
-        });
     }
 
 
     function updateData(row_id) {
         $.ajax({
-            url: "query_vegebyid.json?vegeId=" + row_id,
+            url: "query_standardbyid.json?vkId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("修改");
-                    $('#vegename').val(data.data.vegeName);
-                    $('#alias').val(data.data.alias);
-                    //修改类型
-                    var vegeclass = data.data.classification;
-                    $.each(data.data.classMap,function(index,item){
-                        $('#classification').append(new Option(item,index));
-                        if(item==vegeclass){
-                            $('#classification option[value= ' + index + ']').prop("selected",true);
+                    $('#headline').val(data.data.headline);
+                    $('#code').val(data.data.code);
+
+                    //修改标准类型
+                    $.each(data.data.typeMap,function(index,item){
+                        $('#type').append(new Option(item,index));
+                        if(data.data.type==index){
+                            $('#type').val(index)
                         }
                     });
-                    //修改图片
-                    $('#imgload').attr("src", data.data.imgPath);
-                    $('#imgload').show()
+
                     //修改介绍
-                    tinymce.activeEditor.setContent(data.data.introduction);
-                    $('#note').val(data.data.note);
-                    $('#vegeid').val(data.data.vegeId);
-                    $('#imguuid').val(data.data.imgUuid);
+                    if(data.data.content!=null||""!=data.data.content){
+                        tinymce.activeEditor.setContent(data.data.content);
+                    }else {
+                        tinymce.activeEditor.setContent("无");
+                    }
+
+                    //修改标准状态
+                    if(data.data.type=="0"){
+                        $('#state0').attr("checked","checked");
+                    }else {
+                        $('#state0').attr("checked","checked");
+                    }
+
+                    $('#standardid').val(data.data.standardId);
+                    $('#publictime').val(data.data.publicTime);
+                    $('#filelink').val(data.data.fileLink);
                     $('#myModal').modal('toggle');
                 }
             }
@@ -230,22 +197,35 @@
     function queryDataById(row_id) {
 
         $.ajax({
-            url: "query_vegebyid.json?vegeId=" + row_id,
+            url: "query_standardbyid.json?standardId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data.data) {
                     $('#modalAction').html("详情");
                     $('#intro_child').remove();
-                    $('#vegename_detail').text(data.data.vegeName);
-                    $('#alias_detail').text(data.data.alias);
-                    $('#classification_detail').text(data.data.classification);
-                    $('#image_detail').attr("src",data.data.imgPath);
-                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
-                    //text(data.data.introduction);
-                    $('#note_detail').text(data.data.note);
-                    $('#updatetime_detail').text(data.data.updateTime);
-                    //$('#vegeid_detail').val(data.data.vegeId);
+                    $('#headline_detail').text(data.data.headline);
+                    $('#code_detail').text(data.data.code);
+                    if(data.data.type==0){
+                        $('#type_detail').text("国际标准");
+                    }else if(data.data.type==1){
+                        $('#type_detail').text("国家标准");
+                    }else if(data.data.type==2){
+                        $('#type_detail').text("地方标准");
+                    }else if(data.data.type==3){
+                        $('#type_detail').text("企业标准");
+                    }else{
+                        $('#type_detail').text("行业标准");
+                    }
+                    if(data.data.state==false){
+                        $('#state_detail').text("现行");
+                    }else {
+                        $('#state_detail').text("废止");
+                    }
+                    $('#content_detail').append("<div id='intro_child'>"+data.data.content+"</div>")
+                    $('#publictime_detail').text(data.data.publicTime);
+                    $('#filelink_detail').text(data.data.fileLink);
+
                     $('#detailModal').modal('toggle');
                 }
             }
@@ -259,15 +239,13 @@
             return;
         }
         $.ajax({
-            url: "delete_vege.json?vegeId=" + row_id,
+            url: "delete_standard.json?standardId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
-                if (data.data==true) {
+                if (data.data) {
                     alert("成功！");
                     window.location.reload();
-                }else {
-                    alert("还有关联品种！");
                 }
             }
         });
@@ -276,35 +254,42 @@
     function submitData() {
         var uri;
         var content = tinymce.activeEditor.getContent();
-        var classification = $('#classification').val();
-        if(""==$('#vegename').val()||$('#vegename').val()==null){
-            alert("请填写蔬菜名称！");
+        var type = $('#type').val();
+        if(""==$('#headline').val()||$('#headline').val()==null){
+            alert("请填写标题！");
             return;
         }
-        if("请选择"==classification){
-            alert("请选择蔬菜类别！");
+        if(""==$('#code').val()||$('#code').val()==null){
+            alert("请填写标准编号！");
+            return;
+        }
+        if("5"==type){
+            alert("请选择标准类别！");
             return;
         }
         if(""==content||content==null){
-            alert("请填写蔬菜介绍！");
+            content = "无";
+        }
+        if(""== $('#publictime').val()|| $('#publictime').val()==null){
+            alert("请填写标准发布时间！");
             return;
         }
         var data = {
-            'vegeName': $('#vegename').val(),
-            'vegeId': $('#vegeid').val(),
-            'alias': $('#alias').val(),
-            'classification': classification,
-            'vegeImg': $('#imgpath').val(),
-            'imguuid': $('#imguuid').val(),
-            'introduction': content,
-            'note': $('#note').val(),
-            'updateTime': $('#updatetime').val()
+            'headline': $('#headline').val(),
+            'code': $('#code').val(),
+            'standardId': $('#standardid').val(),
+            'type': $('#type').val(),
+            'content': content,
+            'fileLink': $('#filelink').val(),
+            'publicTime': $('#publictime').val()
         };
+        var checked = $('[name=state]:checked').val();
+        data.state = checked;
         if ($('#modalAction').html() == '添加') {
-            uri = "add_vege.json";
+            uri = "add_standard.json";
         } else {
-            uri = "update_vege.json";
-            data.id = $('#vegeId').val();
+            uri = "update_standard.json";
+            data.id = $('#vkId').val();
         }
 
         $.ajax({
@@ -333,7 +318,7 @@
             cache: false,
             striped: true,                              //是否显示行间隔色
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            url: "query_vege.json",
+            url: "query_standard.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
             queryParams: function queryParams(params) {
@@ -361,35 +346,57 @@
                     }
                 },
                 {
-                    field: 'vegeName',
-                    title: '蔬菜名称',
+                    field: 'headline',
+                    title: '标准名称',
                     visible: true
                 },
                 {
-                    field: 'classification',
-                    title: '生物学分类',
+                    field: 'type',
+                    title: '标准类型',
                     visible: true,
-                    formatter:function (classification) {
-                        return showClass(classification);
+                    formatter:function (type) {
+                        var typeSig;
+                        if(type==0){
+                            typeSig = '<p>国际标准</p>';
+                        }else if(type==1){
+                            typeSig = '<p>国家标准</p>';
+                        }else if(type==2){
+                            typeSig = '<p>地方标准</p>';
+                        }else if(type==3){
+                            typeSig = '<p>企业标准</p>';
+                        }else{
+                            typeSig = '<p>行业标准</p>';
+                        }
+                        return typeSig;
                     }
                 },
                 {
-                    field: 'updateTime',
+                    field: 'state',
+                    title: '标准状态',
+                    visible: true,
+                    formatter:function (state) {
+                        var typeSig;
+                        if(state==false){
+                            typeSig = '<p>现行</p>';
+                        }else{
+                            typeSig = '<p>废止</p>';
+                        }
+                        return typeSig;
+                    }
+                },
+                {
+                    field: 'publicTime',
                     title: '更新时间',
                     visible: true
                 },
                 {
-                    field: 'note',
-                    title: '备注',
-                    visible: true
-                },
-                {
-                    field: 'vegeId',
+                    field: 'standardId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.vegeId + ')"  >修改</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.vegeId + ')" >删除</button>';
-                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.vegeId + ')" >详情</button>';
+                        var operation = '<button class="btn btn-primary" onclick="updateData(' + row.standardId + ')"  >修改</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.standardId + ')" >删除</button>';
+                        operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.standardId + ')" >详情</button>';
+
                         return operation;
                     }
                 }
@@ -406,12 +413,10 @@
 
     function getSearchParams() {
         var param = {};
-        param.vegeName = $('#vegenamesearch').val();
+        param.headline = $('#headlinesearch').val();
+        param.startTime = $('#starttime').val();
+        param.endTime = $('#endtime').val();
         return param;
-    }
-
-    function reset(){
-        window.location.reload();
     }
 
     $(function () {
@@ -420,9 +425,9 @@
             $('#table').bootstrapTable('refresh', getTable());
         });
     });
-    function showClass(classification) {
-        var classes = ['根菜类','白菜和甘蓝类','芥菜类','茄果类','瓜类','豆类','葱蒜类','绿叶菜类','薯芋类','水生蔬菜','多年生蔬菜','食用菌类','芽苗菜类','野生蔬菜'];
-        return classes[classification];
+
+    function reset(){
+        window.location.reload();
     }
 </script>
 </body>
