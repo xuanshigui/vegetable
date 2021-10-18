@@ -93,9 +93,8 @@ public class VegeKnowledgeController extends BaseController {
         List<String> fields = Arrays.asList("kcId", "headline", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         Page<VegeKnowledge> result = vegeKnowledgeService.query(condition);
-        long total = vegeKnowledgeService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

@@ -18,10 +18,8 @@ public class MD5Utils {
 
     public static boolean comparePassword(String password, String input, String salt) {
         String inputBase = input + "/" + salt;
-        String passwordBase = password + "/" + salt;
         String inputString = DigestUtils.md5DigestAsHex(inputBase.getBytes());
-        String passwordString = DigestUtils.md5DigestAsHex(passwordBase.getBytes());
-        if (inputString.compareTo(passwordString) == 0) {
+        if (inputString.compareTo(password) == 0) {
             return true;
         } else {
             return false;

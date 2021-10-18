@@ -16,17 +16,25 @@ public class User {
     @Column(name ="userid")
     private Integer userId;
 
+    @Column(name = "username")
     private String userName;
 
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "salt")
     private String salt;
 
+    @Column(name = "realname")
     private String realName;
 
+    @Column(name = "telephone")
     private String phone;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "note")
     private String note;
 
     public Integer getUserId() {

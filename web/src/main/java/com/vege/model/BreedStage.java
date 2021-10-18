@@ -35,7 +35,7 @@ public class BreedStage {
     @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
     private List<EnvParam> envParams = new LinkedList<>();
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne
     @JoinColumn(name = "vegeid", referencedColumnName = "vegeid")
     private VegeInfo vegeInfo;
 

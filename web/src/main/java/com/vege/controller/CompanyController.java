@@ -88,7 +88,7 @@ public class CompanyController extends BaseController {
         Page<Company> result = companyService.query(condition);
         long total = companyService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

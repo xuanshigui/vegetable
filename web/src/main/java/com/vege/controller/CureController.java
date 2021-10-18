@@ -78,7 +78,7 @@ public class CureController extends BaseController {
         Page<Cure> result = cureService.query(condition);
         long total = cureService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

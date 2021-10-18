@@ -81,7 +81,7 @@ public class DrugController extends BaseController {
         Page<Drug> result = drugService.query(condition);
         long total = drugService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

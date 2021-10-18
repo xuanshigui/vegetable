@@ -360,10 +360,10 @@ ul.notifications > li {
       color: #fff;
       background-color: transparent; }
       .sidebar .nav > li > a:hover i, .sidebar .nav > li > a:focus i, .sidebar .nav > li > a.active i {
-        color: #00AAFF; }
+        color: #227700; }
     .sidebar .nav > li > a:focus, .sidebar .nav > li > a.active {
       background-color: #252c35;
-      border-left-color: #00AAFF; }
+      border-left-color: #227700; }
     .sidebar .nav > li > a[data-toggle="collapse"] .icon-submenu {
       display: inline-block;
       vertical-align: middle;
@@ -391,7 +391,7 @@ ul.notifications > li {
       transform: rotate(0deg); }
     .sidebar .nav > li > a .badge {
       font-weight: 400;
-      background-color: #F9354C; }
+      background-color: #F9354f; }
   .sidebar .nav {
     /* submenu */ }
     .sidebar .nav i {

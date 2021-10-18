@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns="http://w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+
+        .table-detail > tbody > tr:nth-of-type(odd) {
+            background-color: #F5F7EF;
+        }
+        .table-detail th {
+            font-size: 18px;
+            vertical-align: middle;
+        }
+        .table-detail td{
+            font-size: 18px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    品种名称：<input type="text" id="varietynamesearch">
+    蔬菜名称：<input type="text" id="vegenamesearch">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+</div>
+
+<table id="table">
+</table>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade bd-example-modal-lg" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" >
+                <h4 class="modal-title" id="logoinModalLabel" style="display: inline;">品种详情</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display: inline">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-detail">
+                    <tr>
+                        <th>蔬菜名称：</th>
+                        <td>
+                            <span id="varietyname_detail"></span>
+                        </td>
+                        <td rowspan="5" align="center" width="360px;">
+                            <div id="imgborder" style="vertical-align:middle; height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px;">
+                                <img src="" id="image_detail" style="width:320px;height: 200px;">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>蔬菜名称：</th>
+                        <td>
+                            <span text="" id="vegename_detail" ></span><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>品种产地：</th>
+                        <td>
+                            <span text="" id="area_detail"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>品种来源：</th>
+                        <td>
+                            <span text="" id="source_detail"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><br></td>
+                        <td><br></td>
+                    </tr>
+                    <tr>
+                        <th>种植模式：</th>
+                        <td colspan="2">
+                            <table text="" id="breedstage_detail" class="table-striped">
+                                <thead>
+                                <tr>
+                                    <th width="200px">种植模式名称</th>
+                                    <th width="620px">介绍</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="3">基本介绍</th>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div id="introduction_detail"></div><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>更新时间：</th>
+                        <td colspan="2">
+                            <span text="" id="updatetime_detail"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+
+    function queryDataById(row_id) {
+
+        var div = document.getElementById("introduction_detail");
+        while(div.hasChildNodes()) //当div下还存在子节点时 循环继续
+        {
+            div.removeChild(div.firstChild);
+        }
+
+        $.ajax({
+            url: "query_varietybyid.json?varietyId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("详情");
+                    $('#intro_child').remove();
+                    $('#varietyname_detail').text(data.data.varietyName);
+                    $('#vegename_detail').text(data.data.vegeName);
+                    $('#image_detail').attr("src",data.data.imgPath);
+                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.description+"</div>")
+                    $('#updatetime_detail').text(data.data.timestamp);
+                    $('#area_detail').text(data.data.area);
+                    $('#source_detail').text(showClass(data.data.source));
+                    $('#cultivatemode_detail').text();
+                    if(data.data.cultivatemodes){
+                        $.each(data.data.cultivatemodes,function(index,item){
+                            $('#breedstage_detail').append("<tr><td>"+item.cultivateModeName+"</td><td>"+item.note+"</td></tr>");
+                        });
+                    }
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+    }
+
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_variety.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "varietyId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'varietyName',
+                    title: '品种名称',
+                    visible: true
+                },
+                {
+                    field: 'vegeInfo.vegeName',
+                    title: '蔬菜名称',
+                    visible: true
+                },
+                {
+                    field: 'area',
+                    title: '产地',
+                    visible: true
+                },
+                {
+                    field: 'source',
+                    title: '来源',
+                    visible: true,
+                    formatter:function (classification) {
+                        return showClass(classification);
+                    }
+                },
+                {
+                    field: 'timestamp',
+                    title: '更新时间',
+                    visible: true
+                },
+                {
+                    field: 'varietyId',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var operation = '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.varietyId + ')" >详情</button>';
+                        return operation;
+                    }
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.varietyName = $('#varietynamesearch').val();
+        param.vegeName = $('#vegenamesearch').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+
+    function reset(){
+        window.location.reload();
+    }
+
+    function showClass(classification) {
+        var classes = ['选育品种','自有品种','引进品种'];
+        return classes[classification];
+    }
+</script>
+</body>
+</html>

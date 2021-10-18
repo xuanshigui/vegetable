@@ -78,9 +78,8 @@ public class SymptomController extends BaseController {
         List<String> fields = Arrays.asList("symptomName","diseaseName", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         Page<Symptom> result = symptomService.query(condition);
-        long total = symptomService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

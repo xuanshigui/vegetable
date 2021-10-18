@@ -94,7 +94,7 @@ public class StandardController extends BaseController {
         Page<Standard> result = standardService.query(condition);
         long total = standardService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

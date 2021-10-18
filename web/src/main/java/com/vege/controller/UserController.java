@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.vege.model.User;
 import com.vege.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,7 +53,7 @@ public class UserController extends BaseController {
     public Map update(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("userId", "userName", "password", "realName", "phone", "email", "note");
         Map<String, String> data = buildData(request,fields);
-        User user = new User();
+        User user = userService.queryById(data.get("userId"));
         user.setUserName(data.get("userName"));
         user.setPassword(data.get("password"));
         user.setRealName(data.get("realName"));
@@ -68,11 +69,11 @@ public class UserController extends BaseController {
     public Map query(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("userName", "page", "size");
         Map<String, String> condition = buildData(request, fields);
-        List<User> result = userService.query(condition);
-        int total = userService.queryTotal(condition);
+        Page<User> result = userService.query(condition);
+        long total = userService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
-        data.put("rows", result);
+        data.put("total", result.getTotalElements());
+        data.put("rows", result.getContent());
         return buildResponse(data);
     }
 

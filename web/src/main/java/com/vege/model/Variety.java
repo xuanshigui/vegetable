@@ -1,5 +1,6 @@
 package com.vege.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +20,7 @@ public class Variety {
     @Column(name = "varietyid")
     private int varietyId;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "vegeid", referencedColumnName = "vegeid")
     private VegeInfo vegeInfo;
 
@@ -41,7 +42,8 @@ public class Variety {
     @Column(name = "timestamp")
     private Timestamp timestamp;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<CultivateMode> cultivateModes = new ArrayList<>();
 
     public int getVarietyId() {

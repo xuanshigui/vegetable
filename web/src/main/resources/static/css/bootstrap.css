@@ -182,6 +182,7 @@ optgroup {
 table {
   border-spacing: 0;
   border-collapse: collapse;
+  vertical-align: middle;
 }
 td,
 th {
@@ -5934,6 +5935,9 @@ button.close {
 .modal-header {
   padding: 15px;
   border-bottom: 1px solid #e5e5e5;
+  background: #B1CA54;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 .modal-header .close {
   margin-top: -2px;
@@ -5941,6 +5945,7 @@ button.close {
 .modal-title {
   margin: 0;
   line-height: 1.42857143;
+  color: rgba(0, 0, 0, .7);;
 }
 .modal-body {
   position: relative;
@@ -5983,7 +5988,7 @@ button.close {
 }
 @media (min-width: 992px) {
   .modal-lg {
-    width: 900px;
+    width: 1100px;
   }
 }
 .tooltip {

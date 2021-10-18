@@ -2,9 +2,12 @@ package com.vege.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vege.constants.Constants;
+import com.vege.model.BreedStage;
+import com.vege.model.Variety;
 import com.vege.model.VegeInfo;
 import com.vege.service.ImageService;
 import com.vege.service.VegeInfoService;
+import com.vege.utils.CustomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -90,9 +94,8 @@ public class VegeInfoController extends BaseController {
         List<String> fields = Arrays.asList("vegeName", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         Page<VegeInfo> result = vegeService.query(condition);
-        long total = vegeService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         data.put("classificationMap",Constants.CLASS_VEGE_MAP);
         return buildResponse(data);
@@ -108,6 +111,14 @@ public class VegeInfoController extends BaseController {
         data.put("vegeName", vege.getVegeName());
         data.put("alias", vege.getAlias());
         String imgPath = "";
+        List<Variety> varietyList = vege.getVarieties();
+        if(varietyList.size()!=0){
+            setVarietyAttribute(data,varietyList,"varieties");
+        }
+        List<BreedStage> breedStageList = vege.getBreedStages();
+        if(breedStageList.size()!=0){
+            data.put("breedStageList",breedStageList);
+        }
         imgPath = imageService.queryPathByUuid(vege.getImgUuid());
         data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+imgPath);
         data.put("introduction", vege.getIntroduction());
@@ -118,6 +129,18 @@ public class VegeInfoController extends BaseController {
         data.put("imgUuid", vege.getImgUuid());
         data.put("classMap",Constants.VEGE_CLASS_MAP);
         return buildResponse(data);
+    }
+
+    private void setVarietyAttribute(JSONObject data, List<Variety> varietyList,String attrName) {
+        if(varietyList.size()!=0){
+            List<String> varietyNames = new ArrayList<>();
+            for(Variety variety:varietyList){
+                varietyNames.add(variety.getVarietyName());
+            }
+            data.put(attrName, CustomStringUtils.listToString(varietyNames));
+        }else {
+            data.put(attrName, "暂无");
+        }
     }
 
     @RequestMapping(value = "/load_classification.json", method = RequestMethod.GET)

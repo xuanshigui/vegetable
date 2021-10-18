@@ -7,17 +7,17 @@ import java.util.Map;
 
 public interface BreedStageService {
 
-    public BreedStage add(BreedStage breedStage);
+    boolean add(BreedStage breedStage);
 
-    public boolean delete(String breedStageId);
+    boolean delete(String breedStageId);
 
-    public BreedStage update(BreedStage breedStage);
+    boolean update(BreedStage breedStage);
 
-    public Page<BreedStage> query(Map<String, String> condition);
+    Page<BreedStage> query(Map<String, String> condition);
 
-    public long queryTotal(Map<String, String> condition);
+    long queryTotal(Map<String, String> condition);
 
-    public BreedStage queryById(String breedStageId);
+    BreedStage queryById(String breedStageId);
 
     Map<String,String> getBsIdAndName();
 

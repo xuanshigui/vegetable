@@ -1,5 +1,6 @@
 package com.vege.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -41,16 +42,20 @@ public class VegeInfo {
     @Column(name = "updatetime")
     private Timestamp updateTime;
 
-    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<BreedStage> breedStages = new LinkedList<>();
 
-    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Variety> varieties = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<VegeKnowledge> vegeKnowledges = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Disease> diseases = new ArrayList<>();
 
     public int getVegeId() {

@@ -82,22 +82,6 @@
         $('#modalAction').html("添加");
     }
 
-    function queryData() {
-        $.ajax({
-            url: "query_user.json?userid=" + row_id,
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                $('#myModal').modal("toggle");
-                $('#userid').val("");
-                $('#username').val("");
-                $('#realname').val("");
-                $('#phone').val("");
-                $('#note').val("");
-            }
-        });
-    }
-
     function updateData(row_id) {
 
         $.ajax({

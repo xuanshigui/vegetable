@@ -3,11 +3,15 @@ server:
 
 # mysql
 spring:
+  mvc:
+      static-path-pattern: /static/**
   servlet:
     multipart:
       enabled: true
       maxFileSize: 20Mb
       maxRequestSize: 20Mb
+  session:
+    timeout:600s
   jackson:
     date-format: yyyy-MM-dd
   datasource:
@@ -19,6 +23,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   thymeleaf:
     check-template: true
     # 关闭模板缓存，便于调试

@@ -105,7 +105,7 @@ public class EnvParamController extends BaseController {
         Page<EnvParam> result = envparamService.query(condition);
         long total = result.getSize();
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

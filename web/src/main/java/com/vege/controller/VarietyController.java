@@ -108,9 +108,8 @@ public class VarietyController extends BaseController {
         List<String> fields = Arrays.asList("varietyName","vegeName", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         Page<Variety> result = varietyService.query(condition);
-        long total = varietyService.queryTotal(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }
@@ -127,6 +126,7 @@ public class VarietyController extends BaseController {
         data.put("cultivatemodes",variety.getCultivateModes());
         data.put("description", variety.getDescription());
         data.put("area", variety.getArea());
+        data.put("timestamp", variety.getTimestamp());
         String imgPath = "";
         imgPath = imageService.queryPathByUuid(variety.getImgUuid());
         data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+imgPath);

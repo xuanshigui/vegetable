@@ -44,11 +44,7 @@ public class BreedStageController extends BaseController {
         breedStage.setDefinition(data.get("definition"));
         breedStage.setDuration(data.get("duration"));
         breedStage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        BreedStage breedStageNew = breedstageService.add(breedStage);
-        boolean flag = false;
-        if(!(breedStageNew.getBsId()==0)){
-            flag = true;
-        }
+        boolean flag = breedstageService.add(breedStage);
         return buildResponse(flag);
     }
 
@@ -63,19 +59,20 @@ public class BreedStageController extends BaseController {
     public Map update(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("bsId", "stageName", "vegeId", "definition", "duration");
         Map<String, String> data = buildData(request,fields);
-        BreedStage breedStage = new BreedStage();
-        VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
-        breedStage.setVegeInfo(vegeInfo);
+        BreedStage breedStage = breedstageService.queryById(data.get("bsId"));
+        //如果不相等，修改两者关系
+        if(breedStage.getVegeInfo().getVegeId()!=Integer.parseInt(data.get("vegeId"))){
+            VegeInfo vegeInfo = breedStage.getVegeInfo();
+            vegeInfo.getBreedStages().remove(breedStage);
+            vegeInfoService.update(vegeInfo);
+            breedStage.setVegeInfo(vegeInfo);
+        }
         breedStage.setStageName(data.get("stageName"));
         breedStage.setBsId(Integer.parseInt(data.get("bsId")));
         breedStage.setDefinition(data.get("definition"));
         breedStage.setDuration(data.get("duration"));
         breedStage.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        BreedStage breedStageNew = breedstageService.update(breedStage);
-        boolean flag = false;
-        if(breedStageNew.getBsId()!=null){
-            flag = true;
-        }
+        boolean flag = breedstageService.update(breedStage);
         return buildResponse(flag);
     }
 

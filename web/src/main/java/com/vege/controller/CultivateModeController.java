@@ -80,7 +80,7 @@ public class CultivateModeController extends BaseController {
         Page<CultivateMode> result = cultivatemodeService.query(condition);
         long total = result.getSize();
         JSONObject data = new JSONObject();
-        data.put("total", total);
+        data.put("total", result.getTotalElements());
         data.put("rows", result.getContent());
         return buildResponse(data);
     }

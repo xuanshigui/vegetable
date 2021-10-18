@@ -1,13 +1,16 @@
 package com.vege.service.impl;
 
 import com.vege.dao.BreedStageRepository;
+import com.vege.dao.VegeInfoRepository;
 import com.vege.model.BreedStage;
+import com.vege.model.VegeInfo;
 import com.vege.service.BreedStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +22,21 @@ public class BreedStageServiceImpl extends BaseService implements BreedStageServ
     @Autowired
     BreedStageRepository breedStageRepository;
 
+    @Autowired
+    VegeInfoRepository vegeInfoRepository;
+
+    @Transactional
     @Override
-    public BreedStage add(BreedStage breedStage) {
-        return breedStageRepository.save(breedStage);
+    public boolean add(BreedStage breedStage) {
+        try {
+            breedStageRepository.saveAndFlush(breedStage);
+            VegeInfo vegeInfo = breedStage.getVegeInfo();
+            vegeInfo.getBreedStages().add(breedStage);
+            vegeInfoRepository.save(vegeInfo);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override
@@ -35,8 +50,17 @@ public class BreedStageServiceImpl extends BaseService implements BreedStageServ
     }
 
     @Override
-    public BreedStage update(BreedStage breedStage) {
-        return breedStageRepository.save(breedStage);
+    @Transactional
+    public boolean update(BreedStage breedStage) {
+        try {
+            breedStageRepository.saveAndFlush(breedStage);
+            VegeInfo vegeInfo = breedStage.getVegeInfo();
+            vegeInfo.getBreedStages().add(breedStage);
+            vegeInfoRepository.save(vegeInfo);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override

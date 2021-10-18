@@ -7,21 +7,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <!-- VENDOR CSS -->
-    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/vendor/bootstrap-table/bootstrap-table.css">
-    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/vendor/linearicons/style.css">
-    <link rel="stylesheet" href="/vendor/chartist/css/chartist-custom.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/vendor/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/vendor/linearicons/style.css">
+    <link rel="stylesheet" href="/static/vendor/chartist/css/chartist-custom.css">
 
     <!-- MAIN CSS -->
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/static/css/main.css">
     <!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
     <!-- ICONS -->
-    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon.png">
     <!--引入富文本编辑器-->
-    <script src="/editor/tinymce/js/tinymce/tinymce.min.js"></script>
-    <script src="/editor/tinymce/js/tinymce/jquery.tinymce.min.js"></script>
-    <script src="/editor/tinymce/js/tinymce/icons/default/icons.min.js"></script>
+    <script src="/static/editor/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="/static/editor/tinymce/js/tinymce/jquery.tinymce.min.js"></script>
+    <script src="/static/editor/tinymce/js/tinymce/icons/default/icons.min.js"></script>
 
 </head>
 
@@ -29,12 +29,11 @@
 <!-- WRAPPER -->
 <div id="wrapper">
     <!-- NAVBAR -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <span style="font-size: 40px;float: right;margin-right: 200px;padding-top: 10px;">设施蔬菜知识库系统</span>
-        <div class="container-fluid">
-            <div id="navbar-menu">
-            </div>
-        </div>
+    <nav class="navbar navbar-default navbar-fixed-top" style="background-color:#227700">
+        <span style="font-size: 40px;color: #ffffff; float: left;margin-left: 200px;padding-top: 10px;">设施蔬菜知识库系统</span>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/login.html" style="font-size: 16px; color: #FFFFFF"><span class="glyphicon glyphicon-log-in" style="font-size: 16px; color: #FFFFFF">&nbsp;</span>登录</a></li>
+        </ul>
     </nav>
     <!-- END NAVBAR -->
     <!-- LEFT SIDEBAR -->
@@ -49,57 +48,40 @@
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
                         <div id="vegeInfoSubPages" class="collapse ">
                             <ul id="vegeInfoSubNav" class="nav">
-                                <li><a href="/vegeinfo_manage.html" class="">蔬菜基本信息管理</a></li>
-                                <li><a href="/variety_manage.html" class="">蔬菜品种管理</a></li>
-                                <li><a href="/breedstage_manage.html" class="">生长周期管理</a></li>
-                                <li><a href="/environmentparameter_manage.html" class="">环境参数管理</a></li>
-                                <li><a href="/cultivatemode_manage.html" class="">种植模式管理</a></li>
+                                <li><a href="/vegeinfo.html" class="">蔬菜基本信息查询</a></li>
+                                <li><a href="/variety.html" class="">蔬菜品种查询</a></li>
                             </ul>
                         </div>
                     </li>
                     <li>
                         <a id="vegeKnowledgeSubButton" href="#vegeknowSubPages" data-toggle="collapse" class="collapsed"><i
-                                class="lnr lnr-chart-bars"></i></i> <span>蔬菜知识管理</span> <i
+                                class="lnr lnr-chart-bars"></i></i> <span>蔬菜知识查询</span> <i
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
                         <div id="vegeknowSubPages" class="collapse ">
                             <ul id="vegeknowSubNav" class="nav">
-                                <li><a href="/knowledgecategory_manage.html" class="">知识类型管理</a></li>
-                                <li><a href="/vegeknowledge_manage.html" class="">蔬菜知识管理</a></li>
-                                <li><a href="/standard_manage.html" class="">种植标准管理</a></li>
+                                <li><a href="/vegeknowledge.html" class="">蔬菜知识查询</a></li>
+                                <li><a href="/standard.html" class="">蔬菜标准查询</a></li>
                             </ul>
                         </div>
                     </li>
                     <li>
                         <a id="deseaseKnowledgeSubButton" href="#deseaseSubPages" data-toggle="collapse" class="collapsed"><i
-                                class="lnr lnr-linearicons"></i></i> <span>病害知识管理</span> <i
+                                class="lnr lnr-linearicons"></i></i> <span>病害知识查询</span> <i
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
                         <div id="deseaseSubPages" class="collapse ">
                             <ul id="deseaseSubNav" class="nav">
-                                <li><a href="/disease_manage.html" class="">疾病信息管理</a></li>
-                                <li><a href="/symptom_manage.html" class="">疾病症状管理</a></li>
-                                <li><a href="/cure_manage.html" class="">防治方法管理</a></li>
-                                <li><a href="/drug_manage.html" class="">药品信息管理</a></li>
+                                <li><a href="/disease.html" class="">疾病信息管理</a></li>
+                                <li><a href="/drug.html" class="">药品信息管理</a></li>
                             </ul>
                         </div>
                     </li>
                     <li>
                         <a id="enterpriseSubButton" href="#enterpriseSubPages" data-toggle="collapse" class="collapsed"><i
-                                class="lnr lnr-diamond"></i></i> <span>企业信息管理</span> <i
+                                class="lnr lnr-diamond"></i></i> <span>企业风采展示</span> <i
                                 class="icon-submenu lnr lnr-chevron-left"></i></a>
                         <div id="enterpriseSubPages" class="collapse ">
                             <ul id="enterpriceSubNav" class="nav">
-                                <li><a href="/company_manage.html" class="">企业信息管理</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a id="systemSubButton" href="#systemSubPages" data-toggle="collapse" class="collapsed"><i
-                                class="lnr lnr-coffee-cup"></i></i> <span>系统管理</span> <i
-                                class="icon-submenu lnr lnr-chevron-left"></i></a>
-                        <div id="systemSubPages" class="collapse ">
-                            <ul id="systemSubNav" class="nav">
-                                <li><a href="/image_manage.html" class="">图片管理</a></li>
-                                <li><a href="/user_manage.html" class="">用户管理</a></li>
+                                <li><a href="/company.html" class="">企业风采展示</a></li>
                             </ul>
                         </div>
                     </li>
@@ -110,10 +92,10 @@
     <!-- END LEFT SIDEBAR -->
     <!-- MAIN -->
     <!-- Javascript -->
-    <script src="/vendor/jquery/jquery.min.js"></script>
-    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/vendor/bootstrap-table/bootstrap-table.js"></script>
-    <script src="/vendor/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/vendor/bootstrap-table/bootstrap-table.js"></script>
+    <script src="/static/vendor/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
     <div class="main">
         <!-- MAIN CONTENT -->
         <div class="main-content">
@@ -219,7 +201,6 @@
         if (active) {
             return;
         }
-
     }
 
 </script>

@@ -1,13 +1,16 @@
 package com.vege.service.impl;
 
 import com.vege.dao.VarietyRepository;
+import com.vege.dao.VegeInfoRepository;
 import com.vege.model.Variety;
+import com.vege.model.VegeInfo;
 import com.vege.service.VarietyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Map;
 
 @Service
@@ -16,13 +19,18 @@ public class VarietyServiceImpl extends BaseService implements VarietyService {
 
     @Autowired
     private VarietyRepository varietyRepository;
+    @Autowired
+    private VegeInfoRepository vegeInfoRepository;
 
+    @Transactional
     @Override
     public boolean add(Variety variety) {
 
         try {
-
-            varietyRepository.save(variety);
+            varietyRepository.saveAndFlush(variety);
+            VegeInfo vegeInfo = variety.getVegeInfo();
+            vegeInfo.getVarieties().add(variety);
+            vegeInfoRepository.save(vegeInfo);
             return true;
         }catch (Exception e){
             return false;

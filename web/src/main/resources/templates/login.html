@@ -1,0 +1,88 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>设施蔬菜知识库系统</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/vendor/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/vendor/linearicons/style.css">
+    <link rel="stylesheet" href="/static/vendor/chartist/css/chartist-custom.css">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
+    <!-- ICONS -->
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon.png">
+
+    <!-- Javascript -->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/vendor/bootstrap-table/bootstrap-table.js"></script>
+    <script src="/static/vendor/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+
+</head>
+<body style="background-color: #93B874;">
+
+<!-- OVERVIEW -->
+<div class="panel" style="margin-top: -20px">
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="loginModalLabel" style="alignment: center">登录</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" onclick="reset()">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/login" method="post" id="loginform">
+                        <div class="form-group">
+                            <label for="username" class="col-form-label">用户名:</label>
+                            <input type="text" class="form-control" id="username" name="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-form-label">密码:</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reset()">关闭</button>
+                    <button type="button" class="btn btn-success" onclick="ButtonSubmit()">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#loginModal').modal("toggle");
+    });
+
+    function reset(){
+        window.location.replace("index.html")
+    }
+
+    function ButtonSubmit() {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        if(""==username||username==null){
+            alert("请填写用户名！");
+            return;
+        }
+        if(""==password||password==null){
+            alert("请填写密码！");
+            return;
+        }
+        $('#loginform').submit();
+    }
+</script>
+
+</body>
+
+</html>
