@@ -56,9 +56,9 @@ public class DrugServiceImpl extends BaseService implements DrugService {
         Pageable pageable = getPageable(condition);
         if(drugName != null && !drugName.equals("")){
             drugName = "%" + drugName + "%";
-            return drugRepository.findAllByDrugNameLike(drugName,getPageable(condition));
+            return drugRepository.findAllByDrugNameLike(drugName,pageable);
         }
-        return drugRepository.findAll(getPageable(condition));
+        return drugRepository.findAll(pageable);
     }
 
     @Override

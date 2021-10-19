@@ -26,7 +26,7 @@ public class KnowledgeCategory {
     private String introduction;
 
     @OneToMany(cascade = CascadeType.REFRESH)
-    private List<VegeKnowledge>  vegekledges = new ArrayList<>();
+    private List<VegeKnowledge>  vegeknowledges = new ArrayList<>();
 
     @Column(name = "updatetime")
     private Timestamp updateTime;
@@ -55,12 +55,12 @@ public class KnowledgeCategory {
         this.introduction = introduction;
     }
 
-    public List<VegeKnowledge> getVegekledges() {
-        return vegekledges;
+    public List<VegeKnowledge> getVegeknowledges() {
+        return vegeknowledges;
     }
 
-    public void setVegekledges(List<VegeKnowledge> vegekledges) {
-        this.vegekledges = vegekledges;
+    public void setVegeknowledges(List<VegeKnowledge> vegeknowledges) {
+        this.vegeknowledges = vegeknowledges;
     }
 
     public Timestamp getUpdateTime() {

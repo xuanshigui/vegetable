@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    药品名称：<input type="text" id="drugnamesearch">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+
+</div>
+
+<table id="table">
+</table>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade bd-example-modal-lg" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">药品详情</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-detail">
+                    <tbody>
+                    <tr>
+                        <th>
+                            <span>药品名称：</span>
+                        </th>
+                        <td>
+                            <span id="drugname_detail"></span>
+                        </td>
+                        <th>
+                            <span>保存时间：</span>
+                        </th>
+                        <td>
+                            <span id="saveperiod_detail"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">
+                            <span> 使用方法：</span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <span id="method_detail"></span>
+                        </td>
+                    </tr>
+                        <th colspan="4">
+                            <span>注意事项：</span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <span id="attention_detail"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span>更新时间：</span>
+                        </td>
+                        <td colspan="3">
+                            <span id="updatetime_detail"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+
+    function queryDataById(row_id) {
+
+        $.ajax({
+            url: "query_drugbyid.json?drugId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("详情");
+                    $('#drugname_detail').text(data.data.drugName);
+                    $('#method_detail').text(data.data.methods);
+                    $('#dosage_detail').text(data.data.dosage);
+                    $('#saveperiod_detail').text(data.data.savePeriod);
+                    $('#attention_detail').text(data.data.attention);
+                    $('#updatetime_detail').text(data.data.updateTime);
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_drug.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "drugId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            cardView: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    width: '50px',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'drugName',
+                    title: '药品名称',
+                    visible: true
+                },
+                {
+                    field: 'savePeriod',
+                    title: '保存时间',
+                    visible: true
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    visible: true
+                },
+                {
+                    field: 'drugId',
+                    title: '操作',
+                    width: '300px',
+                    formatter: function (value, row, index) {
+                        var operation = '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.drugId + ')" >详情</button>';
+                        return operation;
+                    }
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.drugName = $('#drugnamesearch').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+
+    function reset(){
+        window.location.reload();
+    }
+</script>
+</body>
+</html>

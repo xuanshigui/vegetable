@@ -2,7 +2,9 @@ package com.vege.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vege.constants.Constants;
+import com.vege.model.Cure;
 import com.vege.model.Disease;
+import com.vege.model.Symptom;
 import com.vege.model.VegeInfo;
 import com.vege.service.DiseaseService;
 import com.vege.service.ImageService;
@@ -170,9 +172,19 @@ public class DiseaseController extends BaseController {
             data.put("imgUuid3", disease.getImgUuid3());
         }
 
+        List<Symptom> symptomList = disease.getSymptoms();
+        if(symptomList!=null){
+            data.put("symptomList", symptomList);
+        }
+        List<Cure> cureList = disease.getCures();
+        if(cureList!=null){
+            data.put("cureList", cureList);
+        }
+
         data.put("regularity", disease.getRegularity());
         data.put("etiology", disease.getEtiology());
         data.put("diseaseType",disease.getDiseaseType());
+        data.put("updateTime",disease.getUpdateTime());
 
         //载入列表选项
         Map<String,String> vegeNameMap = vegeInfoService.getVegeIdAndName();

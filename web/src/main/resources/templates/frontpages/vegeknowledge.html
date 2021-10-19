@@ -2,19 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <style>
-        .table-detail > tbody > tr:nth-of-type(odd) {
-            background-color: #F5F7EF;
-        }
-        .table-detail th {
-            font-size: 18px;
-            vertical-align: middle;
-        }
-        .table-detail td{
-            font-size: 18px;
-            vertical-align: middle;
-        }
-    </style>
 </head>
 <body>
 <!-- 按钮触发模态框 -->
@@ -39,7 +26,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
                     &times;
                 </button>
-                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">知识详情</span>
                 </h4>
             </div>
             <div class="modal-body">
@@ -102,7 +89,7 @@
             dataType: "json",
             success: function (data) {
                 if (data.data) {
-                    $('#modalAction').html("详情");
+
                     $('#intro_child').remove();
                     $('#headline_detail').text(data.data.headline);
                     if(data.data.vegeInfo!=null){

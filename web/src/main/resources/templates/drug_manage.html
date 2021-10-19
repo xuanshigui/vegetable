@@ -11,7 +11,6 @@
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
     药品名称：<input type="text" id="drugnamesearch">
-    疾病名称：<input type="text" id="diseaseamesearch">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -32,21 +31,31 @@
             </div>
             <div class="modal-body">
                 <form>
-                    药品名称：<input id="drugname" type="text"><br>
-                    蔬菜名称：<select id="vegename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
-                    疾病名称：<select id="diseasename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
-                    治疗方法名称：<select id="curename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
-                    <div>
-                        <span style="vertical-align: middle;display: inline-block">使用方法：</span>
-                        <textarea id="methods" value="" style="width: 700px;height: 200px; vertical-align: middle; display: inline-block" ></textarea><br>
-                    </div>
-                    使用量：<input id="dosage" type="text"><br>
-                    保存时间：<input id="saveperiod" type="text"><br>
-                    <div>
-                        <span style="vertical-align: middle;display: inline-block">注意事项：</span>
-                        <textarea id="attention" value="" style="width: 700px;height: 200px; vertical-align: middle; display: inline-block"></textarea><br>
-                    </div>
-                    <input type="hidden" id="drugid">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>药品名称：</td>
+                            <td><input id="drugname" type="text" style="width: 300px"></td>
+                        </tr>
+                        <tr>
+                            <td>保存时间：</td>
+                            <td><input id="saveperiod" type="text" style="width: 300px"></td>
+                        </tr>
+                        <tr>
+                            <td>使用方法：</td>
+                            <td>
+                                <textarea id="methods" value="" style="width: 700px;height: 200px; vertical-align: middle; display: inline-block" ></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>注意事项：</td>
+                            <td>
+                                <textarea id="attention" value="" style="width: 700px;height: 200px; vertical-align: middle; display: inline-block"></textarea>
+                            </td>
+                        </tr>
+                        <input type="hidden" id="drugid">
+                        </tbody>
+                    </table>
                 </form>
             </div>
             <div class="modal-footer">
@@ -65,9 +74,8 @@
         <div class="modal-content">
             <div class="modal-body">
                 <span>药品名称：</span><label text="" id="drugname_detail" value=""></label><br>
-                <span>使用方法：</span><label text="" id="method_detail" value=""></label><br>
-                <span>使用量：</span><label text="" id="dosage_detail" value=""></label><br>
                 <span>保存时间：</span><label text="" id="saveperiod_detail" value=""></label><br>
+                <span>使用方法：</span><label text="" id="method_detail" value=""></label><br>
                 <span>注意事项：</span><label text="" id="attention_detail" value=""></label><br>
                 <span>更新时间：</span><label text="" id="updatetime_detail" value=""></label><br>
             </div>
@@ -89,11 +97,7 @@
             method: "Get",
             dataType: "json",
             success: function (data) {
-                if (data.data.vegeNameMap) {
-                    $.each(data.data.vegeNameMap,function(index,item){
-                        $('#vegename').append(new Option(item,index));
-                    });
-                }
+
             }
         });
         $('#drugname').val("");
@@ -117,30 +121,7 @@
                 if (data) {
                     $('#modalAction').html("修改");
                     $('#drugname').val(data.data.drugName);
-                    $.each(data.data.vegeNameMap,function(index,item){
-                        $('#vegename').append(new Option(item,index));
-                        if(data.data.vegeName==item){
-                            $('#vegename').val(index);
-                        }
-                    });
-                    if (data.data.diseaseNameMap) {
-                        $.each(data.data.diseaseNameMap,function(index,item){
-                            $('#diseasename').append(new Option(item,index));
-                            if(data.data.diseaseName == item){
-                                $('#diseasename').val(index)
-                            }
-                        });
-                    }
-                    if (data.data.cureNameMap) {
-                        $.each(data.data.cureNameMap,function(index,item){
-                            $('#curename').append(new Option(item,index));
-                            if(data.data.cureName == item){
-                                $('#curename').val(index)
-                            }
-                        });
-                    }
                     $('#methods').val(data.data.methods);
-                    $('#dosage').val(data.data.dosage);
                     $('#saveperiod').val(data.data.savePeriod);
                     $('#attention').val(data.data.attention);
                     //id回传
@@ -163,7 +144,6 @@
                     $('#modalAction').html("详情");
                     $('#drugname_detail').text(data.data.drugName);
                     $('#method_detail').text(data.data.methods);
-                    $('#dosage_detail').text(data.data.dosage);
                     $('#saveperiod_detail').text(data.data.savePeriod);
                     $('#attention_detail').text(data.data.attention);
                     $('#updatetime_detail').text(data.data.updateTime);
@@ -198,24 +178,10 @@
             alert("请填写药品名称！");
             return;
         }
-        if("0"==$('#vegename').val()||$('#vegename').val()==null){
-            alert("请填蔬菜名称！");
-            return;
-        }
-        if("0"==$('#diseasename').val()||$('#diseasename').val()==null){
-            alert("请填所治疗疾病名称！");
-            return;
-        }
-        if("0"==$('#curename').val()||$('#curename').val()==null){
-            alert("请填治疗方法名称！");
-            return;
-        }
         var data = {
             'drugId': $('#drugid').val(),
-            'cureId': $('#curename').val(),
             'drugName': $('#drugname').val(),
             'methods': $('#methods').val(),
-            'dosage': $('#dosage').val(),
             'savePeriod': $('#saveperiod').val(),
             'attention': $('#attention').val(),
         };
@@ -320,7 +286,6 @@
     function getSearchParams() {
         var param = {};
         param.drugName = $('#drugnamesearch').val();
-        param.diseaseName = $('#diseaseamesearch').val();
         return param;
     }
 
@@ -328,51 +293,6 @@
         initQuery();
         $('#queryTable').click(function () {
             $('#table').bootstrapTable('refresh', getTable());
-        });
-    });
-
-    $('#vegename').change(function () {
-        var vegeId = $('#vegename').val();
-        $('#diseasename').empty();
-        $('#diseasename').append(new Option("请选择",0));
-        var diseaseId = $('#diseasename').val();
-        $('#curename').empty();
-        $('#curename').append(new Option("请选择",0));
-        $.ajax({
-            url: "load_diseasename.json?vegeId=" + vegeId,
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                if (data.data.diseaseNameMap) {
-                    $.each(data.data.diseaseNameMap,function(index,item){
-                        $('#diseasename').append(new Option(item,index));
-                        if(data.data.diseaseName==item){
-                            $('#diseasename').val(index)
-                        }
-                    });
-                }
-            }
-        });
-    });
-
-    $('#diseasename').change(function () {
-        var diseaseId = $('#diseasename').val();
-        $('#curename').empty();
-        $('#curename').append(new Option("请选择",0));
-        $.ajax({
-            url: "load_curename.json?diseaseId=" + diseaseId,
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-                if (data.data.cureNameMap) {
-                    $.each(data.data.cureNameMap,function(index,item){
-                        $('#curename').append(new Option(item,index));
-                        if(data.data.cureName==item){
-                            $('#curename').val(index)
-                        }
-                    });
-                }
-            }
         });
     });
 

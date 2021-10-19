@@ -2,11 +2,12 @@
 <html xmlns="http://w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <base target="_blank" />
 </head>
 <body>
+
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    品种名称：<input type="text" id="varietynamesearch">
-    蔬菜名称：<input type="text" id="vegenamesearch">
+    企业名称：<input type="text" id="companynamesearch">
     <button class="btn btn-primary" id="queryTable">查询</button>
 </div>
 
@@ -18,7 +19,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header" >
-                <h4 class="modal-title" id="logoinModalLabel" style="display: inline;">品种详情</h4>
+                <h4 class="modal-title" id="logoinModalLabel" style="display: inline;">企业详情</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display: inline">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -26,9 +27,9 @@
             <div class="modal-body">
                 <table class="table table-detail">
                     <tr>
-                        <th>蔬菜名称：</th>
+                        <th>企业名称：</th>
                         <td>
-                            <span id="varietyname_detail"></span>
+                            <span id="companyname_detail"></span>
                         </td>
                         <td rowspan="5" align="center" width="360px;">
                             <div id="imgborder" style="vertical-align:middle; height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px;">
@@ -37,53 +38,42 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>蔬菜名称：</th>
+                        <th>企业性质：</th>
                         <td>
-                            <span text="" id="vegename_detail" ></span><br>
+                            <span text="" id="type_detail" ></span><br>
                         </td>
                     </tr>
                     <tr>
-                        <th>品种产地：</th>
+                        <th>企业地址：</th>
                         <td>
-                            <span text="" id="area_detail"></span>
+                            <span text="" id="location_detail"></span>
                         </td>
                     </tr>
                     <tr>
-                        <th>品种来源：</th>
+                        <th>联 系 人：</th>
                         <td>
-                            <span text="" id="source_detail"></span>
+                            <span text="" id="contact_detail"></span>
                         </td>
                     </tr>
                     <tr>
-                        <td><br></td>
-                        <td><br></td>
+                        <th>联系电话：</th>
+                        <td>
+                            <span text="" id="telephone_detail"></span>
+                        </td>
                     </tr>
                     <tr>
-                        <th>种植模式：</th>
-                        <td colspan="2">
-                            <table text="" id="breedstage_detail" class="table-striped">
-                                <thead>
-                                <tr>
-                                    <th width="200px">种植模式名称</th>
-                                    <th width="620px">介绍</th>
-                                </tr>
-                                </thead>
-                            </table>
+                        <th>企业首页：</th>
+                        <td>
+                            <a href="" id="website_detail"></a>
                         </td>
                     </tr>
 
                     <tr>
-                        <th colspan="3">基本介绍</th>
+                        <th colspan="3" style="alignment: center">企业介绍</th>
                     </tr>
                     <tr>
                         <td colspan="3">
                             <div id="introduction_detail"></div><br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>更新时间：</th>
-                        <td colspan="2">
-                            <span text="" id="updatetime_detail"></span>
                         </td>
                     </tr>
                 </table>
@@ -106,32 +96,28 @@
         }
 
         $.ajax({
-            url: "query_varietybyid.json?varietyId=" + row_id,
+            url: "query_companybyid.json?companyId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
                 if (data) {
                     $('#modalAction').html("详情");
-                    $('#intro_child').remove();
-                    $('#varietyname_detail').text(data.data.varietyName);
-                    $('#vegename_detail').text(data.data.vegeName);
+                    $('#companyname_detail').text(data.data.companyName);
+                    $('#location_detail').text(data.data.location);
+                    $('#contact_detail').text(data.data.contact);
+                    $('#telephone_detail').text(data.data.telephone);
+                    $('#website_detail').text(data.data.website);
+                    $('#website_detail').attr("href", "http://"+data.data.website);
+                    var types = ["国有企业","私营企业","集体企业","合资企业","外资企业","其他"];
+                    $('#type_detail').text(types[data.data.type]);
                     $('#image_detail').attr("src",data.data.imgPath);
-                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.description+"</div>")
-                    $('#updatetime_detail').text(data.data.timestamp);
-                    $('#area_detail').text(data.data.area);
-                    $('#source_detail').text(showClass(data.data.source));
-                    $('#cultivatemode_detail').text();
-                    if(data.data.cultivatemodes){
-                        $.each(data.data.cultivatemodes,function(index,item){
-                            $('#breedstage_detail').append("<tr><td>"+item.cultivateModeName+"</td><td>"+item.note+"</td></tr>");
-                        });
-                    }
+                    $('#introduction_detail').append("<div id='intro_child'>"+data.data.introduction+"</div>")
                     $('#detailModal').modal('toggle');
                 }
             }
         });
-    }
 
+    }
 
     function initQuery() {
         $('#table').bootstrapTable(getTable());
@@ -145,7 +131,7 @@
             cache: false,
             striped: true,                              //是否显示行间隔色
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            url: "query_variety.json",
+            url: "query_company.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
             queryParams: function queryParams(params) {
@@ -158,53 +144,46 @@
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 7,                       //每页的记录行数（*）
             pageList: [7, 12, 20],             //可供选择的每页的行数（*）
-            uniqueId: "varietyId",                     //每一行的唯一标识，一般为主键列
-            showToggle: false,
+            uniqueId: "companyId",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,
             responseHandler: responseHandler,
             onLoadError: function (status) {
                 alert("数据加载失败，请刷新后重试。")
             },
             columns: [
                 {
-                    field: 'number',
-                    title: '序号',
-                    formatter: function (value, row, index) {
-                        return index+1;
-                    }
-                },
-                {
-                    field: 'varietyName',
-                    title: '品种名称',
+                    field: 'companyName',
+                    title: '企业名称',
                     visible: true
                 },
                 {
-                    field: 'vegeInfo.vegeName',
-                    title: '蔬菜名称',
+                    field: 'contact',
+                    title: '联系人',
                     visible: true
                 },
                 {
-                    field: 'area',
-                    title: '产地',
+                    field: 'telephone',
+                    title: '联系电话',
                     visible: true
                 },
                 {
-                    field: 'source',
-                    title: '来源',
+                    field: 'location',
+                    title: '企业地址',
+                    visible: true
+                },
+                {
+                    field: 'website',
+                    title: '企业首页',
                     visible: true,
-                    formatter:function (classification) {
-                        return showClass(classification);
+                    formatter:function (value, row, index){
+                        return "<a href='http://"+ value +"'>" + value + "</a>";
                     }
                 },
                 {
-                    field: 'timestamp',
-                    title: '更新时间',
-                    visible: true
-                },
-                {
-                    field: 'varietyId',
+                    field: 'companyId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.varietyId + ')" >详情</button>';
+                        var operation = '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.companyId + ')" >详情</button>';
                         return operation;
                     }
                 }
@@ -221,8 +200,7 @@
 
     function getSearchParams() {
         var param = {};
-        param.varietyName = $('#varietynamesearch').val();
-        param.vegeName = $('#vegenamesearch').val();
+        param.companyName = $('#companynamesearch').val();
         return param;
     }
 
@@ -235,11 +213,6 @@
 
     function reset(){
         window.location.reload();
-    }
-
-    function showClass(classification) {
-        var classes = ['选育品种','自有品种','引进品种'];
-        return classes[classification];
     }
 </script>
 </body>

@@ -65,7 +65,7 @@ public class BreedStageController extends BaseController {
             VegeInfo vegeInfo = breedStage.getVegeInfo();
             vegeInfo.getBreedStages().remove(breedStage);
             vegeInfoService.update(vegeInfo);
-            breedStage.setVegeInfo(vegeInfo);
+            breedStage.setVegeInfo(vegeInfoService.queryById(data.get("vegeId")));
         }
         breedStage.setStageName(data.get("stageName"));
         breedStage.setBsId(Integer.parseInt(data.get("bsId")));

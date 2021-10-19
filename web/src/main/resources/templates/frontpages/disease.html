@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    疾病名称：<input type="text" id="diseasenamesearch">
+    蔬菜名称：<input type="text" id="vegenamesearch">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+
+</div>
+
+<table id="table">
+</table>
+<!-- 模态框（Modal） -->
+<div class="modal fade bd-example-modal-lg" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">疾病详情</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-detail" id="disease_table">
+                    <tbody>
+                        <tr>
+                            <th width="150px;">
+                                <span>疾病名称：</span>
+                            </th>
+                            <td>
+                                <span id="diseasename_detail"></span>
+                            </td>
+                            <th>
+                                <span>蔬菜名称：</span>
+                            </th>
+                            <td>
+                                <span id="vegename_detail"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span>疾病类型：</span>
+                            </th>
+                            <td>
+                                <span id="diseasetype_detail"></span>
+                            </td>
+                            <th>
+                                <span>更新时间：</span>
+                            </th>
+                            <td>
+                                <span id="updatetime_detail"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span>疾病症状：</span>
+                            </th>
+                            <td colspan="3">
+                                <table id="symptom_detail" class="table-striped">
+                                    <thead>
+                                        <!--<tr>-->
+                                            <!--<th width="200px">症状名称</th>-->
+                                            <!--<th width="200px">症状症状部位</th>-->
+                                            <!--<th width="600px">症状描述</th>-->
+                                        <!--</tr>-->
+                                    </thead>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span> 疾病图片：</span>
+                            </th>
+                            <td colspan="3">
+                                <div class="row" align="center">
+                                    <div id="imgborder4" style="height: 200px;width: 360px; margin:5px; display: inline-block; ">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image0_detail" style="margin-right:50px;width:300px;height: 200px;">
+                                    </div>
+                                    <div id="imgborder5" style="height: 200px;width: 300px; margin:5px; display: inline-block; ">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image1_detail" style="width:300px;height: 200px;">
+                                    </div>
+                                </div>
+                                <div class="row" align="center">
+                                    <div id="imgborder6" style="height: 200px;width: 360px; margin:5px; display: inline-block; ">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image2_detail" style="margin-right:50px;width:300px;height: 200px;">
+                                    </div>
+                                    <div id="imgborder7" style="height: 200px;width: 300px; margin:5px; display: inline-block;">
+                                        <img src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" id="image3_detail" style="width:300px; height: 200px;">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span>疾病病原：</span>
+                            </th>
+                            <td colspan="3">
+                                <span text="" id="etiology_detail" value=""></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span>发病规律：</span>
+                            </th>
+                            <td colspan="3">
+                                <span text="" id="regularity_detail" value=""></span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+
+    function queryDataById(row_id) {
+
+        $.ajax({
+            url: "query_diseasebyid.json?diseaseId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $('#modalAction').html("详情");
+                    $('#diseasename_detail').text(data.data.diseaseName);
+                    $('#vegename_detail').text(data.data.vegeName);
+                    //载入图片
+                    $('#image0_detail').attr("src",data.data.imgPath0);
+                    $('#image1_detail').attr("src",data.data.imgPath1);
+                    $('#image2_detail').attr("src",data.data.imgPath2);
+                    $('#image3_detail').attr("src",data.data.imgPath3);
+
+                    // $('#')
+
+                    var locations = ['根','茎','叶','花'];
+                    if(data.data.symptomList!=null){
+                        $.each(data.data.symptomList,function(index,item){
+                            $('#symptom_detail').append("<tr id='symptom"+index+"'><td width='100px'><p>"+locations[item.location]+"</p></td><td width='700px' style='vertical-align: middle'>"+item.description+"</td></tr>");
+                        });
+                    }
+
+                    if(data.data.cureList!=null){
+                        $.each(data.data.cureList,function(index,item){
+                            $('#disease_table').append("<tr id='cure"+index+"'><td colspan='4' align='center'><label>"+ item.cureName +"</label></td></tr>");
+                            $('#disease_table').append("<tr id='cure"+index+"'><th width='100px'><span>农业防治：</span></th><td width='700px' colspan='3'>"+item.agriControl+"</td></tr>");
+                            $('#disease_table').append("<tr id='cure"+index+"'><th width='100px'><span>生物防治：</span></th><td width='700px' colspan='3'>"+item.bioControl+"</td></tr>");
+                            $('#disease_table').append("<tr id='cure"+index+"'><th width='100px'><span>化学防治：</span></th><td width='700px' colspan='3'>"+item.chemControl+"</td></tr>");
+                        });
+                    }
+
+                    $('#etiology_detail').text(data.data.etiology);
+                    $('#regularity_detail').text(data.data.regularity);
+                    if(data.data.diseaseType==0){
+                        $('#diseasetype_detail').text("病害");
+                    }else {
+                        $('#diseasetype_detail').text("虫害");
+                    }
+                    $('#updatetime_detail').text(data.data.updateTime);
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_disease.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "diseaseId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'diseaseName',
+                    title: '疾病名称',
+                    visible: true
+                },
+                {
+                    field: 'vegeInfo.vegeName',
+                    title: '蔬菜名称',
+                    visible: true
+                },
+                {
+                    field: 'diseaseType',
+                    title: '疾病类型',
+                    visible: true,
+                    formatter:function (type) {
+                        var typeSig;
+                        if(type==0){
+                            typeSig = '<p>病害</p>';
+                        }else {
+                            typeSig = '<p>虫害</p>';
+                        }
+                        return typeSig;
+                    }
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    visible: true
+                },
+                {
+                    field: 'diseaseId',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var operation = '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.diseaseId + ')" >详情</button>';
+                        return operation;
+                    }
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.diseaseName = $('#diseasenamesearch').val();
+        param.vegeName = $('#vegenamesearch').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+
+    function reset(){
+        window.location.reload();
+    }
+</script>
+</body>
+</html>

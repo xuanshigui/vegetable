@@ -64,8 +64,12 @@ public class SymptomController extends BaseController {
         Map<String, String> data = buildData(request,fields);
         Symptom symptom = symptomService.queryById(data.get("symptomId"));
         symptom.setSymptomName(data.get("symptomName"));
-        Disease disease = diseaseService.queryById(data.get("diseaseId"));
-        symptom.setDisease(disease);
+        if(symptom.getDisease().getDiseaseId()!=Integer.parseInt(data.get("symptomId"))){
+            Disease disease = symptom.getDisease();
+            disease.getSymptoms().remove(symptom);
+            diseaseService.update(disease);
+            symptom.setDisease(diseaseService.queryById(data.get("diseaseId")));
+        }
         symptom.setDescription(data.get("description"));
         symptom.setLocation(data.get("location"));
         symptom.setUpdateTime(new Timestamp(System.currentTimeMillis()));

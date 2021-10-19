@@ -32,7 +32,7 @@ class NavigateController extends BaseController{
     @GetMapping(path = "/{pageName}.html")
     ModelAndView page(@PathVariable("pageName") String pageName) {
 
-        Set<String> frontPageSet = new HashSet<>((Arrays.asList("index", "vegeinfo", "variety", "disease", "vegeknowledge", "company")));
+        Set<String> frontPageSet = new HashSet<>((Arrays.asList("index", "vegeinfo", "variety", "disease", "vegeknowledge", "company", "standard", "drug")));
         ModelAndView modelAndView;
         if(pageName.equals("login")){
             modelAndView = new ModelAndView("login");

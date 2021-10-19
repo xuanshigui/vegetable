@@ -61,6 +61,12 @@ public class CureController extends BaseController {
         List<String> fields = Arrays.asList("cureId", "cureName", "agricontrol", "biocontrol","chemcontrol", "diseaseId");
         Map<String, String> data = buildData(request,fields);
         Cure cure = cureService.queryById(data.get("cureId"));
+        if(cure.getDisease().getDiseaseId()!=Integer.parseInt(data.get("cureId"))){
+            Disease disease = cure.getDisease();
+            disease.getCures().remove(cure);
+            diseaseService.update(disease);
+            cure.setDisease(diseaseService.queryById(data.get("diseaseId")));
+        }
         cure.setCureName(data.get("cureName"));
         cure.setAgriControl(data.get("agricontrol"));
         cure.setBioControl(data.get("biocontrol"));

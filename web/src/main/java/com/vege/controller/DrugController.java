@@ -39,12 +39,11 @@ public class DrugController extends BaseController {
     @RequestMapping(value = "/add_drug.json", method = RequestMethod.POST)
     public Map add(HttpServletRequest request, HttpServletResponse response) {
 
-        List<String> fields = Arrays.asList( "drugName", "methods","dosage", "savePeriod", "attention", "cureId");
+        List<String> fields = Arrays.asList( "drugName", "methods", "savePeriod", "attention");
         Map<String, String> data = buildData(request,fields);
         Drug drug = new Drug();
         drug.setDrugName(data.get("drugName"));
         drug.setMethods(data.get("methods"));
-        drug.setDosage(data.get("dosage"));
         drug.setSavePeriod(data.get("savePeriod"));
         drug.setAttention(data.get("attention"));
         drug.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -61,12 +60,11 @@ public class DrugController extends BaseController {
 
     @RequestMapping(value = "/update_drug.json", method = RequestMethod.POST)
     public Map update(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("drugId", "drugName", "methods","dosage","savePeriod", "attention", "cureId");
+        List<String> fields = Arrays.asList("drugId", "drugName", "methods","savePeriod", "attention");
         Map<String, String> data = buildData(request,fields);
         Drug drug = drugService.queryById(data.get("drugId"));
         drug.setDrugName(data.get("drugName"));
         drug.setMethods(data.get("methods"));
-        drug.setDosage(data.get("dosage"));
         drug.setSavePeriod(data.get("savePeriod"));
         drug.setAttention(data.get("attention"));
         drug.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -76,7 +74,7 @@ public class DrugController extends BaseController {
 
     @RequestMapping(value = "/query_drug.json", method = {RequestMethod.POST, RequestMethod.GET})
     public Map query(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("diseaseName", "page", "size");
+        List<String> fields = Arrays.asList("drugName", "page", "size");
         Map<String, String> condition = buildData(request, fields);
         Page<Drug> result = drugService.query(condition);
         long total = drugService.queryTotal(condition);
@@ -95,7 +93,6 @@ public class DrugController extends BaseController {
         data.put("drugId", drug.getDrugId());
         data.put("drugName", drug.getDrugName());
         data.put("methods", drug.getMethods());
-        data.put("dosage", drug.getDosage());
         data.put("savePeriod", drug.getSavePeriod());
         data.put("attention", drug.getAttention());
         data.put("updateTime", drug.getUpdateTime().toString());

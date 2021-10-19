@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base target="_blank" />
+</head>
+<body>
+
+<div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
+    标准名称：<input type="text" id="headlinesearch">
+    开始时间：<input type="date" id="starttime">&nbsp;
+    结束时间：<input type="date" id="endtime">
+    <button class="btn btn-primary" id="queryTable">查询</button>
+
+</div>
+
+<table id="table">
+</table>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade bd-example-modal-lg" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction">标准详情</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-detail">
+                    <tbody>
+                    <tr>
+                        <th>
+                            <span>标准名称：</span>
+                        </th>
+                        <td>
+                            <span id="headline_detail"></span>
+                        </td>
+                        <th>
+                            <span>标准编号：</span>
+                        </th>
+                        <td>
+                            <span id="code_detail"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <span>标准类型：</span>
+                        </th>
+                        <td>
+                            <span id="type_detail"></span>
+                        </td>
+                        <th>
+                            <span>标准状态：</span>
+                        </th>
+                        <td>
+                            <span id="state_detail"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <span>标准链接：</span>
+                        </th>
+                        <td>
+                            <a id="filelink_detail"></a>
+                        </td>
+                        <th>
+                            <span>发布时间：</span>
+                        </th>
+                        <td>
+                            <span id="publictime_detail"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">
+                            <span>标准内容：</span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div id="content_detail"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+
+    function queryDataById(row_id) {
+
+        $.ajax({
+            url: "query_standardbyid.json?standardId=" + row_id,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    $('#intro_child').remove();
+                    $('#headline_detail').text(data.data.headline);
+                    $('#code_detail').text(data.data.code);
+                    $('#type_detail').text(showClass(data.data.type));
+                    if(data.data.state==false){
+                        $('#state_detail').text("现行");
+                    }else {
+                        $('#state_detail').text("废止");
+                    }
+                    $('#content_detail').append("<div id='intro_child'>"+data.data.content+"</div>")
+                    $('#publictime_detail').text(data.data.publicTime);
+                    $('#filelink_detail').text(data.data.fileLink);
+                    $('#filelink_detail').attr("href","http://"+data.data.fileLink);
+                    $('#detailModal').modal('toggle');
+                }
+            }
+        });
+
+    }
+
+    function initQuery() {
+        $('#table').bootstrapTable(getTable());
+    }
+
+    function getTable() {
+        return {
+            method: 'GET',
+            dataType: 'json',
+            contentType: "application/json;charset=UTF-8",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            url: "query_standard.json",
+            width: $(window).width(),
+            pagination: true,                  //分页开关
+            queryParams: function queryParams(params) {
+                var searchParams = getSearchParams();
+                searchParams.page = this.pageNumber;
+                searchParams.size = this.pageSize;
+                return searchParams;
+            },
+            minimumCountColumns: 2,
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 7,                       //每页的记录行数（*）
+            pageList: [7, 12, 20],             //可供选择的每页的行数（*）
+            uniqueId: "vegeId",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,
+            responseHandler: responseHandler,
+            onLoadError: function (status) {
+                alert("数据加载失败，请刷新后重试。")
+            },
+            columns: [
+                {
+                    field: 'number',
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'headline',
+                    title: '标准名称',
+                    visible: true,
+                    formatter: function (value, row, index) {
+                        var operation = '&nbsp;&nbsp;<a onclick="queryDataById(' + row.standardId + ')" >'+value+'</a>';
+                        return operation;
+                    }
+                },
+                {
+                    field: 'type',
+                    title: '标准类型',
+                    visible: true,
+                    formatter:function (classification) {
+                        return showClass(classification);
+                    }
+                },
+                {
+                    field: 'state',
+                    title: '标准状态',
+                    visible: true,
+                    formatter:function (state) {
+                        var typeSig;
+                        if(state==false){
+                            typeSig = '<p>现行</p>';
+                        }else{
+                            typeSig = '<p>废止</p>';
+                        }
+                        return typeSig;
+                    }
+                },
+                {
+                    field: 'publicTime',
+                    title: '发布时间',
+                    visible: true
+                }
+            ]
+        }
+    }
+
+    function responseHandler(data) {
+        return {
+            "rows": data.data.rows,
+            "total": data.data.total
+        };
+    }
+
+    function getSearchParams() {
+        var param = {};
+        param.headline = $('#headlinesearch').val();
+        param.startTime = $('#starttime').val();
+        param.endTime = $('#endtime').val();
+        return param;
+    }
+
+    $(function () {
+        initQuery();
+        $('#queryTable').click(function () {
+            $('#table').bootstrapTable('refresh', getTable());
+        });
+    });
+
+    function showClass(classification) {
+        var classes = ['国际标准','国家标准','地方标准','企业标准','行业标准'];
+        return classes[classification];
+    }
+
+    function reset(){
+        window.location.reload();
+    }
+</script>
+</body>
+</html>

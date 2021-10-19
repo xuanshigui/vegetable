@@ -23,9 +23,6 @@ public class Drug {
     @Column(name = "methods")
     private String methods;
 
-    @Column(name = "dosage")
-    private String dosage;
-
     @Column(name = "saveperiod")
     private String savePeriod;
 
@@ -57,14 +54,6 @@ public class Drug {
 
     public void setMethods(String methods) {
         this.methods = methods;
-    }
-
-    public String getDosage() {
-        return dosage;
-    }
-
-    public void setDosage(String dosage) {
-        this.dosage = dosage;
     }
 
     public String getSavePeriod() {

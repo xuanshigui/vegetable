@@ -1,5 +1,6 @@
 package com.vege.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -47,9 +48,11 @@ public class Disease {
     private VegeInfo vegeInfo;
 
     @OneToMany
+    @JsonIgnore
     private List<Symptom> symptoms = new ArrayList<>();
 
     @OneToMany
+    @JsonIgnore
     private List<Cure> cures = new ArrayList<>();;
 
     @Column(name = "updatetime")

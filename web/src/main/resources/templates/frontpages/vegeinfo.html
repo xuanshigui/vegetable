@@ -2,21 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <style>
-
-        .table-detail > tbody > tr:nth-of-type(odd) {
-            background-color: #F5F7EF;
-        }
-        .table-detail th {
-            font-size: 18px;
-            vertical-align: middle;
-        }
-        .table-detail td{
-            font-size: 18px;
-            vertical-align: middle;
-        }
-    </style>
 </head>
 <body>
 
@@ -145,7 +130,7 @@
                         $('#detailModal').modal('toggle');
                         if(data.data.breedStageList){
                             $.each(data.data.breedStageList,function(index,item){
-                                $('#breedstage_detail').append("<tr id='breedStages'><td>"+item.stageName+"</td><td>"+item.definition+"</td><td>"+item.duration+"</td></tr>");
+                                $('#breedstage_detail').append("<tr id='breedstage"+index+"'><td>"+item.stageName+"</td><td>"+item.definition+"</td><td>"+item.duration+"</td></tr>");
                             });
                         }
                     }

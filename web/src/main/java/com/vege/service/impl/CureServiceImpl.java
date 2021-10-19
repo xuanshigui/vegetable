@@ -1,12 +1,15 @@
 package com.vege.service.impl;
 
 import com.vege.dao.CureRepository;
+import com.vege.dao.DiseaseRepository;
 import com.vege.model.Cure;
+import com.vege.model.Disease;
 import com.vege.service.CureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +21,17 @@ public class CureServiceImpl extends BaseService implements CureService {
     @Autowired
     CureRepository cureRepository;
 
+    @Autowired
+    DiseaseRepository diseaseRepository;
+
     @Override
+    @Transactional
     public boolean add(Cure cure) {
         try {
-            cureRepository.save(cure);
+            cureRepository.saveAndFlush(cure);
+            Disease disease = cure.getDisease();
+            disease.getCures().add(cure);
+            diseaseRepository.save(disease);
             return true;
         }catch (Exception e){
             return false;
@@ -42,7 +52,10 @@ public class CureServiceImpl extends BaseService implements CureService {
     @Override
     public boolean update(Cure cure) {
         try {
-            cureRepository.save(cure);
+            cureRepository.saveAndFlush(cure);
+            Disease disease = cure.getDisease();
+            disease.getCures().add(cure);
+            diseaseRepository.save(disease);
             return true;
         }catch (Exception e){
             return false;

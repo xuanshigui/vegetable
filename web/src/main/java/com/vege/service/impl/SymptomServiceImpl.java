@@ -1,6 +1,8 @@
 package com.vege.service.impl;
 
+import com.vege.dao.DiseaseRepository;
 import com.vege.dao.SymptomRepository;
+import com.vege.model.Disease;
 import com.vege.model.Symptom;
 import com.vege.service.SymptomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Map;
 
 @Service
@@ -17,10 +20,17 @@ public class SymptomServiceImpl extends BaseService implements SymptomService {
     @Autowired
     SymptomRepository symptomRepository;
 
+    @Autowired
+    DiseaseRepository diseaseRepository;
+
     @Override
+    @Transactional
     public boolean add(Symptom symptom) {
         try {
-            symptomRepository.save(symptom);
+            symptomRepository.saveAndFlush(symptom);
+            Disease disease = symptom.getDisease();
+            disease.getSymptoms().add(symptom);
+            diseaseRepository.save(disease);
             return true;
         }catch (Exception e){
             return false;
@@ -38,10 +48,14 @@ public class SymptomServiceImpl extends BaseService implements SymptomService {
         }
     }
 
+    @Transactional
     @Override
     public boolean update(Symptom symptom) {
         try {
-            symptomRepository.save(symptom);
+            symptomRepository.saveAndFlush(symptom);
+            Disease disease = symptom.getDisease();
+            disease.getSymptoms().add(symptom);
+            diseaseRepository.save(disease);
             return true;
         }catch (Exception e){
             return false;
