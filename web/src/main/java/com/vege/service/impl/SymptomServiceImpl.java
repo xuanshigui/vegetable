@@ -38,9 +38,13 @@ public class SymptomServiceImpl extends BaseService implements SymptomService {
     }
 
     @Override
+    @Transactional
     public boolean delete(String symptomId) {
         try {
             Symptom symptom = symptomRepository.findBySymptomId(Integer.parseInt(symptomId));
+            Disease disease = symptom.getDisease();
+            disease.getSymptoms().remove(symptom);
+            diseaseRepository.save(disease);
             symptomRepository.delete(symptom);
             return true;
         }catch (Exception e){
@@ -48,14 +52,10 @@ public class SymptomServiceImpl extends BaseService implements SymptomService {
         }
     }
 
-    @Transactional
     @Override
     public boolean update(Symptom symptom) {
         try {
-            symptomRepository.saveAndFlush(symptom);
-            Disease disease = symptom.getDisease();
-            disease.getSymptoms().add(symptom);
-            diseaseRepository.save(disease);
+            symptomRepository.save(symptom);
             return true;
         }catch (Exception e){
             return false;

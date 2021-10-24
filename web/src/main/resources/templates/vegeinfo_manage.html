@@ -45,6 +45,7 @@
         });
     </script>
 </head>
+
 <body>
 <!-- 按钮触发模态框 -->
 <button class="btn btn-primary" data-toggle="modal" onclick="insertData()">
@@ -73,17 +74,59 @@
             </div>
             <div class="modal-body">
                 <form enctype="multipart/form-data">
-                    蔬菜名称：<input type="text" id="vegename" value=""><br>
-                    别   名：<input type="text" id="alias" value=""><br>
-                    蔬菜分类：<select id="classification" value="">
-                                <option>请选择</option>
-                            </select><br>
-                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
-                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
-                    </div>
-                    基本介绍：<textarea id="introduction">${data.data.content}</textarea><br>
-                    备   注：<input type="text" id="note" value=""><br>
+                    <table class="table-striped" border="1" width="100%">
+                        <tbody>
+                            <tr>
+                                <th><span>蔬菜名称：</span></th>
+                                <td>
+                                    <input type="text" id="vegename" value="" style="width: 300px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>别   名：</span></th>
+                                <td>
+                                    <input type="text" id="alias" value="" style="width: 300px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>蔬菜分类：</span></th>
+                                <td>
+                                    <select id="classification" value="" style="width: 300px;">
+                                        <option>请选择</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>上传图片：</span></th>
+                                <td>
+                                    <input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
+                                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2"><span>基本介绍：</span></th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <textarea id="introduction"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>备   注：</span></th>
+                                <td>
+                                    <textarea id="note" value="" style="width: 100%"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span></span></th>
+                                <td>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <input type="hidden" id="vegeid">
                     <input type="hidden" id="imgpath">
                     <input type="hidden" id="imguuid">
@@ -267,7 +310,8 @@
                     alert("成功！");
                     window.location.reload();
                 }else {
-                    alert("还有关联品种！");
+                    alert("还有关联品种/生长阶段！");
+                    window.location.reload();
                 }
             }
         });

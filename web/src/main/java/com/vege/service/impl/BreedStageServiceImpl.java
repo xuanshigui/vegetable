@@ -40,9 +40,17 @@ public class BreedStageServiceImpl extends BaseService implements BreedStageServ
     }
 
     @Override
+    @Transactional
     public boolean delete(String breedStageId) {
+        BreedStage breedStage = breedStageRepository.findByBsId(Integer.parseInt(breedStageId));
         try {
-            breedStageRepository.deleteById(Integer.parseInt(breedStageId));
+            if (breedStage.getEnvParams().size()!=0){
+                return false;
+            }
+            VegeInfo vegeInfo = breedStage.getVegeInfo();
+            vegeInfo.getBreedStages().remove(breedStage);
+            vegeInfoRepository.saveAndFlush(vegeInfo);
+            breedStageRepository.delete(breedStage);
             return true;
         }catch (Exception e){
             return false;
@@ -50,13 +58,9 @@ public class BreedStageServiceImpl extends BaseService implements BreedStageServ
     }
 
     @Override
-    @Transactional
     public boolean update(BreedStage breedStage) {
         try {
-            breedStageRepository.saveAndFlush(breedStage);
-            VegeInfo vegeInfo = breedStage.getVegeInfo();
-            vegeInfo.getBreedStages().add(breedStage);
-            vegeInfoRepository.save(vegeInfo);
+            breedStageRepository.save(breedStage);
             return true;
         }catch (Exception e){
             return false;

@@ -1,5 +1,6 @@
 package com.vege.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,7 @@ public class KnowledgeCategory {
     private String introduction;
 
     @OneToMany(cascade = CascadeType.REFRESH)
+    @JsonIgnore
     private List<VegeKnowledge>  vegeknowledges = new ArrayList<>();
 
     @Column(name = "updatetime")

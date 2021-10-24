@@ -6,10 +6,9 @@
 <body>
 
 <div style="border: 1px gray solid;padding: 5px 5px;margin: 10px 0px 10px 0px;">
-    图片名称：<input type="text" id="imgnamesearch"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    关联业务表名：<input type="text" id="tablenamesearch"><br>
-    开始时间：<input type="datetime-local" id="starttime">&nbsp;
-    结束时间：<input type="datetime-local" id="endtime">
+    图片名称：<input type="text" id="imgnamesearch">
+    开始时间：<input type="date" id="starttime">&nbsp;
+    结束时间：<input type="date" id="endtime">
     <button class="btn btn-primary" id="queryTable">查询</button>
 
 </div>
@@ -56,13 +55,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                    图片名称：<label text="" id="imgname_detail" value=""></label><br>
+                    图片名称：<label text="" id="imgname_detail"></label><br>
                     图片：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
                             <img src="" id="image_detail" style="width:300px;height: 200px;">
                         </div><br>
-                    关联表名：<label text="" id="tablename_detail" value=""></label><br>
-                    更新时间：<label text="" id="timestamp_detail" value=""></label><br>
-                    图片描述：<label text="" id="note_detail" value=""></label><br>
+                    关联表名：<label text="" id="tablename_detail" ></label><br>
+                    图片UUid：<label text="" id="imguuid_detail" ></label><br>
+                    图片路径：<label text="" id="imgpath_detail" ></label><br>
+                    更新时间：<label text="" id="timestamp_detail"></label><br>
+                    图片描述：<label text="" id="note_detail"></label><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -126,6 +127,8 @@
                     $('#image_detail').attr("src", data.data.imgPath);
                     $('#image_detail').show();
                     $('#timestamp_detail').text(data.data.timestamp);
+                    $('#imguuid_detail').text(data.data.imgUuid);
+                    $('#imgpath_detail').text(data.data.oldPath);
                     $('#tablename_detail').text(data.data.tableName);
                     $('#note_detail').text(data.data.note);
                     $('#detailModal').modal('toggle');
@@ -310,7 +313,6 @@
     function getSearchParams() {
         var param = {};
         param.imgName = $('#imgnamesearch').val();
-        param.tableName = $('#tablenamesearch').val();
         param.startTime = $('#starttime').val();
         param.endTime = $('#endtime').val();
         return param;

@@ -39,9 +39,13 @@ public class CureServiceImpl extends BaseService implements CureService {
     }
 
     @Override
+    @Transactional
     public boolean delete(String cureId) {
         try {
             Cure cure = cureRepository.findByCureId(Integer.parseInt(cureId));
+            Disease disease = cure.getDisease();
+            disease.getCures().remove(cure);
+            diseaseRepository.save(disease);
             cureRepository.delete(cure);
             return true;
         }catch (Exception e){
@@ -53,9 +57,6 @@ public class CureServiceImpl extends BaseService implements CureService {
     public boolean update(Cure cure) {
         try {
             cureRepository.saveAndFlush(cure);
-            Disease disease = cure.getDisease();
-            disease.getCures().add(cure);
-            diseaseRepository.save(disease);
             return true;
         }catch (Exception e){
             return false;

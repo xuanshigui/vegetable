@@ -50,7 +50,7 @@ public class VegeInfo {
     @JsonIgnore
     private List<Variety> varieties = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST},fetch = FetchType.LAZY)
     @JsonIgnore
     private List<VegeKnowledge> vegeKnowledges = new ArrayList<>();
 
@@ -153,4 +153,5 @@ public class VegeInfo {
     public void setDiseases(List<Disease> diseases) {
         this.diseases = diseases;
     }
+
 }

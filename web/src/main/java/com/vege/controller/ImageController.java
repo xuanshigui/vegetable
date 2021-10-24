@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.vege.model.Image;
 import com.vege.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,13 +51,12 @@ public class ImageController extends BaseController {
 
     @RequestMapping(value = "/query_image.json", method = {RequestMethod.POST, RequestMethod.GET})
     public Map query(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("imgName", "tableName", "startTime","endTime", "page", "size");
+        List<String> fields = Arrays.asList("imgName", "startTime","endTime", "page", "size");
         Map<String, String> condition = buildData(request, fields);
-        List<Image> result = imageService.query(condition);
-        int total = imageService.queryTotal(condition);
+        Page<Image> result = imageService.query(condition);
         JSONObject data = new JSONObject();
-        data.put("total", total);
-        data.put("rows", result);
+        data.put("total", result.getTotalElements());
+        data.put("rows", result.getContent());
         return buildResponse(data);
     }
 
@@ -70,6 +70,7 @@ public class ImageController extends BaseController {
         data.put("imgName", image.getImgName());
         data.put("imgPath", "http://127.0.0.1:8080/show_img?imgPath="+ image.getImgPath());
         data.put("oldPath",image.getImgPath());
+        data.put("imgUuid",image.getUuid());
         data.put("timestamp", image.getTimestamp());
         data.put("tableName", image.getTableName());
         data.put("note", image.getNote());

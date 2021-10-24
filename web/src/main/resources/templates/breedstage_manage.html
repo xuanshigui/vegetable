@@ -31,11 +31,37 @@
             </div>
             <div class="modal-body">
                 <form>
-                    所对应蔬菜：<select id="vegename" value="">
-                                <option value="0">请选择</option></select><br>
-                    养殖阶段名称：<input type="text" id="stagename" value=""><br>
-                    培养阶段定义：<textarea type="text" id="definition" value="" style="height: 300px;width: 500px;"></textarea><br>
-                    培养阶段时长：<input type="text" id="duration" value=""><br>
+                    <table class="table-striped" border="1" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="200px"><span>所对应蔬菜：</span></td>
+                                <td>
+                                    <select id="vegename" value="">
+                                        <option value="0">请选择</option></select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>养殖阶段名称：</span></td>
+                                <td>
+                                    <input type="text" id="stagename" value="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>培养阶段时长：</span></td>
+                                <td>
+                                    <input type="text" id="duration" value="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><span>培养阶段定义：</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <textarea type="text" id="definition" value="" style="height: 300px;width:100%"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <input type="hidden" id="bsid">
                     <input type="hidden" id="vegeid">
                 </form>
@@ -154,6 +180,9 @@
             success: function (data) {
                 if (data.data) {
                     alert("成功！");
+                    window.location.reload();
+                }else {
+                    alert("还有关联的环境参数！");
                     window.location.reload();
                 }
             }

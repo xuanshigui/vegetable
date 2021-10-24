@@ -18,9 +18,11 @@ public class VegeKnowledge {
     private Integer vkId;
 
     @ManyToOne
+    @JoinColumn(name = "vegeid", referencedColumnName = "vegeid")
     private VegeInfo vegeInfo;
 
     @ManyToOne
+    @JoinColumn(name = "kcid", referencedColumnName = "kcid")
     private KnowledgeCategory knowledgeCategory;
 
     @Column(name = "headline")

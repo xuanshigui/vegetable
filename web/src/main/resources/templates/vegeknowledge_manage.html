@@ -75,8 +75,8 @@
             </div>
             <div class="modal-body">
                 <form enctype="multipart/form-data">
-                    知识标题：<input type="text" id="headline" value=""><br>
-                    知识分类：<select id="knowledgecategory" value="" style="width: 200px;">
+                    知识标题：<input type="text" id="headline" value="" style="width: 500px"><br>
+                    知识分类：<select id="knowledgecategory" style="width: 200px;">
                                 <option value="0">请选择</option>
                             </select><br>
                     蔬菜名称：<select id="vegename" value="" style="width: 200px;">
@@ -158,7 +158,7 @@
                     //修改对应蔬菜
                     $.each(data.data.vegeNameMap,function(index,item){
                         $('#vegename').append(new Option(item,index));
-                        if(data.data.vegeInfo.vegeName==item){
+                        if(data.data.vegeInfo!=null && data.data.vegeInfo.vegeName==item){
                             $('#vegename').val(index)
                         }
                     });
@@ -239,16 +239,12 @@
             alert("请填写标题！");
             return;
         }
-        if("0"==$('#vegename').val()||$('#vegename').val()==null){
-            alert("请选择蔬菜名称！");
-            return;
-        }
         if("0"==knowledgeCategory){
             alert("请选择知识类别！");
             return;
         }
         if(""==content||content==null){
-            alert("请填写蔬菜介绍！");
+            alert("请填写知识内容！");
             return;
         }
         var data = {

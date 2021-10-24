@@ -1,7 +1,9 @@
 package com.vege.service.impl;
 
 import com.vege.dao.CompanyRepository;
+import com.vege.dao.ImageRepository;
 import com.vege.model.Company;
+import com.vege.model.Image;
 import com.vege.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,9 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 
     @Autowired
     CompanyRepository companyRepository;
+
+    @Autowired
+    ImageRepository imageRepository;
 
     @Override
     public boolean add(Company company) {
@@ -31,6 +36,10 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
         try {
             Company company = companyRepository.findByCompanyId(Integer.parseInt(companyId));
             companyRepository.delete(company);
+            if(company.getImgUuid()!=null){
+                Image image = imageRepository.findByUuid(company.getImgUuid());
+                imageRepository.delete(image);
+            }
             return true;
         }catch (Exception e){
             return false;

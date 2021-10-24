@@ -62,10 +62,14 @@ public class BreedStageController extends BaseController {
         BreedStage breedStage = breedstageService.queryById(data.get("bsId"));
         //如果不相等，修改两者关系
         if(breedStage.getVegeInfo().getVegeId()!=Integer.parseInt(data.get("vegeId"))){
+            //旧的VegeInfo去掉BreedStage
             VegeInfo vegeInfo = breedStage.getVegeInfo();
             vegeInfo.getBreedStages().remove(breedStage);
-            vegeInfoService.update(vegeInfo);
-            breedStage.setVegeInfo(vegeInfoService.queryById(data.get("vegeId")));
+            //新的VegeInfo加上
+            VegeInfo newVege = vegeInfoService.queryById(data.get("vegeId"));
+            newVege.getBreedStages().add(breedStage);
+            vegeInfoService.update(newVege);
+            breedStage.setVegeInfo(newVege);
         }
         breedStage.setStageName(data.get("stageName"));
         breedStage.setBsId(Integer.parseInt(data.get("bsId")));

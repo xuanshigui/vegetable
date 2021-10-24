@@ -24,7 +24,6 @@
             imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
             images_upload_handler: function (blobInfo, success, failure) {
                 var xhr, formData;
-
                 xhr = new XMLHttpRequest();
                 xhr.withCredentials = false;
                 xhr.open('POST', baseURL + "upload_img" );

@@ -95,7 +95,7 @@ public class DrugController extends BaseController {
         data.put("methods", drug.getMethods());
         data.put("savePeriod", drug.getSavePeriod());
         data.put("attention", drug.getAttention());
-        data.put("updateTime", drug.getUpdateTime().toString());
+        data.put("updateTime", drug.getUpdateTime());
         return buildResponse(data);
     }
 

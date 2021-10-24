@@ -88,8 +88,14 @@ public class DiseaseController extends BaseController {
         List<String> fields = Arrays.asList("diseaseId", "diseaseName", "diseaseImg0","diseaseImg1","diseaseImg2","diseaseImg3", "imguuid0", "imguuid1", "imguuid2", "imguuid3", "etiology", "vegeId", "regularity", "diseaseType");
         Map<String, String> data = buildData(request,fields);
         Disease disease = diseaseService.queryById(data.get("diseaseId"));
-        VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
-        disease.setVegeInfo(vegeInfo);
+        if(Integer.parseInt(data.get("vegeId"))!=0 && data.get("vegeId")!=null){
+            VegeInfo vegeInfo = disease.getVegeInfo();
+            vegeInfo.getDiseases().remove(disease);
+            VegeInfo newVegeInfo = vegeInfoService.queryById(data.get("vegeId"));
+            newVegeInfo.getDiseases().add(disease);
+            vegeInfoService.update(newVegeInfo);
+            disease.setVegeInfo(newVegeInfo);
+        }
         disease.setDiseaseName(data.get("diseaseName"));
         if (data.get("imguuid0")==null||data.get("imguuid0").equals("")){
             //建立图片
@@ -150,7 +156,7 @@ public class DiseaseController extends BaseController {
         data.put("diseaseName", disease.getDiseaseName());
 
         //载入图片
-        String imgPath = "";
+        String imgPath;
         if(disease.getImgUuid0()!=null&&!"".equals(disease.getImgUuid0())){
             imgPath = imageService.queryPathByUuid(disease.getImgUuid0());
             data.put("imgPath0", "http://127.0.0.1:8080/show_img?imgPath="+imgPath);

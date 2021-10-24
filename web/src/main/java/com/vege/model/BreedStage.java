@@ -1,5 +1,6 @@
 package com.vege.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +33,8 @@ public class BreedStage {
     private Timestamp updateTime;
 
     //一对多
-    @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<EnvParam> envParams = new LinkedList<>();
 
     @ManyToOne

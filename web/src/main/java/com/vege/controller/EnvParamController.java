@@ -42,9 +42,11 @@ public class EnvParamController extends BaseController {
         List<String> fields = Arrays.asList("bsId","paramName", "type", "boundH", "boundL", "paramUnit", "note");
         Map<String, String> data = buildData(request,fields);
         EnvParam envParam = new EnvParam();
+        if(data.get("bsId")!=null){
+            BreedStage bs = breedStageService.queryById(data.get("bsId"));
+            envParam.setBreedStage(bs);
+        }
         envParam.setParaName(data.get("paramName"));
-        BreedStage bs = breedStageService.queryById(data.get("bsId"));
-        envParam.setBreedStage(bs);
         if("0".equals(data.get("type"))){
             envParam.setType(false);
         }else {
@@ -55,11 +57,7 @@ public class EnvParamController extends BaseController {
         envParam.setParamUnit(data.get("paramUnit"));
         envParam.setNote(data.get("note"));
         envParam.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        EnvParam envParamNew = envparamService.add(envParam);
-        boolean flag = false;
-        if(envParamNew.getEpId()!=null){
-            flag = true;
-        }
+        boolean flag = envparamService.add(envParam);
         return buildResponse(flag);
     }
 
@@ -72,13 +70,21 @@ public class EnvParamController extends BaseController {
 
     @RequestMapping(value = "/update_envparam.json", method = RequestMethod.POST)
     public Map update(HttpServletRequest request, HttpServletResponse response) {
-        List<String> fields = Arrays.asList("epId","bsId","paramName", "type", "boundH", "boundL", "paramUnit", "note");
+        List<String> fields = Arrays.asList("epId", "bsId", "paramName", "type", "boundH", "boundL", "paramUnit", "note");
         Map<String, String> data = buildData(request,fields);
-        EnvParam envParam = new EnvParam();
-        envParam.setEpId(Integer.parseInt(data.get("epId")));
+        EnvParam envParam = envparamService.queryById(data.get("epId"));
+        //修改BsId
+        if(Integer.parseInt(data.get("bsId"))!=envParam.getBreedStage().getBsId()){
+            //去掉旧的
+            BreedStage breedStage = envParam.getBreedStage();
+            breedStage.getEnvParams().remove(envParam);
+            //加上新的
+            BreedStage newBreadStage = breedStageService.queryById(data.get("bsId"));
+            newBreadStage.getEnvParams().add(envParam);
+            breedStageService.update(breedStage);
+            envParam.setBreedStage(newBreadStage);
+        }
         envParam.setParaName(data.get("paramName"));
-        BreedStage bs = breedStageService.queryById(data.get("bsId"));
-        envParam.setBreedStage(bs);
         if(Integer.parseInt(data.get("type"))==0){
             envParam.setType(false);
         }else {
@@ -89,11 +95,7 @@ public class EnvParamController extends BaseController {
         envParam.setParamUnit(data.get("paramUnit"));
         envParam.setNote(data.get("note"));
         envParam.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        EnvParam envParamNew = envparamService.update(envParam);
-        boolean flag = false;
-        if(envParamNew.getEpId()!=null){
-            flag = true;
-        }
+        boolean flag = envparamService.update(envParam);
         return buildResponse(flag);
     }
 

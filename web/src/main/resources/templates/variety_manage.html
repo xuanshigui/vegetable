@@ -73,22 +73,62 @@
             </div>
             <div class="modal-body">
                 <form>
-                    品种名称：<input type="text" id="varietyname" value=""><br>
-                    蔬菜名称：<select id="vegename" value=""><option value="0">请选择</option></select><br>
-                    种植模式：<div id="cultivatemode" style="padding-left: 66px"></div>
-
-                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
-                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
-                    </div>
-                    基本介绍：<textarea id="introduction"></textarea><br>
-                    品种产地：<input type="text" id="area" value=""><br>
-                    品种来源：<select id="source" value="">
-                                <option id="source_option_0", value="请选择">请选择</option>
-                                <option id="source_option_1", value="0">选育品种</option>
-                                <option id="source_option_2", value="1">自有品种</option>
-                                <option id="source_option_3", value="2">引进品种</option>
-                            </select><br>
+                    <table class="table-striped" border="1" width="100%">
+                        <tbody>
+                            <tr>
+                                <th><span>品种名称：</span></th>
+                                <td>
+                                    <input type="text" id="varietyname" value="" style="width: 300px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>蔬菜名称：</span></th>
+                                <td>
+                                    <select id="vegename" value="" style="width: 300px;"><option value="0">请选择</option></select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>种植模式：</span></th>
+                                <td>
+                                    <div id="cultivatemode" style="padding-left: 66px"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>上传图片：</span></th>
+                                <td>
+                                    <input type="file" id="imgupload" value="" onchange="uploadImg()">
+                                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>品种来源：</span></th>
+                                <td>
+                                    <select id="source" value="请选择" style="width: 300px;">
+                                        <option id="source_option_0", value="请选择">请选择</option>
+                                        <option id="source_option_1", value="0">选育品种</option>
+                                        <option id="source_option_2", value="1">自有品种</option>
+                                        <option id="source_option_3", value="2">引进品种</option>
+                                    </select><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span>品种产地：</span></th>
+                                <td>
+                                    <input type="text" id="area" value="" style="width: 300px;"><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2"><span style="alignment: center">基本介绍：</span></th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <textarea id="introduction"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <input type="hidden" id="varietyid">
                     <input type="hidden" id="imgpath">
                     <input type="hidden" id="imguuid">

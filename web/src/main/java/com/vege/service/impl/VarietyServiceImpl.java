@@ -37,10 +37,14 @@ public class VarietyServiceImpl extends BaseService implements VarietyService {
         }
     }
 
+    @Transactional
     @Override
     public boolean delete(String varietyId) {
         try {
             Variety variety = varietyRepository.findByVarietyId(Integer.parseInt(varietyId));
+            VegeInfo vegeInfo = variety.getVegeInfo();
+            vegeInfo.getVarieties().remove(variety);
+            vegeInfoRepository.save(vegeInfo);
             varietyRepository.delete(variety);
             return true;
         }catch (Exception e){
@@ -48,11 +52,12 @@ public class VarietyServiceImpl extends BaseService implements VarietyService {
         }
     }
 
+    @Transactional
     @Override
     public boolean update(Variety variety) {
 
         try {
-            varietyRepository.save(variety);
+            varietyRepository.saveAndFlush(variety);
             return true;
         }catch (Exception e){
             return false;

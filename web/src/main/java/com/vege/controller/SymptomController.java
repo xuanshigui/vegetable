@@ -65,10 +65,14 @@ public class SymptomController extends BaseController {
         Symptom symptom = symptomService.queryById(data.get("symptomId"));
         symptom.setSymptomName(data.get("symptomName"));
         if(symptom.getDisease().getDiseaseId()!=Integer.parseInt(data.get("symptomId"))){
+            //旧Disease去除Symptom
             Disease disease = symptom.getDisease();
             disease.getSymptoms().remove(symptom);
+            //新Disease加上Sympt
+            Disease newDisease = diseaseService.queryById(data.get("diseaseId"));
+            newDisease.getSymptoms().add(symptom);
             diseaseService.update(disease);
-            symptom.setDisease(diseaseService.queryById(data.get("diseaseId")));
+            symptom.setDisease(newDisease);
         }
         symptom.setDescription(data.get("description"));
         symptom.setLocation(data.get("location"));

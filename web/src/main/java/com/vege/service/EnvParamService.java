@@ -7,11 +7,11 @@ import java.util.Map;
 
 public interface EnvParamService {
 
-    public EnvParam add(EnvParam envParam);
+    public boolean add(EnvParam envParam);
 
     public boolean delete(String envParamId);
 
-    public EnvParam update(EnvParam envParam);
+    public boolean update(EnvParam envParam);
 
     public Page<EnvParam> query(Map<String, String> condition);
 

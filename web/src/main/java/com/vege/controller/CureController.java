@@ -62,17 +62,19 @@ public class CureController extends BaseController {
         Map<String, String> data = buildData(request,fields);
         Cure cure = cureService.queryById(data.get("cureId"));
         if(cure.getDisease().getDiseaseId()!=Integer.parseInt(data.get("cureId"))){
+            //旧Disease去掉Cure
             Disease disease = cure.getDisease();
             disease.getCures().remove(cure);
+            //新Disease加上Cure
+            Disease newDisease = diseaseService.queryById(data.get("diseaseId"));
+            newDisease.getCures().add(cure);
             diseaseService.update(disease);
-            cure.setDisease(diseaseService.queryById(data.get("diseaseId")));
+            cure.setDisease(newDisease);
         }
         cure.setCureName(data.get("cureName"));
         cure.setAgriControl(data.get("agricontrol"));
         cure.setBioControl(data.get("biocontrol"));
         cure.setChemControl(data.get("chemcontrol"));
-        Disease disease = diseaseService.queryById(data.get("diseaseId"));
-        cure.setDisease(disease);
         boolean flag = cureService.update(cure);
         return buildResponse(flag);
     }

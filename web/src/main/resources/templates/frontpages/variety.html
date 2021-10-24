@@ -39,19 +39,19 @@
                     <tr>
                         <th>蔬菜名称：</th>
                         <td>
-                            <span text="" id="vegename_detail" ></span><br>
+                            <span id="vegename_detail" ></span><br>
                         </td>
                     </tr>
                     <tr>
                         <th>品种产地：</th>
                         <td>
-                            <span text="" id="area_detail"></span>
+                            <span id="area_detail"></span>
                         </td>
                     </tr>
                     <tr>
                         <th>品种来源：</th>
                         <td>
-                            <span text="" id="source_detail"></span>
+                            <span id="source_detail"></span>
                         </td>
                     </tr>
                     <tr>
@@ -61,7 +61,7 @@
                     <tr>
                         <th>种植模式：</th>
                         <td colspan="2">
-                            <table text="" id="breedstage_detail" class="table-striped">
+                            <table id="breedstage_detail" class="table-striped">
                                 <thead>
                                 <tr>
                                     <th width="200px">种植模式名称</th>
@@ -148,7 +148,7 @@
             url: "query_variety.json",
             width: $(window).width(),
             pagination: true,                  //分页开关
-            queryParams: function queryParams(params) {
+            queryParams: function queryParams() {
                 var searchParams = getSearchParams();
                 searchParams.page = this.pageNumber;
                 searchParams.size = this.pageSize;
@@ -204,8 +204,7 @@
                     field: 'varietyId',
                     title: '操作',
                     formatter: function (value, row, index) {
-                        var operation = '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.varietyId + ')" >详情</button>';
-                        return operation;
+                        return '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.varietyId + ')" >详情</button>';
                     }
                 }
             ]

@@ -125,7 +125,9 @@
             dataType: "json",
             success: function (data) {
                 if (data.data) {
-                    alert("成功！");
+                    window.location.reload();
+                }else {
+                    alert("还有关联知识！");
                     window.location.reload();
                 }
             }

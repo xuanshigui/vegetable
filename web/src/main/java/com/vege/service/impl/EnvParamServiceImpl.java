@@ -1,6 +1,8 @@
 package com.vege.service.impl;
 
+import com.vege.dao.BreedStageRepository;
 import com.vege.dao.EnvParamRepository;
+import com.vege.model.BreedStage;
 import com.vege.model.EnvParam;
 import com.vege.service.EnvParamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Map;
 @Service
 public class EnvParamServiceImpl extends BaseService implements EnvParamService {
@@ -15,15 +18,35 @@ public class EnvParamServiceImpl extends BaseService implements EnvParamService 
     @Autowired
     EnvParamRepository envParamRepository;
 
+    @Autowired
+    BreedStageRepository breedStageRepository;
+
     @Override
-    public EnvParam add(EnvParam envParam) {
-        return envParamRepository.save(envParam);
+    @Transactional
+    public boolean add(EnvParam envParam) {
+
+        try {
+            envParamRepository.saveAndFlush(envParam);
+            BreedStage breedStage = envParam.getBreedStage();
+            breedStage.getEnvParams().add(envParam);
+            breedStageRepository.save(breedStage);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
+    @Transactional
     @Override
     public boolean delete(String epId) {
         try {
-            envParamRepository.deleteById(Integer.parseInt(epId));
+            EnvParam envParam = envParamRepository.findByEpId(Integer.parseInt(epId));
+            BreedStage breedStage = envParam.getBreedStage();
+            breedStage.getEnvParams().remove(envParam);
+            breedStageRepository.save(breedStage);
+            envParamRepository.delete(envParam);
             return true;
         }catch (Exception e){
             e.printStackTrace();
@@ -32,8 +55,16 @@ public class EnvParamServiceImpl extends BaseService implements EnvParamService 
     }
 
     @Override
-    public EnvParam update(EnvParam envParam) {
-        return envParamRepository.save(envParam);
+    @Transactional
+    public boolean update(EnvParam envParam) {
+
+        try {
+            envParamRepository.saveAndFlush(envParam);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

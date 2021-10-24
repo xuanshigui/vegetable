@@ -2,6 +2,7 @@ package com.vege.service.impl;
 
 import com.vege.dao.KnowledgeCategoryRepository;
 import com.vege.model.KnowledgeCategory;
+import com.vege.model.VegeKnowledge;
 import com.vege.service.KnowledgeCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,11 @@ public class KnowledgeCategoryServiceImpl extends BaseService implements Knowled
     @Override
     public boolean delete(String knowledgeCategoryId) {
         try {
+            KnowledgeCategory knowledgeCategory = knowledgeCategoryRepository.findByKcId(Integer.parseInt(knowledgeCategoryId));
+            List<VegeKnowledge> vegeKnowledgeList = knowledgeCategory.getVegeknowledges();
+            if(vegeKnowledgeList!=null||vegeKnowledgeList.size()!=0){
+                return false;
+            }
             knowledgeCategoryRepository.deleteById(Integer.parseInt(knowledgeCategoryId));
             return true;
         }catch (Exception e){

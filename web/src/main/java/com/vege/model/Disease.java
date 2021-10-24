@@ -45,6 +45,7 @@ public class Disease {
     private Integer diseaseType;
 
     @ManyToOne
+    @JoinColumn(name = "vegeid", referencedColumnName = "vegeid")
     private VegeInfo vegeInfo;
 
     @OneToMany

@@ -78,8 +78,18 @@ public class VarietyController extends BaseController {
         List<String> fields = Arrays.asList("varietyId", "varietyName", "varietyImg", "imguuid", "introduction", "vegeId", "area", "source", "cultivateModes");
         Map<String, String> data = buildData(request,fields);
         Variety variety = varietyService.queryById(data.get("varietyId"));
-        VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
-        variety.setVegeInfo(vegeInfo);
+        //修改VegeInfo和Variety关系
+        if(Integer.parseInt(data.get("vegeId"))!=variety.getVegeInfo().getVegeId()){
+            //去掉旧的VegeInfo
+            VegeInfo vegeInfo = variety.getVegeInfo();
+            vegeInfo.getVarieties().remove(variety);
+            //加上新的VegeInfo
+            VegeInfo newVegeInfo = vegeInfoService.queryById(data.get("vegeId"));
+            newVegeInfo.getVarieties().add(variety);
+            vegeInfoService.update(vegeInfo);
+            variety.setVegeInfo(newVegeInfo);
+        }
+
         variety.setVarietyName(data.get("varietyName"));
         if (data.get("imguuid")==null||data.get("imguuid").equals("")){
             //建立图片
@@ -88,7 +98,7 @@ public class VarietyController extends BaseController {
         } else {
             variety.setImgUuid(data.get("imguuid"));
         }
-        //添加养殖模式
+        //修改养殖模式
         String[] cm = data.get("cultivateModes").split(",");
         List<CultivateMode> cultivateModeList = new ArrayList<>();
         for(String cmId:cm){

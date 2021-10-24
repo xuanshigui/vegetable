@@ -70,18 +70,46 @@ public class VegeKnowledgeController extends BaseController {
     public Map update(HttpServletRequest request, HttpServletResponse response) {
         List<String> fields = Arrays.asList("headline", "content", "kcId", "vegeId","vkId");
         Map<String, String> data = buildData(request,fields);
-
+        //得到旧值
         VegeKnowledge vegeKnowledge = vegeKnowledgeService.queryById(data.get("vkId"));
-        vegeKnowledge.setVkId(Integer.parseInt(data.get("vkId")));
+        if (Integer.parseInt(data.get("kcId"))!=vegeKnowledge.getKnowledgeCategory().getKcId()){
+            //去掉旧的Category
+            KnowledgeCategory knowledgeCategory = vegeKnowledge.getKnowledgeCategory();
+            knowledgeCategory.getVegeknowledges().remove(vegeKnowledge);
+            //添加新的Category
+            KnowledgeCategory newKnowledgeCategory =knowledgeCategoryService.queryById(data.get("kcId"));
+            newKnowledgeCategory.getVegeknowledges().add(vegeKnowledge);
+            knowledgeCategoryService.update(knowledgeCategory);
+            vegeKnowledge.setKnowledgeCategory(newKnowledgeCategory);
+        }
+        //原本没有VegeInfo给个新的
+        if(vegeKnowledge.getVegeInfo()==null && Integer.parseInt(data.get("vegeId"))!=0){
+            VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
+            vegeInfo.getVegeKnowledges().add(vegeKnowledge);
+            vegeInfoService.update(vegeInfo);
+            vegeKnowledge.setVegeInfo(vegeInfo);
+        }
+        //原本有VegeInfo给个新的
+        if(Integer.parseInt(data.get("vegeId"))!=0 && vegeKnowledge.getVegeInfo()!=null && Integer.parseInt(data.get("vegeId"))!=vegeKnowledge.getVegeInfo().getVegeId()){
+            //去掉旧的VegeInfo
+            VegeInfo vegeInfo = vegeKnowledge.getVegeInfo();
+            vegeInfo.getVegeKnowledges().remove(vegeKnowledge);
+            //给个新的
+            VegeInfo newVege = vegeInfoService.queryById(data.get("vegeId"));
+            newVege.getVegeKnowledges().add(vegeKnowledge);
+            vegeInfoService.update(vegeInfo);
+            vegeKnowledge.setVegeInfo(newVege);
+        }
+        //原本无论有没有VegeInfo改没了
+        if(Integer.parseInt(data.get("vegeId"))==0){
+            VegeInfo vegeInfo = vegeKnowledge.getVegeInfo();
+            vegeInfo.getVegeKnowledges().remove(vegeKnowledge);
+            vegeInfoService.update(vegeInfo);
+            vegeKnowledge.setVegeInfo(null);
+        }
 
         vegeKnowledge.setHeadline(data.get("headline"));
         vegeKnowledge.setContent(data.get("content"));
-
-        VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
-        vegeKnowledge.setVegeInfo(vegeInfo);
-
-        KnowledgeCategory knowledgeCategory = knowledgeCategoryService.queryById(data.get("kcId"));
-        vegeKnowledge.setKnowledgeCategory(knowledgeCategory);
 
         vegeKnowledge.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         boolean flag = vegeKnowledgeService.update(vegeKnowledge);

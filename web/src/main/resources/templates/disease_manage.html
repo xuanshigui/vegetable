@@ -32,45 +32,85 @@
             </div>
             <div class="modal-body">
                 <form>
-                    疾病名称：<input type="text" id="diseasename" value=""><br>
-                    蔬菜名称：<select id="vegename" value=""><option value="0">请选择</option></select><br>
-                    疾病图片：
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div id="imgborder0" style="height: 210px;width: 320px; margin-left: 100px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
-                                <input type="file" id="imgupload0" value="0" onchange="uploadImg(this)" style="display: none">
-                                <img id="imgload0" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200" onclick="changeImg(0)">
-                                <input type="hidden" id="imgpath0">
-                                <input type="hidden" id="imguuid0">
-                            </div>
-                            <div id="imgborder1" style="height: 210px;width: 320px; margin-left: 10px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
-                                <input type="file" id="imgupload1" value="1" onchange="uploadImg(this)" style="display: none">
-                                <img id="imgload1" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200" onclick="changeImg(1)">
-                                <input type="hidden" id="imgpath1">
-                                <input type="hidden" id="imguuid1">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div id="imgborder2" style="height: 210px;width: 320px;  margin-left: 100px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
-                                <input type="file" id="imgupload2" value="2" onchange="uploadImg(this)" style="display: none">
-                                <img id="imgload2" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200"  onclick="changeImg(2)">
-                                <input type="hidden" id="imgpath2">
-                                <input type="hidden" id="imguuid2">
-                            </div>
-                            <div id="imgborder3" style="height: 210px;width: 320px;  margin-left: 10px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
-                                <input type="file" id="imgupload3" value="3" onchange="uploadImg(this)" style="display: none">
-                                <img id="imgload3" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200"  onclick="changeImg(3)">
-                                <input type="hidden" id="imgpath3">
-                                <input type="hidden" id="imguuid3">
-                            </div>
-                        </div>
-                    </div>
-                    疾病病原：<textarea id="etiology" value="" style="width: 700px;height: 200px;" ></textarea><br>
-                    发病规律：<textarea id="regularity" value="" style="width: 700px;height: 200px;"></textarea><br>
-                    疾病类型：<select id="diseasetype" value=""><option value="0">请选择</option></select><br>
-
+                    <table class="table-striped" border="1" width="100%">
+                        <tbody>
+                        <tr>
+                            <td><span>疾病名称：</span></td>
+                            <td>
+                                <input type="text" id="diseasename" value="" style="width: 300px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>蔬菜名称：</span></td>
+                            <td>
+                                <select id="vegename" value="" style="width: 300px"><option value="0">请选择</option></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>疾病类型：</span></td>
+                            <td>
+                                <select id="diseasetype" value="" style="width: 300px"><option value="0" id="typeOpt0">请选择</option></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><span>疾病图片：</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div id="imgborder0" style="height: 210px;width: 310px; margin-left: 200px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                            <input type="file" id="imgupload0" value="0" onchange="uploadImg(this)" style="display: none">
+                                            <img id="imgload0" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200" onclick="changeImg(0)">
+                                            <input type="hidden" id="imgpath0">
+                                            <input type="hidden" id="imguuid0">
+                                        </div>
+                                        <div id="imgborder1" style="height: 210px;width: 310px; margin-left: 10px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                            <input type="file" id="imgupload1" value="1" onchange="uploadImg(this)" style="display: none">
+                                            <img id="imgload1" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200" onclick="changeImg(1)">
+                                            <input type="hidden" id="imgpath1">
+                                            <input type="hidden" id="imguuid1">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="imgborder2" style="height: 210px;width: 310px;  margin-left: 200px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                            <input type="file" id="imgupload2" value="2" onchange="uploadImg(this)" style="display: none">
+                                            <img id="imgload2" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200"  onclick="changeImg(2)">
+                                            <input type="hidden" id="imgpath2">
+                                            <input type="hidden" id="imguuid2">
+                                        </div>
+                                        <div id="imgborder3" style="height: 210px;width: 310px;  margin-left: 10px; margin-top:10px; margin-bottom:10px; border: dotted; display: inline-block">
+                                            <input type="file" id="imgupload3" value="3" onchange="uploadImg(this)" style="display: none">
+                                            <img id="imgload3" width="300" src="http://127.0.0.1:8080/show_img?imgPath=/Users/liuyiran/Downloads/resource/image/default.jpeg" height="200"  onclick="changeImg(3)">
+                                            <input type="hidden" id="imgpath3">
+                                            <input type="hidden" id="imguuid3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><span>疾病病原：</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea id="etiology" value="" style="width:100%;height: 200px;" ></textarea><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><span>疾病规律：</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea id="regularity" value="" style="width:100%;height: 200px;"></textarea><br>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                     <input type="hidden" id="diseaseid">
-
                 </form>
             </div>
             <div class="modal-footer">
@@ -170,6 +210,7 @@
                             $('#vegename').val(index);
                         }
                     });
+                    $('#typeOpt0').remove();
                     if (data.data.diseaseTypeMap) {
                         $.each(data.data.diseaseTypeMap,function(index,item){
                             $('#diseasetype').append(new Option(item,index));
@@ -342,6 +383,9 @@
             success: function (data) {
                 if (data.data) {
                     alert("成功！");
+                    window.location.reload();
+                }else{
+                    alert("还有关联的症状/治疗方案！");
                     window.location.reload();
                 }
             }
