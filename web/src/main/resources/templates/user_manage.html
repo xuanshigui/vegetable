@@ -31,12 +31,47 @@
             </div>
             <div class="modal-body">
                 <form>
-                    用 户 名：<input type="text" id="username" value=""><br>
-                    密   码：<input type="text" id="password" value=""><br>
-                    真实姓名：<input type="text" id="realname" value=""><br>
-                    手 机 号：<input type="text" id="phone" value=""><br>
-                    邮 箱 号：<input type="text" id="email" value=""><br>
-                    备   注：<input type="text" id="note" value=""><br>
+                    <table style="width: 100%;">
+                        <tbody>
+                        <tr>
+                            <td style="width: 20%"><span>用 户 名：</span></td>
+                            <td>
+                                <input type="text" id="username" value="" onblur="checkUser()">
+                                <img id="flag" style="height: 23px;width: 23px" hidden="hidden">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>密   码：</span></td>
+                            <td>
+                                <input type="password" id="password" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>真实姓名：</span></td>
+                            <td>
+                                <input type="text" id="realname" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>手 机 号：</span></td>
+                            <td>
+                                <input type="text" id="phone" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>邮 箱 号：</span></td>
+                            <td>
+                                <input type="text" id="email" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>备   注：</span></td>
+                            <td>
+                                <input type="text" id="note" value="" style="width: 78%;height: 120px">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                     <input type="hidden" id="userid">
                 </form>
             </div>
@@ -56,11 +91,11 @@
         <div class="modal-content">
             <div class="modal-body">
                 用 户 名：<label text="" id="username_detail" value=""></label><br>
-                    密   码：<label text="" id="password_detail" value=""></label><br>
-                    真实姓名：<label text="" id="realname_detail" value=""></label><br>
-                    手 机 号：<label text="" id="phone_detail" value=""></label><br>
-                    邮 箱 号：<label text="" id="email_detail" value=""></label><br>
-                    备   注：<label text="" id="note_detail" value=""></label><br>
+                密   码：<label text="" id="password_detail" value=""></label><br>
+                真实姓名：<label text="" id="realname_detail" value=""></label><br>
+                手 机 号：<label text="" id="phone_detail" value=""></label><br>
+                邮 箱 号：<label text="" id="email_detail" value=""></label><br>
+                备   注：<label text="" id="note_detail" value=""></label><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -244,7 +279,6 @@
                         var operation = '<button class="btn btn-primary" onclick="updateData(' + row.userId + ')"  >修改</button>';
                         operation += '&nbsp;&nbsp;<button class="btn-danger btn" onclick="deleteData(' + row.userId + ')" >删除</button>';
                         operation += '&nbsp;&nbsp;<button class="btn-success btn" onclick="queryDataById(' + row.userId + ')" >详情</button>';
-
                         return operation;
                     }
                 }
@@ -271,6 +305,27 @@
             $('#table').bootstrapTable('refresh', getTable());
         });
     });
+
+    //验证用户名
+    function checkUser(){
+        var userName = $('#username').val();
+        $.ajax({
+            url: "check_user.json?userName=" + userName,
+            method: "Get",
+            dataType: "json",
+            success: function (data) {
+                if (data.data) {
+                    $('#flag').attr("src","/static/img/true.png");
+                    $('#flag').show();
+                }else {
+                    $('#flag').attr("src","/static/img/false.jpeg");
+                    $('#flag').show();
+                    $('#username').focus();
+                }
+            }
+        });
+    }
+
 </script>
 </body>
 </html>

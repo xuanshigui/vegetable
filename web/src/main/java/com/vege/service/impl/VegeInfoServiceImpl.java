@@ -1,5 +1,6 @@
 package com.vege.service.impl;
 
+import com.vege.dao.ImageRepository;
 import com.vege.dao.VegeInfoRepository;
 import com.vege.model.VegeInfo;
 import com.vege.service.VegeInfoService;
@@ -18,6 +19,9 @@ public class VegeInfoServiceImpl extends BaseService implements VegeInfoService 
 
     @Autowired
     private VegeInfoRepository vegeInfoRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     @Override
     public boolean add(VegeInfo vegeInfo) {
@@ -41,6 +45,9 @@ public class VegeInfoServiceImpl extends BaseService implements VegeInfoService 
         VegeInfo vegeInfo = vegeInfoRepository.findByVegeId(Integer.parseInt(vegeId));
         try {
             vegeInfoRepository.delete(vegeInfo);
+            if(vegeInfo.getImgUuid()!=null){
+                imageRepository.delete(imageRepository.findByUuid(vegeInfo.getImgUuid()));
+            }
             return true;
         }catch (Exception e){
             return false;

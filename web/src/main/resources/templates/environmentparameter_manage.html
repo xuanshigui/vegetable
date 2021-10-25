@@ -47,7 +47,7 @@
                     参数单位：<input type="text" id="paramunit" value="" style="width: 300px;"><br>
                     参数上限：<input type="text" id="boundh" value="" style="width: 300px;"><br>
                     参数下限：<input type="text" id="boundl" value="" style="width: 300px;"><br>
-                    备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：<textarea id="note" value="" style="width: 400px;height: 300px"></textarea><br>
+                    备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：<textarea id="note" value="" style="width: 100%;height: 100px"></textarea><br>
                     <input type="hidden" id="epid">
                 </form>
             </div>
@@ -214,7 +214,7 @@
             return;
         }
         if("请选择"==$('#breedstage').val()){
-            alert("请选择所属生长周期！");
+            alert("请选择所属生长阶段！");
             return;
         }
         //判断是否为数字

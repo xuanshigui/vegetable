@@ -1,7 +1,9 @@
 package com.vege.service.impl;
 
+import com.vege.dao.ImageRepository;
 import com.vege.dao.VarietyRepository;
 import com.vege.dao.VegeInfoRepository;
+import com.vege.model.Image;
 import com.vege.model.Variety;
 import com.vege.model.VegeInfo;
 import com.vege.service.VarietyService;
@@ -21,6 +23,9 @@ public class VarietyServiceImpl extends BaseService implements VarietyService {
     private VarietyRepository varietyRepository;
     @Autowired
     private VegeInfoRepository vegeInfoRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     @Transactional
     @Override
@@ -46,6 +51,10 @@ public class VarietyServiceImpl extends BaseService implements VarietyService {
             vegeInfo.getVarieties().remove(variety);
             vegeInfoRepository.save(vegeInfo);
             varietyRepository.delete(variety);
+            if(variety.getImgUuid()!=null){
+                Image image = imageRepository.findByUuid(variety.getImgUuid());
+                imageRepository.delete(image);
+            }
             return true;
         }catch (Exception e){
             return false;

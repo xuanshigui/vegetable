@@ -92,4 +92,11 @@ public class UserController extends BaseController {
         data.put("note", user.getNote());
         return buildResponse(data);
     }
+
+    @RequestMapping(value = "/check_user.json", method = RequestMethod.GET)
+    public Map check(HttpServletRequest request, HttpServletResponse response) {
+        String userName = request.getParameter("userName");
+        boolean flag = userService.isUnique(userName);
+        return buildResponse(flag);
+    }
 }

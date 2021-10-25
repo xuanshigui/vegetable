@@ -31,13 +31,10 @@
 
                 xhr.onload = function () {
                     var json;
-
                     console.log(xhr.responseText);
                     json = JSON.parse(xhr.responseText);
                     //json.location = json.url;
                     success(json.location);
-
-
                 };
                 formData = new FormData();
                 formData.append('file', blobInfo.blob(), blobInfo.filename());
@@ -76,17 +73,67 @@
             </div>
             <div class="modal-body">
                 <form>
-                    企业名称：<input type="text" id="companyname" value=""><br>
-                    上传图片：<input type="file" id="imgupload" value="" onchange="uploadImg()"><br>
-                    <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                        <img src="" id="imgload" width="300" height="200" style="display: none"><br>
-                    </div>
-                    企业性质：<select id="type" value=""><option value="5">请选择</option></select><br>
-                    企业介绍：<textarea id="introduction"></textarea><br>
-                    企业地址：<input type="text" id="location" value=""><br>
-                    联 系 人：<input type="text" id="contact" value=""><br>
-                    联系电话：<input type="text" id="telephone" value=""><br>
-                    企业首页：<input type="text" id="website" value=""><br>
+                    <table style="width: 100%" class="table-striped">
+                        <tbody>
+                        <tr>
+                            <td><span>企业名称：</span></td>
+                            <td>
+                                <input type="text" id="companyname" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>企业性质：</span></td>
+                            <td>
+                                <select id="type" value=""><option value="5">请选择</option></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>企业地址：</span></td>
+                            <td>
+                                <input type="text" id="location" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>联 系 人：</span></td>
+                            <td>
+                                <input type="text" id="contact" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>联系电话：</span></td>
+                            <td>
+                                <input type="text" id="telephone" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>企业首页：</span></td>
+                            <td>
+                                <input type="text" id="website" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span>上传图片：</span></td>
+                            <td>
+                                <input type="file" id="imgupload" value="" onchange="uploadImg()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="imgborder" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px;margin-left: 210px; border: dotted">
+                                    <img src="" id="imgload" width="300" height="200" style="display: none"><br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">企业介绍：</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea id="introduction"></textarea><br>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                     <input type="hidden" id="companyid">
                     <input type="hidden" id="imgpath">
                     <input type="hidden" id="imguuid">

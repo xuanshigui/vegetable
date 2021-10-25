@@ -1,8 +1,10 @@
 package com.vege.service.impl;
 
 import com.vege.dao.DiseaseRepository;
+import com.vege.dao.ImageRepository;
 import com.vege.dao.VegeInfoRepository;
 import com.vege.model.Disease;
+import com.vege.model.Image;
 import com.vege.model.VegeInfo;
 import com.vege.service.DiseaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class DiseaseServiceImpl extends BaseService implements DiseaseService {
 
     @Autowired
     VegeInfoRepository vegeInfoRepository;
+
+    @Autowired
+    ImageRepository imageRepository;
 
     @Override
     @Transactional
@@ -50,6 +55,22 @@ public class DiseaseServiceImpl extends BaseService implements DiseaseService {
             vegeInfo.getDiseases().remove(disease);
             vegeInfoRepository.save(vegeInfo);
             diseaseRepository.delete(disease);
+            if(disease.getImgUuid0()!=null){
+                Image image = imageRepository.findByUuid(disease.getImgUuid0());
+                imageRepository.delete(image);
+            }
+            if(disease.getImgUuid1()!=null){
+                Image image = imageRepository.findByUuid(disease.getImgUuid1());
+                imageRepository.delete(image);
+            }
+            if(disease.getImgUuid2()!=null){
+                Image image = imageRepository.findByUuid(disease.getImgUuid2());
+                imageRepository.delete(image);
+            }
+            if(disease.getImgUuid3()!=null){
+                Image image = imageRepository.findByUuid(disease.getImgUuid3());
+                imageRepository.delete(image);
+            }
             return true;
         }catch (Exception e){
             return false;

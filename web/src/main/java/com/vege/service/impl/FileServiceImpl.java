@@ -1,7 +1,6 @@
 package com.vege.service.impl;
 
 import com.vege.service.FileService;
-import com.vege.utils.PathHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,19 +10,22 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * created by zbs on 2018/3/11
+ * created by lyr on 2021/10/24
  */
 @Service
 public class FileServiceImpl implements FileService {
+
     private static int READ_ROWS = 10;
+    public static final String SEPARATOR = File.separator;
 
     @Override
-    public String uploadFile(MultipartFile file, String fileName) {
+    public String uploadFile(MultipartFile file, String fileName, String basePath) {
         String path = "";
         try {
             InputStream inputStream = file.getInputStream();
+            System.out.println(fileName);
             String newFileName = UUID.randomUUID().toString() + fileName.substring(fileName.lastIndexOf("."),fileName.length());
-            File newFile = new File(PathHelper.getUploadPath() + newFileName);
+            File newFile = new File(basePath, newFileName);
             OutputStream outputStream = new FileOutputStream(newFile);
 
             byte temp[] = new byte[1024];
