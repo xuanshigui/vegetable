@@ -79,9 +79,9 @@
                                 <option value="5">请选择</option>
                             </select><br>
                     <span style="display: inline-block">标准状态：</span><div class="form-check form-check-inline" style="display: inline-block">
-                                <input class="form-check-input" type="radio" name="state" id="state0" value="0" checked="checked">
+                                <input class="form-check-input" type="radio" name="state" id="state0" value="TRUE" checked="checked">
                                 <label class="form-check-label" for="state0">现行</label>
-                                <input class="form-check-input" type="radio" name="state" id="state1" value="1">
+                                <input class="form-check-input" type="radio" name="state" id="state1" value="FALSE">
                                 <label class="form-check-label" for="state0">废止</label>
                             </div><br>
                     标准链接：<input type="text" id="filelink" value="" style="width: 500px;"><br>
@@ -142,8 +142,6 @@
         $('#standardId').val("");
         $('#publictime').val("");
         $('#content').val("");
-        $('#state0').val("");
-        $('#state1').val("");
         $('#code').val("");
         $('#filelink').val("");
         $('#modalAction').html("添加");
@@ -152,7 +150,7 @@
 
     function updateData(row_id) {
         $.ajax({
-            url: "query_standardbyid.json?vkId=" + row_id,
+            url: "query_standardbyid.json?standardId=" + row_id,
             method: "GET",
             dataType: "json",
             success: function (data) {
@@ -177,8 +175,8 @@
                     }
 
                     //修改标准状态
-                    if(data.data.type=="0"){
-                        $('#state0').attr("checked","checked");
+                    if(data.data.state==false){
+                        $('#state1').attr("checked","checked");
                     }else {
                         $('#state0').attr("checked","checked");
                     }
@@ -217,9 +215,9 @@
                         $('#type_detail').text("行业标准");
                     }
                     if(data.data.state==false){
-                        $('#state_detail').text("现行");
-                    }else {
                         $('#state_detail').text("废止");
+                    }else {
+                        $('#state_detail').text("现行");
                     }
                     $('#content_detail').append("<div id='intro_child'>"+data.data.content+"</div>")
                     $('#publictime_detail').text(data.data.publicTime);
@@ -376,9 +374,9 @@
                     formatter:function (state) {
                         var typeSig;
                         if(state==false){
-                            typeSig = '<p>现行</p>';
-                        }else{
                             typeSig = '<p>废止</p>';
+                        }else{
+                            typeSig = '<p>现行</p>';
                         }
                         return typeSig;
                     }
@@ -428,6 +426,11 @@
     function reset(){
         window.location.reload();
     }
+
+    $('[name=state]').change(function () {
+        var checked = $('[name=state]:checked')
+        console.log('选中的值:', checked.val())
+    })
 </script>
 </body>
 </html>

@@ -45,6 +45,18 @@ public class VegeInfoServiceImpl extends BaseService implements VegeInfoService 
         VegeInfo vegeInfo = vegeInfoRepository.findByVegeId(Integer.parseInt(vegeId));
         try {
             vegeInfoRepository.delete(vegeInfo);
+            if(vegeInfo.getVarieties().size()!=0){
+                return false;
+            }
+            if(vegeInfo.getBreedStages().size()!=0){
+                return false;
+            }
+            if(vegeInfo.getVegeKnowledges().size()!=0){
+                return false;
+            }
+            if(vegeInfo.getDiseases().size()!=0){
+                return false;
+            }
             if(vegeInfo.getImgUuid()!=null){
                 imageRepository.delete(imageRepository.findByUuid(vegeInfo.getImgUuid()));
             }

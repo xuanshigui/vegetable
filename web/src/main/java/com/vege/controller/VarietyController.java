@@ -2,6 +2,7 @@ package com.vege.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vege.model.CultivateMode;
+import com.vege.model.Image;
 import com.vege.model.Variety;
 import com.vege.model.VegeInfo;
 import com.vege.service.CultivateModeService;
@@ -48,16 +49,21 @@ public class VarietyController extends BaseController {
         variety.setVarietyName(data.get("varietyName"));
         VegeInfo vegeInfo = vegeInfoService.queryById(data.get("vegeId"));
         variety.setVegeInfo(vegeInfo);
-        //存储图片
-        String imgUuid = imageService.add(data.get("varietyImg"),Variety.class.getSimpleName());
-        //添加养殖模式
-        String[] cm = data.get("cultivateModes").split(",");
-        List<CultivateMode> cultivateModeList = new ArrayList<>();
-        for(String cmId:cm){
-            cultivateModeList.add(cultivateModeService.queryById(cmId));
+
+        //添加种植模式
+        if(data.get("cultivateModes")!=null){
+            String[] cm = data.get("cultivateModes").split(",");
+            List<CultivateMode> cultivateModeList = new ArrayList<>();
+            for(String cmId:cm){
+                cultivateModeList.add(cultivateModeService.queryById(cmId));
+            }
+            variety.setCultivateModes(cultivateModeList);
         }
-        variety.setCultivateModes(cultivateModeList);
-        variety.setImgUuid(imgUuid);
+        //存储图片
+        if (data.get("varietyImg")!=null&&!data.get("varietyImg").equals("")){
+            String imgUuid = imageService.add(data.get("varietyImg"),Variety.class.getSimpleName());
+            variety.setImgUuid(imgUuid);
+        }
         variety.setDescription(data.get("introduction"));
         variety.setArea(data.get("area"));
         variety.setSource(data.get("source"));
@@ -92,7 +98,9 @@ public class VarietyController extends BaseController {
 
         variety.setVarietyName(data.get("varietyName"));
         if (data.get("imguuid")==null||data.get("imguuid").equals("")){
-            //建立图片
+            //建立图片，新图片
+            Image oldImg = imageService.queryByUuid(variety.getImgUuid());
+            imageService.delete(String.valueOf(oldImg.getImgId()));
             String imgUuid = imageService.add(data.get("varietyImg"),variety.getClass().getSimpleName());
             variety.setImgUuid(imgUuid);
         } else {

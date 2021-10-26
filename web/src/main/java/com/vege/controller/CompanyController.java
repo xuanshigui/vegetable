@@ -3,6 +3,7 @@ package com.vege.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.vege.constants.Constants;
 import com.vege.model.Company;
+import com.vege.model.Image;
 import com.vege.service.CompanyService;
 import com.vege.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,8 @@ public class CompanyController extends BaseController {
         //存储图片
         if (data.get("imguuid")==null||data.get("imguuid").equals("")){
             //建立图片
+            Image oldImg = imageService.queryByUuid(company.getImgUuid());
+            imageService.delete(String.valueOf(oldImg.getImgId()));
             String imgUuid = imageService.add(data.get("varietyImg"),company.getClass().getSimpleName());
             company.setImgUuid(imgUuid);
         } else {
@@ -108,7 +111,6 @@ public class CompanyController extends BaseController {
         data.put("imgUuid", company.getImgUuid());
         data.put("introduction", company.getIntroduction());
         data.put("type", company.getType());
-
         data.put("location", company.getLocation());
         data.put("contact",company.getContact());
         data.put("telephone", company.getTelephone());

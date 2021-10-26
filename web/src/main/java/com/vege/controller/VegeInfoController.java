@@ -3,6 +3,7 @@ package com.vege.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.vege.constants.Constants;
 import com.vege.model.BreedStage;
+import com.vege.model.Image;
 import com.vege.model.Variety;
 import com.vege.model.VegeInfo;
 import com.vege.service.ImageService;
@@ -78,6 +79,8 @@ public class VegeInfoController extends BaseController {
             vege.setImgUuid(data.get("imguuid"));
         }else {
             //建立图片
+            Image oldImg = imageService.queryByUuid(vege.getImgUuid());
+            imageService.delete(String.valueOf(oldImg.getImgId()));
             String imgUuid = imageService.add(data.get("vegeImg"),vege.getClass().getSimpleName());
             vege.setImgUuid(imgUuid);
         }

@@ -386,11 +386,19 @@
             alert("请选择品种来源！");
             return;
         }
+        if(""==$('#imgupload').val()||$('#imgupload').val()==null){
+            alert("请上传品种图片！");
+            return;
+        }
         var cultivateModes="";
         $("input[name=items]:checkbox:checked").each(function(){
             cultivateModes = cultivateModes + $(this).val() + ",";
         });
 
+        if(""==cultivateModes){
+            alert("请选择品种种植模式！");
+            return;
+        }
         var data = {
             'varietyName': $('#varietyname').val(),
             'varietyId': $('#varietyid').val(),

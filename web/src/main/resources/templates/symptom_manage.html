@@ -74,11 +74,11 @@
             </div>
             <div class="modal-body">
                 <form>
-                    症状名称：<input type="text" id="symptomname" value=""><br>
+                    症状名称：<input type="text" id="symptomname" value="" style="width: 500px"><br>
                     蔬菜名称：<select id="vegename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
                     疾病名称：<select id="diseasename" value="" style="width: 178px"><option value="0">请选择</option></select><br>
                     症状描述：<textarea id="description"></textarea><br>
-                    发病部位：<select id="location" value="" style="width: 178px"><option value="4">请选择</option></select><br>
+                    发病部位：<select id="location" value="" style="width: 178px"><option value="10">请选择</option></select><br>
                     <input type="hidden" id="symptomid">
                 </form>
             </div>
@@ -202,15 +202,7 @@
                     $('#symptomname_detail').text(data.data.symptomName);
                     $('#vegename_detail').text(data.data.disease.vegeInfo.vegeName);
                     $('#diseasename_detail').text(data.data.disease.diseaseName);
-                    if(data.data.location==0){
-                        $('#location_detail').text("根");
-                    }else if(data.data.location==1){
-                        $('#location_detail').text("茎");
-                    }else if(data.data.location==2){
-                        $('#location_detail').text("叶");
-                    }else {
-                        $('#location_detail').text("花");
-                    }
+                    $('#location_detail').text(showClass(data.data.location));
                     $('#description_detail').append("<div id='intro_child'>"+data.data.description+"</div>")
                     $('#updatetime_detail').text(data.data.updateTime);
                     $('#detailModal').modal('toggle');
@@ -260,7 +252,7 @@
             alert("请填写症状描述！");
             return;
         }
-        if("4"==$('#location').val()){
+        if("10"==$('#location').val()){
             alert("请选择发病部位！");
             return;
         }
@@ -353,16 +345,7 @@
                     title: '发病部位',
                     visible: true,
                     formatter:function (location) {
-                        var typeSig;
-                        if(location==0){
-                            typeSig = '<p>根</p>';
-                        }else if(location==1){
-                            typeSig = '<p>茎</p>';
-                        }else if(location==2){
-                            typeSig = '<p>叶</p>';
-                        }else{
-                            typeSig = '<p>花</p>';
-                        }
+                        var typeSig = showClass(location);
                         return typeSig;
                     }
                 },
@@ -431,6 +414,11 @@
     function reset(){
         window.location.reload();
     }
+    function showClass(classification) {
+        var classes = ['根','茎','叶','花','种子','果实'];
+        return classes[classification];
+    }
+
 </script>
 </body>
 </html>

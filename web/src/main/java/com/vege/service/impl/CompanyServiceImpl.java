@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Map;
 
 @Service
@@ -31,6 +32,7 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
         }
     }
 
+    @Transactional
     @Override
     public boolean delete(String companyId) {
         try {
@@ -47,6 +49,7 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
     }
 
     @Override
+    @Transactional
     public boolean update(Company company) {
         try {
             companyRepository.save(company);

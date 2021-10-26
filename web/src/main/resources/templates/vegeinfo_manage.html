@@ -147,15 +147,60 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                蔬菜名称：<label text="" id="vegename_detail"></label><br>
-                别   名：<label text="" id="alias_detail" ></label><br>
-                蔬菜分类：<label text="" id="classification_detail"></label><br>
-                图   片：<div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
-                <img src="" id="image_detail" style="width:300px;height: 200px;"></img>
-            </div><br>
-                基本介绍：<div id="introduction_detail"></div><br>
-                备   注：<label text="" id="note_detail"></label><br>
-                更新时间：<label text="" id="updatetime_detail"></label><br>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><span>蔬菜名称：</span></td>
+                        <td>
+                            <label text="" id="vegename_detail"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>别   名：</span></td>
+                        <td>
+                            <label text="" id="alias_detail" ></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>蔬菜分类：</span></td>
+                        <td>
+                            <label text="" id="classification_detail"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>图   片：</span></td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span></span></td>
+                        <td>
+                            <div id="imgborder2" style="height: 210px;width: 320px; padding-bottom: 5px; padding-top: 5px; border: dotted">
+                                <img src="" id="image_detail" style="width:300px;height: 200px;">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">基本介绍：</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div id="introduction_detail"></div></td>
+                    </tr>
+                    <tr>
+                        <td><span>备   注：</span></td>
+                        <td>
+                            <label text="" id="note_detail"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>更新时间：</span></td>
+                        <td>
+                            <label text="" id="updatetime_detail"></label>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -310,7 +355,7 @@
                     alert("成功！");
                     window.location.reload();
                 }else {
-                    alert("还有关联品种/生长阶段！");
+                    alert("还有关联品种/生长阶段/疾病/知识！");
                     window.location.reload();
                 }
             }
@@ -323,6 +368,10 @@
         var classification = $('#classification').val();
         if(""==$('#vegename').val()||$('#vegename').val()==null){
             alert("请填写蔬菜名称！");
+            return;
+        }
+        if(""==$('#imgupload').val()||$('#imgupload').val()==null){
+            alert("请上传蔬菜图片！");
             return;
         }
         if("请选择"==classification){

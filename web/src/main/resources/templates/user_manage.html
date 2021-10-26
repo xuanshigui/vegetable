@@ -23,7 +23,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="reset()">
                     &times;
                 </button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction">添加</span>数据
@@ -76,7 +76,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">关闭
                 </button>
                 <button onclick="submitData()" type="button" class="btn btn-primary">
                     提交
@@ -183,6 +183,24 @@
 
     function submitData() {
         var uri;
+        if(""==$('#username').val()||$('#username').val()==null){
+            alert("请填写用户名称！");
+            return;
+        }
+        if(""==$('#password').val()||$('#password').val()==null){
+            alert("请填写用户密码！");
+            return;
+        }
+        var phone = $('#phone').val();
+        if(!(/^1[3-9]\d{9}$/s.test(phone))){
+            alert("手机号码有误，请慎重填写！");
+            return;
+        }
+        var email = $('#email').val();
+        if(!(/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/s.test(email))){
+            alert("邮箱号有误，请慎重填写！");
+            return;
+        }
         var data = {
             'userName': $('#username').val(),
             'userId': $('#userid').val(),
@@ -192,6 +210,7 @@
             'email': $('#email').val(),
             'note': $('#note').val()
         };
+
         if ($('#modalAction').html() == '添加') {
             uri = "add_user.json";
         } else {
@@ -324,6 +343,10 @@
                 }
             }
         });
+    }
+
+    function reset(){
+        window.location.reload();
     }
 
 </script>

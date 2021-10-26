@@ -101,9 +101,9 @@ public class StandardController extends BaseController {
 
     @RequestMapping(value = "/query_standardbyid.json", method = {RequestMethod.GET, RequestMethod.GET})
     public Map queryById(HttpServletRequest request, HttpServletResponse response) {
-        String vkId = request.getParameter("standardId");
+        String standardId = request.getParameter("standardId");
 
-        Standard standard = standardService.queryById(vkId);
+        Standard standard = standardService.queryById(standardId);
         JSONObject data = new JSONObject();
         data.put("standardId", standard.getStandardId());
         data.put("headline", standard.getHeadline());

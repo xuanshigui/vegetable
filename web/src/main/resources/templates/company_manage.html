@@ -78,7 +78,7 @@
                         <tr>
                             <td><span>企业名称：</span></td>
                             <td>
-                                <input type="text" id="companyname" value="">
+                                <input type="text" id="companyname" value="" style="width: 500px;">
                             </td>
                         </tr>
                         <tr>
@@ -90,25 +90,25 @@
                         <tr>
                             <td><span>企业地址：</span></td>
                             <td>
-                                <input type="text" id="location" value="">
+                                <input type="text" id="location" value="" style="width: 500px;">
                             </td>
                         </tr>
                         <tr>
                             <td><span>联 系 人：</span></td>
                             <td>
-                                <input type="text" id="contact" value="">
+                                <input type="text" id="contact" value=""  style="width: 500px;">
                             </td>
                         </tr>
                         <tr>
                             <td><span>联系电话：</span></td>
                             <td>
-                                <input type="text" id="telephone" value="">
+                                <input type="text" id="telephone" value=""  style="width: 500px;">
                             </td>
                         </tr>
                         <tr>
                             <td><span>企业首页：</span></td>
                             <td>
-                                <input type="text" id="website" value="">
+                                <input type="text" id="website" value=""  style="width: 500px;">
                             </td>
                         </tr>
                         <tr>
@@ -358,9 +358,16 @@
             alert("请填写企业介绍！");
             return;
         }
-
+        if(""==$('#imgupload').val()||$('#imgupload').val()==null){
+            alert("请上传企业图片！");
+            return;
+        }
         //增加联系方式的检查
-
+        var telephone = $('#telephone').val();
+        if(!(/^1[3-9]\d{9}$/s.test(telephone))&&!/^\d{3}-\d{7,8}|\d{4}-\d{7,8}$/.test(telephone)){
+            alert("联系方式有误，请慎重填写！");
+            return;
+        }
         var data = {
             'companyName': $('#companyname').val(),
             'companyId': $('#companyid').val(),
@@ -460,6 +467,7 @@
                 },
                 {
                     field: 'companyId',
+                    width: '280px',
                     title: '操作',
                     formatter: function (value, row, index) {
                         var operation = '<button class="btn btn-primary" onclick="updateData(' + row.companyId + ')"  >修改</button>';

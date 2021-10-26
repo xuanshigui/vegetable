@@ -89,6 +89,8 @@ public class Constants {
         SYMPTOM_LOCATION_MAP.put("1","茎");
         SYMPTOM_LOCATION_MAP.put("2","叶");
         SYMPTOM_LOCATION_MAP.put("3","花");
+        SYMPTOM_LOCATION_MAP.put("4","种子");
+        SYMPTOM_LOCATION_MAP.put("5","果实");
 
         //STANDARD_TYPE_MAP
         STANDARD_TYPE_MAP = new HashMap<>();
